@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSDF Shop</title>
+    <meta name="description" content="Support CSDF through products, event tickets, and donation packages." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="accessibility-panel" aria-label="Accessibility controls"><button type="button" data-font-scale="down">A-</button><button type="button" data-font-scale="reset">A</button><button type="button" data-font-scale="up">A+</button><button type="button" id="contrast-toggle">High Contrast</button></div>
+    <header class="site-header" id="site-header"><div class="container nav-wrap"><a class="brand" href="index.html"><img class="brand-logo" src="assets/csdf-logo.svg" alt="CSDF logo" /><span class="brand-text">CSDF<small>Community Services</small></span></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Primary navigation"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="resources.html">Resources</a><a href="events.html">Events</a><a href="shop.html" class="active">Shop</a><a href="volunteer.html">Volunteer</a><a href="donate.html">Donate</a><a href="contact.html">Contact</a></nav><button class="cart-btn" id="cart-toggle" type="button" aria-label="Open cart"><span class="cart-ic">🛒</span><span class="cart-badge" id="cart-count">0</span></button></div></header>
+    <main id="main-content">
+      <section class="page-hero"><div class="container page-grid"><div class="page-intro"><span class="eyebrow">Shop</span><h1>Support our mission through every purchase</h1><p>Every product helps sustain outreach, education, peer leadership, and health support programs across the community.</p></div><aside class="highlight-panel card"><span class="section-tag">Impact Shopping</span><p>Designed for fundraising, awareness, and practical community support.</p></aside></div></section>
+      <section class="section section-soft">
+        <div class="container">
+          <div class="shop-toolbar">
+            <div class="shop-filters">
+              <button type="button" class="chip active">All</button>
+              <button type="button" class="chip">Apparel</button>
+              <button type="button" class="chip">Accessories</button>
+              <button type="button" class="chip">Education</button>
+              <button type="button" class="chip">Support</button>
+            </div>
+            <p class="shop-hint">Click a product to view details</p>
+          </div>
+          <div class="shop-grid">
+            <article class="shop-card card" data-price="18" data-name="CSDF T-Shirts" data-tag="Apparel" data-img="https://loremflickr.com/800/600/tshirt,clothing?lock=31" data-desc="Comfortable branded shirts for campaigns and community events. Soft, durable cotton that helps spread awareness wherever you go.">
+              <div class="shop-media" style="background-image:url('https://loremflickr.com/600/480/tshirt,clothing?lock=31')"><span class="shop-tag">Apparel</span></div>
+              <div class="shop-body"><h3>CSDF T-Shirts</h3><p>Comfortable branded shirts for campaigns and community events.</p><div class="shop-foot"><span class="price">$18</span><button type="button" class="btn btn-primary btn-cart">Add to Cart</button></div></div>
+            </article>
+            <article class="shop-card card" data-price="12" data-name="Tote Bags" data-tag="Accessories" data-img="https://loremflickr.com/800/600/totebag,bag?lock=32" data-desc="Reusable bags that keep the mission visible in everyday life. Strong enough for daily use and a great conversation starter.">
+              <div class="shop-media" style="background-image:url('https://loremflickr.com/600/480/totebag,bag?lock=32')"><span class="shop-tag">Accessories</span></div>
+              <div class="shop-body"><h3>Tote Bags</h3><p>Reusable bags that keep the mission visible in everyday life.</p><div class="shop-foot"><span class="price">$12</span><button type="button" class="btn btn-primary btn-cart">Add to Cart</button></div></div>
+            </article>
+            <article class="shop-card card" data-price="5" data-name="Awareness Wristbands" data-tag="Accessories" data-img="https://loremflickr.com/800/600/wristband,bracelet?lock=33" data-desc="Simple items for awareness drives and solidarity campaigns. Comfortable, adjustable, and perfect for events.">
+              <div class="shop-media" style="background-image:url('https://loremflickr.com/600/480/wristband,bracelet?lock=33')"><span class="shop-tag">Accessories</span></div>
+              <div class="shop-body"><h3>Awareness Wristbands</h3><p>Simple items for awareness drives and solidarity campaigns.</p><div class="shop-foot"><span class="price">$5</span><button type="button" class="btn btn-primary btn-cart">Add to Cart</button></div></div>
+            </article>
+            <article class="shop-card card" data-price="15" data-name="Reusable Water Bottles" data-tag="Accessories" data-img="https://loremflickr.com/800/600/waterbottle,bottle?lock=34" data-desc="Branded bottles for events, volunteers, and supporters. Keep drinks cool while supporting the community.">
+              <div class="shop-media" style="background-image:url('https://loremflickr.com/600/480/waterbottle,bottle?lock=34')"><span class="shop-tag">Accessories</span></div>
+              <div class="shop-body"><h3>Reusable Water Bottles</h3><p>Branded bottles for events, volunteers, and supporters.</p><div class="shop-foot"><span class="price">$15</span><button type="button" class="btn btn-primary btn-cart">Add to Cart</button></div></div>
+            </article>
+            <article class="shop-card card" data-price="24" data-name="Educational Books" data-tag="Education" data-img="https://loremflickr.com/800/600/books,library?lock=35" data-desc="Selected titles on rights, health communication, and community care. Curated to inform, educate, and empower.">
+              <div class="shop-media" style="background-image:url('https://loremflickr.com/600/480/books,library?lock=35')"><span class="shop-tag">Education</span></div>
+              <div class="shop-body"><h3>Educational Books</h3><p>Selected titles on rights, health communication, and community care.</p><div class="shop-foot"><span class="price">$24</span><button type="button" class="btn btn-primary btn-cart">Add to Cart</button></div></div>
+            </article>
+            <article class="shop-card card" data-price="30" data-name="Health Awareness Kits" data-tag="Support" data-img="https://loremflickr.com/800/600/firstaidkit,medical?lock=36" data-desc="Fund practical outreach materials for health education sessions. Each kit directly supports community health work.">
+              <div class="shop-media" style="background-image:url('https://loremflickr.com/600/480/firstaidkit,medical?lock=36')"><span class="shop-tag">Support</span></div>
+              <div class="shop-body"><h3>Health Awareness Kits</h3><p>Fund practical outreach materials for health education sessions.</p><div class="shop-foot"><span class="price">$30</span><button type="button" class="btn btn-primary btn-cart">Add to Cart</button></div></div>
+            </article>
+            <article class="shop-card card" data-price="20" data-name="Community Event Tickets" data-tag="Support" data-img="https://loremflickr.com/800/600/event,crowd?lock=37" data-desc="Reserve a place for selected training sessions and fundraising events. Join the community and support the cause.">
+              <div class="shop-media" style="background-image:url('https://loremflickr.com/600/480/event,crowd?lock=37')"><span class="shop-tag">Support</span></div>
+              <div class="shop-body"><h3>Community Event Tickets</h3><p>Reserve a place for selected training sessions and fundraising events.</p><div class="shop-foot"><span class="price">$20</span><button type="button" class="btn btn-primary btn-cart">Add to Cart</button></div></div>
+            </article>
+            <article class="shop-card card" data-price="50" data-name="Donation Packages" data-tag="Support" data-img="https://loremflickr.com/800/600/charity,donation?lock=38" data-desc="Choose bundled giving options linked to direct service impact. Flexible packages for individuals and organisations.">
+              <div class="shop-media" style="background-image:url('https://loremflickr.com/600/480/charity,donation?lock=38')"><span class="shop-tag">Support</span></div>
+              <div class="shop-body"><h3>Donation Packages</h3><p>Choose bundled giving options linked to direct service impact.</p><div class="shop-foot"><span class="price">$50+</span><button type="button" class="btn btn-primary btn-cart">Add to Cart</button></div></div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer"><div class="container footer-grid"><div><h3>CSDF</h3><p>Community Strength Development Foundation — supporting marginalized women in Sri Lanka since 2002.</p><p class="footer-contact">No. 68, Kolonnawa Road, Kolonnawa, Colombo, Sri Lanka<br />0112 534 838<br />kanthiabeykoon3@gmail.com</p></div><div><h4>Explore</h4><a href="about.html">About</a><a href="services.html">Services</a><a href="shop.html">Shop</a><a href="resources.html">Resources</a></div><div><h4>Get Involved</h4><a href="events.html">Events</a><a href="volunteer.html">Volunteer</a><a href="donate.html">Donate</a><a href="contact.html">Contact</a></div><div><h4>Policies</h4><a href="contact.html">Privacy Policy</a><a href="contact.html">Terms &amp; Conditions</a></div></div><div class="container footer-bottom"><span>© 2026 CSDF. All rights reserved.</span><span>Community-focused. Inclusive. Professional.</span></div></footer>
+    <a class="floating-whatsapp" href="https://wa.me/94112534838" aria-label="Chat with CSDF on WhatsApp">WhatsApp</a>
+    <button class="back-to-top" id="back-to-top" type="button" aria-label="Back to top">↑</button>
+
+    <div class="drawer-overlay" id="drawer-overlay" hidden></div>
+    <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart" aria-hidden="true">
+      <div class="cart-head">
+        <h3>Your Cart</h3>
+        <button type="button" class="icon-btn" id="cart-close" aria-label="Close cart">✕</button>
+      </div>
+      <div class="cart-items" id="cart-items"></div>
+      <p class="cart-empty" id="cart-empty">Your cart is empty.</p>
+      <div class="cart-foot">
+        <div class="cart-total-row"><span>Total</span><strong id="cart-total">$0</strong></div>
+        <button type="button" class="btn btn-primary cart-checkout" id="checkout-btn">Checkout</button>
+        <p class="checkout-message" id="checkout-message" aria-live="polite"></p>
+      </div>
+    </aside>
+
+    <div class="modal-overlay" id="product-modal" hidden>
+      <div class="product-modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-name">
+        <button type="button" class="icon-btn modal-close" id="modal-close" aria-label="Close">✕</button>
+        <div class="modal-media" id="modal-media"></div>
+        <div class="modal-info">
+          <span class="shop-tag modal-tag" id="modal-tag"></span>
+          <h2 id="modal-name"></h2>
+          <p id="modal-desc"></p>
+          <div class="modal-buy">
+            <span class="price" id="modal-price"></span>
+            <button type="button" class="btn btn-primary" id="modal-add">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

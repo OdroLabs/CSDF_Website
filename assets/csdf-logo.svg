@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="CSDF logo">
+  <rect x="10" y="10" width="180" height="180" rx="10" fill="#ffffff" stroke="#1a1a1a" stroke-width="8"/>
+  <rect x="26" y="26" width="148" height="120" rx="4" fill="#ffffff"/>
+  <!-- water base -->
+  <path d="M30 118 q40 -22 70 0 q30 -20 70 0 v24 q-70 26 -140 0 z" fill="#0096e6"/>
+  <!-- teardrop / flame -->
+  <path d="M100 40 C124 74 140 92 140 116 a40 40 0 0 1 -80 0 C60 92 76 74 100 40 Z" fill="#0096e6"/>
+  <path d="M100 62 C114 84 124 96 124 112 a24 24 0 0 1 -48 0 C76 96 86 84 100 62 Z" fill="#ffd400"/>
+  <path d="M100 92 c8 10 12 16 12 22 a12 12 0 0 1 -24 0 c0 -6 4 -12 12 -22 z" fill="#ffffff" opacity="0.85"/>
+  <!-- red cross top-left -->
+  <g fill="#d62828">
+    <rect x="44" y="44" width="10" height="30" rx="2"/>
+    <rect x="34" y="54" width="30" height="10" rx="2"/>
+  </g>
+  <!-- awareness ribbon top-right -->
+  <path d="M150 40 l8 14 -6 4 -8 -14 z M142 40 l-8 14 6 4 8 -14 z M146 58 l4 22 -6 -6 -6 6 z" fill="#d62828"/>
+  <!-- wordmark -->
+  <text x="100" y="182" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-weight="800" font-size="34" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="1">CSDF</text>
+</svg>
