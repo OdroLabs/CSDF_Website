@@ -1,0 +1,197 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+}
+
+// Key-value site settings, trilingual where needed
+model Setting {
+  id      Int     @id @default(autoincrement())
+  key     String  @unique
+  valueEn String? @db.Text
+  valueSi String? @db.Text
+  valueTa String? @db.Text
+}
+
+model Project {
+  id            Int       @id @default(autoincrement())
+  titleEn       String
+  titleSi       String?
+  titleTa       String?
+  descriptionEn String    @db.Text
+  descriptionSi String?   @db.Text
+  descriptionTa String?   @db.Text
+  image         String?
+  status        String    @default("ongoing") // ongoing | completed | upcoming
+  startDate     DateTime?
+  endDate       DateTime?
+  order         Int       @default(0)
+  published     Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+}
+
+model Service {
+  id            Int     @id @default(autoincrement())
+  titleEn       String
+  titleSi       String?
+  titleTa       String?
+  descriptionEn String  @db.Text
+  descriptionSi String? @db.Text
+  descriptionTa String? @db.Text
+  icon          String? // emoji or icon name
+  image         String?
+  order         Int     @default(0)
+  published     Boolean @default(true)
+}
+
+model Publication {
+  id            Int      @id @default(autoincrement())
+  titleEn       String
+  titleSi       String?
+  titleTa       String?
+  descriptionEn String?  @db.Text
+  descriptionSi String?  @db.Text
+  descriptionTa String?  @db.Text
+  category      String   @default("research") // research | report | annual | other
+  fileUrl       String?
+  coverImage    String?
+  publishedAt   DateTime @default(now())
+  published     Boolean  @default(true)
+}
+
+model News {
+  id          Int      @id @default(autoincrement())
+  titleEn     String
+  titleSi     String?
+  titleTa     String?
+  excerptEn   String?  @db.Text
+  excerptSi   String?  @db.Text
+  excerptTa   String?  @db.Text
+  contentEn   String   @db.Text
+  contentSi   String?  @db.Text
+  contentTa   String?  @db.Text
+  image       String?
+  publishedAt DateTime @default(now())
+  published   Boolean  @default(true)
+}
+
+model Event {
+  id            Int       @id @default(autoincrement())
+  titleEn       String
+  titleSi       String?
+  titleTa       String?
+  descriptionEn String    @db.Text
+  descriptionSi String?   @db.Text
+  descriptionTa String?   @db.Text
+  location      String?
+  image         String?
+  startDate     DateTime
+  endDate       DateTime?
+  published     Boolean   @default(true)
+}
+
+model GalleryImage {
+  id        Int      @id @default(autoincrement())
+  captionEn String?
+  captionSi String?
+  captionTa String?
+  image     String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id            Int      @id @default(autoincrement())
+  nameEn        String
+  nameSi        String?
+  nameTa        String?
+  descriptionEn String   @db.Text
+  descriptionSi String?  @db.Text
+  descriptionTa String?  @db.Text
+  price         Decimal? @db.Decimal(10, 2)
+  image         String?
+  inStock       Boolean  @default(true)
+  order         Int      @default(0)
+  published     Boolean  @default(true)
+}
+
+model Testimonial {
+  id        Int     @id @default(autoincrement())
+  quoteEn   String  @db.Text
+  quoteSi   String? @db.Text
+  quoteTa   String? @db.Text
+  authorEn  String
+  authorSi  String?
+  authorTa  String?
+  order     Int     @default(0)
+  published Boolean @default(true)
+}
+
+model Partner {
+  id    Int     @id @default(autoincrement())
+  name  String
+  logo  String?
+  url   String?
+  order Int     @default(0)
+}
+
+model Stat {
+  id      Int     @id @default(autoincrement())
+  labelEn String
+  labelSi String?
+  labelTa String?
+  value   String
+  order   Int     @default(0)
+}
+
+model Donation {
+  id               Int      @id @default(autoincrement())
+  orderId          String   @unique
+  name             String
+  email            String
+  phone            String?
+  amount           Decimal  @db.Decimal(10, 2)
+  currency         String   @default("LKR")
+  message          String?  @db.Text
+  status           String   @default("pending") // pending | success | failed | cancelled | chargeback
+  payherePaymentId String?
+  createdAt        DateTime @default(now())
+}
+
+model Suggestion {
+  id        Int      @id @default(autoincrement())
+  name      String?
+  email     String?
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Subscriber {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
