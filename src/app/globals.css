@@ -6,24 +6,24 @@
 
 @layer base {
   :root {
-    --background: 204 100% 97%;
-    --foreground: 0 0% 17%;
+    --background: 0 0% 100%;
+    --foreground: 217 33% 14%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 17%;
-    --primary: 201 100% 45%;
+    --card-foreground: 217 33% 14%;
+    --primary: 201 100% 36%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 201 100% 36%;
+    --secondary: 203 100% 28%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 204 60% 95%;
-    --muted-foreground: 220 9% 46%;
-    --accent: 50 100% 50%;
-    --accent-foreground: 0 0% 17%;
+    --muted: 210 40% 97%;
+    --muted-foreground: 215 16% 44%;
+    --accent: 45 96% 51%;
+    --accent-foreground: 217 33% 14%;
     --destructive: 0 69% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 204 30% 88%;
-    --input: 204 30% 86%;
-    --ring: 201 100% 45%;
-    --radius: 1rem;
+    --border: 214 25% 90%;
+    --input: 214 25% 87%;
+    --ring: 201 100% 36%;
+    --radius: 0.75rem;
   }
 }
 
@@ -34,10 +34,7 @@
   body {
     @apply text-foreground antialiased;
     font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-    background:
-      radial-gradient(circle at top left, rgba(0, 150, 230, 0.12), transparent 30%),
-      radial-gradient(circle at top right, rgba(79, 195, 247, 0.14), transparent 28%),
-      hsl(var(--background));
+    background: hsl(var(--background));
   }
   h1,
   h2,
@@ -58,4 +55,25 @@
 .prose-basic p {
   margin-bottom: 1em;
   line-height: 1.8;
+}
+
+/* Scroll-reveal animation (used with the <Reveal> component) */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

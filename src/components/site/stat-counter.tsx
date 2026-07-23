@@ -8,11 +8,12 @@ export function StatCounter({ value }: { value: string }) {
   const [display, setDisplay] = useState(value);
 
   useEffect(() => {
-    const match = value.replace(/,/g, "").match(/(\d+)/);
+    // Split the original value into prefix / number (may contain commas) / suffix
+    const match = value.match(/^(\D*)([\d,]*\d)(.*)$/);
     if (!match || !ref.current) return;
-    const target = parseInt(match[1], 10);
-    const prefix = value.slice(0, value.indexOf(match[1]));
-    const suffix = value.slice(value.indexOf(match[1]) + match[1].length);
+    const [, prefix, num, suffix] = match;
+    const target = parseInt(num.replace(/,/g, ""), 10);
+    if (isNaN(target)) return;
     setDisplay(`${prefix}0${suffix}`);
 
     const el = ref.current;

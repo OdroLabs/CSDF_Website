@@ -1,8 +1,9 @@
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
 import { getDictionary } from "@/lib/dictionaries";
-import { Card, CardContent } from "@/components/ui/card";
 import { PageHero } from "@/components/site/page-hero";
 
 export default async function ServicesPage({ params }: { params: { locale: Locale } }) {
@@ -15,23 +16,42 @@ export default async function ServicesPage({ params }: { params: { locale: Local
 
   return (
     <>
-      <PageHero title={dict.nav.services} />
-      <div className="container grid gap-6 py-12 sm:grid-cols-2 lg:grid-cols-3">
+      <PageHero title={dict.nav.services} eyebrow="CSDF" />
+      <div className="container grid gap-6 py-12 sm:grid-cols-2 md:py-16 lg:grid-cols-3">
         {services.map((service) => (
-          <Card key={service.id} className="overflow-hidden transition-shadow hover:shadow-lg">
+          <Link
+            key={service.id}
+            href={`/${locale}/services/${service.slug ?? service.id}`}
+            className="group flex flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-brand-500/10"
+          >
             {service.image && (
-              <div className="relative h-44 w-full">
-                <Image src={service.image} alt="" fill className="object-cover" />
+              <div className="relative aspect-[16/10] w-full overflow-hidden">
+                <Image
+                  src={service.image}
+                  alt=""
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
               </div>
             )}
-            <CardContent className="pt-6">
-              {service.icon && <div className="mb-3 text-3xl">{service.icon}</div>}
-              <h2 className="mb-2 text-lg font-bold">{loc(service, "title", locale)}</h2>
-              <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+            <div className="flex flex-1 flex-col p-6">
+              {service.icon && (
+                <span className="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-brand-500/10 text-2xl">
+                  {service.icon}
+                </span>
+              )}
+              <h2 className="mb-2 text-lg font-bold leading-snug transition-colors group-hover:text-primary">
+                {loc(service, "title", locale)}
+              </h2>
+              <p className="mb-4 line-clamp-4 text-sm leading-relaxed text-muted-foreground">
                 {loc(service, "description", locale)}
               </p>
-            </CardContent>
-          </Card>
+              <span className="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
+                {dict.common.readMore}
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </span>
+            </div>
+          </Link>
         ))}
       </div>
     </>

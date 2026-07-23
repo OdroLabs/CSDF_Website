@@ -24,6 +24,8 @@ export default async function LocaleLayout({
         locale={params.locale}
         dict={dict}
         siteName={s(settings, "site_name", params.locale) || "Community Strength Development Foundation"}
+        phone={s(settings, "phone")}
+        email={s(settings, "email")}
       />
       <main className="flex-1">{children}</main>
       <SiteFooter locale={params.locale} dict={dict} settings={settings} />

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Heart } from "lucide-react";
+import { Menu, X, Heart, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LocaleSwitcher } from "./locale-switcher";
 import { cn } from "@/lib/utils";
@@ -13,26 +13,25 @@ export function SiteHeader({
   locale,
   dict,
   siteName,
+  phone,
+  email,
 }: {
   locale: string;
   dict: Dictionary;
   siteName: string;
+  phone?: string;
+  email?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
-  const isHome = pathname === `/${locale}`;
-
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  // Transparent over the hero only on the homepage before scrolling (and while menu closed)
-  const transparent = isHome && !scrolled && !open;
 
   const links = [
     { href: "", label: dict.nav.home },
@@ -54,99 +53,125 @@ export function SiteHeader({
 
   return (
     <>
+      {/* Dark top strip */}
+      <div className="hidden bg-brand-950 text-white md:block">
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-2 text-xs md:px-6">
+          <div className="flex items-center gap-6 text-white/80">
+            {phone && (
+              <a
+                href={`tel:${phone.replace(/\s/g, "")}`}
+                className="flex items-center gap-1.5 transition-colors hover:text-white"
+              >
+                <Phone className="h-3.5 w-3.5 text-accent" /> {phone}
+              </a>
+            )}
+            {email && (
+              <a
+                href={`mailto:${email}`}
+                className="flex items-center gap-1.5 transition-colors hover:text-white"
+              >
+                <Mail className="h-3.5 w-3.5 text-accent" /> {email}
+              </a>
+            )}
+          </div>
+          <LocaleSwitcher current={locale} dark />
+        </div>
+      </div>
+
+      {/* Solid white sticky bar */}
       <header
         className={cn(
-          "fixed top-0 z-40 w-full transition-all duration-300",
-          transparent
-            ? "border-transparent bg-transparent"
-            : "border-b bg-white/95 shadow-sm backdrop-blur"
+          "sticky top-0 z-40 border-b bg-white transition-shadow",
+          scrolled && "shadow-md shadow-brand-950/5"
         )}
       >
-        <div className="container flex items-center justify-between py-2">
-          <Link href={`/${locale}`} className="flex items-center gap-2">
-            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-400 text-lg font-bold text-white shadow-md">
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-4 py-3 md:px-6">
+          <Link href={`/${locale}`} className="flex shrink-0 items-center gap-2.5">
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-brand-700 to-brand-500 text-lg font-bold text-white shadow-sm">
               C
             </span>
             <span className="leading-tight">
-              <span
-                className={cn(
-                  "block text-lg font-extrabold tracking-tight",
-                  transparent ? "text-white" : "text-primary"
-                )}
-              >
+              <span className="block text-lg font-extrabold tracking-tight text-brand-800">
                 CSDF
               </span>
-              <span
-                className={cn(
-                  "block text-[11px]",
-                  transparent ? "text-white/75" : "text-muted-foreground"
-                )}
-              >
+              <span className="block max-w-[220px] truncate text-[10px] text-muted-foreground">
                 {siteName}
               </span>
             </span>
           </Link>
-          <div className="hidden items-center gap-4 lg:flex">
-            <LocaleSwitcher current={locale} />
-            <Button asChild size="sm" className="rounded-full bg-destructive hover:bg-destructive/90">
-              <Link href={`/${locale}/donate`}>
-                <Heart className="h-4 w-4" /> {dict.nav.donate}
-              </Link>
-            </Button>
-          </div>
-          <button
-            className={cn("lg:hidden", transparent && "text-white")}
-            onClick={() => setOpen(!open)}
-            aria-label="Menu"
-          >
-            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
-        </div>
-        <nav
-          className={cn(
-            "lg:block",
-            open ? "block border-t bg-white" : "hidden",
-            !transparent && "lg:border-t lg:bg-transparent",
-            transparent ? "lg:border-t lg:border-white/15" : ""
-          )}
-        >
-          <div className="container flex flex-col gap-1 py-2 lg:flex-row lg:items-center lg:gap-5 lg:py-0">
+
+          {/* Desktop nav */}
+          <nav className="hidden items-center gap-5 xl:flex">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={`/${locale}${link.href}`}
-                onClick={() => setOpen(false)}
                 className={cn(
-                  "py-2 text-sm font-semibold transition-colors lg:border-b-2 lg:py-3",
-                  transparent
-                    ? cn(
-                        "lg:hover:text-white",
-                        isActive(link.href)
-                          ? "text-primary lg:border-accent lg:text-white"
-                          : "text-foreground/80 lg:border-transparent lg:text-white/80"
-                      )
-                    : cn(
-                        "hover:text-primary",
-                        isActive(link.href)
-                          ? "text-primary lg:border-primary"
-                          : "text-foreground/80 lg:border-transparent"
-                      )
+                  "relative py-1.5 text-[13px] font-bold transition-colors hover:text-primary",
+                  isActive(link.href)
+                    ? "text-primary after:absolute after:inset-x-0 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-primary"
+                    : "text-foreground/75"
                 )}
               >
                 {link.label}
               </Link>
             ))}
-            <div className="flex items-center gap-3 py-2 lg:hidden">
-              <LocaleSwitcher current={locale} />
-              <Button asChild size="sm" className="rounded-full bg-destructive hover:bg-destructive/90">
-                <Link href={`/${locale}/donate`}>{dict.nav.donate}</Link>
-              </Button>
-            </div>
+          </nav>
+
+          <div className="flex items-center gap-3">
+            <Button
+              asChild
+              size="sm"
+              className="hidden rounded-md bg-destructive px-5 font-bold hover:bg-destructive/90 md:inline-flex"
+            >
+              <Link href={`/${locale}/donate`}>
+                <Heart className="h-4 w-4" /> {dict.nav.donate}
+              </Link>
+            </Button>
+            <button
+              className="xl:hidden"
+              onClick={() => setOpen(!open)}
+              aria-label="Menu"
+              aria-expanded={open}
+            >
+              {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
-        </nav>
+        </div>
+
+        {/* Collapsible menu below xl */}
+        {open && (
+          <nav className="border-t bg-white xl:hidden">
+            <div className="mx-auto flex max-w-[1400px] flex-col gap-1 px-4 py-3 md:px-6">
+              {links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={`/${locale}${link.href}`}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "rounded-md px-2 py-2 text-sm font-semibold transition-colors hover:bg-muted hover:text-primary",
+                    isActive(link.href) ? "text-primary" : "text-foreground/80"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <div className="mt-2 flex items-center justify-between gap-3 border-t px-2 pt-3">
+                <LocaleSwitcher current={locale} />
+                <Button
+                  asChild
+                  size="sm"
+                  className="rounded-md bg-destructive px-5 font-bold hover:bg-destructive/90 md:hidden"
+                >
+                  <Link href={`/${locale}/donate`} onClick={() => setOpen(false)}>
+                    <Heart className="h-4 w-4" /> {dict.nav.donate}
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </nav>
+        )}
       </header>
-      {/* Spacer keeps content below the fixed header on non-home pages */}
-      {!isHome && <div className="h-[57px] lg:h-[103px]" />}
     </>
   );
 }

@@ -8,6 +8,9 @@ import { prisma } from "./prisma";
 import { authOptions } from "./auth";
 import { getEntity, type FieldDef } from "./admin-config";
 import { settingGroups } from "./settings";
+import { slugify, uniqueSlug } from "./slug";
+
+const SLUGGED_MODELS = ["project", "service", "news", "event"] as const;
 
 async function requireAdmin() {
   const session = await getServerSession(authOptions);
@@ -62,6 +65,13 @@ export async function saveEntity(slug: string, id: number | null, formData: Form
   const entity = getEntity(slug);
   if (!entity || entity.readOnly) throw new Error("Unknown entity");
   const data = buildData(entity.fields, formData);
+
+  // Auto-generate a unique URL slug from the English title when left empty
+  if ((SLUGGED_MODELS as readonly string[]).includes(entity.model)) {
+    const base = slugify((data.slug as string) || (data.titleEn as string) || "");
+    data.slug = await uniqueSlug(entity.model as (typeof SLUGGED_MODELS)[number], base, id);
+  }
+
   if (id) {
     await delegate(entity.model).update({ where: { id }, data });
   } else {

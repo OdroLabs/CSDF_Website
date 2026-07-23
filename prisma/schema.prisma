@@ -26,24 +26,42 @@ model Setting {
 }
 
 model Project {
-  id            Int       @id @default(autoincrement())
-  titleEn       String
-  titleSi       String?
-  titleTa       String?
-  descriptionEn String    @db.Text
-  descriptionSi String?   @db.Text
-  descriptionTa String?   @db.Text
-  image         String?
-  status        String    @default("ongoing") // ongoing | completed | upcoming
-  startDate     DateTime?
-  endDate       DateTime?
-  order         Int       @default(0)
-  published     Boolean   @default(true)
-  createdAt     DateTime  @default(now())
+  id             Int       @id @default(autoincrement())
+  slug           String?   @unique
+  titleEn        String
+  titleSi        String?
+  titleTa        String?
+  descriptionEn  String    @db.Text
+  descriptionSi  String?   @db.Text
+  descriptionTa  String?   @db.Text
+  image          String?
+  // Detail page content
+  contentEn      String?   @db.Text // long description shown on the detail page
+  contentSi      String?   @db.Text
+  contentTa      String?   @db.Text
+  objectivesEn   String?   @db.Text // checklist, one item per line
+  objectivesSi   String?   @db.Text
+  objectivesTa   String?   @db.Text
+  outcomesEn     String?   @db.Text // numbered cards, one per line: "Title :: Text"
+  outcomesSi     String?   @db.Text
+  outcomesTa     String?   @db.Text
+  beneficiariesEn String?
+  beneficiariesSi String?
+  beneficiariesTa String?
+  location       String?
+  image2         String?
+  image3         String?
+  status         String    @default("ongoing") // ongoing | completed | upcoming
+  startDate      DateTime?
+  endDate        DateTime?
+  order          Int       @default(0)
+  published      Boolean   @default(true)
+  createdAt      DateTime  @default(now())
 }
 
 model Service {
   id            Int     @id @default(autoincrement())
+  slug          String? @unique
   titleEn       String
   titleSi       String?
   titleTa       String?
@@ -52,6 +70,21 @@ model Service {
   descriptionTa String? @db.Text
   icon          String? // emoji or icon name
   image         String?
+  // Detail page content
+  contentEn     String? @db.Text // long description shown on the detail page
+  contentSi     String? @db.Text
+  contentTa     String? @db.Text
+  featuresEn    String? @db.Text // checklist, one item per line
+  featuresSi    String? @db.Text
+  featuresTa    String? @db.Text
+  benefitsEn    String? @db.Text // numbered cards, one per line: "Title :: Text"
+  benefitsSi    String? @db.Text
+  benefitsTa    String? @db.Text
+  faqsEn        String? @db.Text // one per line: "Question :: Answer"
+  faqsSi        String? @db.Text
+  faqsTa        String? @db.Text
+  image2        String?
+  image3        String?
   order         Int     @default(0)
   published     Boolean @default(true)
 }
@@ -73,6 +106,7 @@ model Publication {
 
 model News {
   id          Int      @id @default(autoincrement())
+  slug        String?  @unique
   titleEn     String
   titleSi     String?
   titleTa     String?
@@ -83,12 +117,22 @@ model News {
   contentSi   String?  @db.Text
   contentTa   String?  @db.Text
   image       String?
+  // Rich detail-page content
+  highlightsEn String? @db.Text // key points checklist, one per line
+  highlightsSi String? @db.Text
+  highlightsTa String? @db.Text
+  quoteEn      String? @db.Text // pull quote, optionally "Quote :: Attribution"
+  quoteSi      String? @db.Text
+  quoteTa      String? @db.Text
+  image2       String?
+  image3       String?
   publishedAt DateTime @default(now())
   published   Boolean  @default(true)
 }
 
 model Event {
   id            Int       @id @default(autoincrement())
+  slug          String?   @unique
   titleEn       String
   titleSi       String?
   titleTa       String?
@@ -97,6 +141,18 @@ model Event {
   descriptionTa String?   @db.Text
   location      String?
   image         String?
+  // Rich detail-page content
+  contentEn     String?   @db.Text // long description shown on the detail page
+  contentSi     String?   @db.Text
+  contentTa     String?   @db.Text
+  highlightsEn  String?   @db.Text // "what to expect" checklist, one per line
+  highlightsSi  String?   @db.Text
+  highlightsTa  String?   @db.Text
+  agendaEn      String?   @db.Text // schedule, one per line: "Time :: Item"
+  agendaSi      String?   @db.Text
+  agendaTa      String?   @db.Text
+  image2        String?
+  image3        String?
   startDate     DateTime
   endDate       DateTime?
   published     Boolean   @default(true)

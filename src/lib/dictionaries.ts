@@ -38,6 +38,9 @@ const en = {
     outOfStock: "Out of stock",
     thankYou: "Thank you!",
     backHome: "Back to Home",
+    keyPoints: "Key Points",
+    whatToExpect: "What to Expect",
+    agenda: "Agenda",
   },
   home: {
     whoWeAre: "Who We Are",
@@ -55,6 +58,9 @@ const en = {
     newsletter: "Stay informed about programs, events, and resources",
     subscribe: "Subscribe",
     emailPlaceholder: "Email address",
+    getInTouch: "Get In Touch",
+    contactHeading: "Don't hesitate to contact us",
+    callUs: "Call Us",
   },
   about: {
     overview: "Overview",
@@ -130,6 +136,9 @@ const si: typeof en = {
     outOfStock: "තොග අවසන්",
     thankYou: "ස්තූතියි!",
     backHome: "මුල් පිටුවට",
+    keyPoints: "ප්‍රධාන කරුණු",
+    whatToExpect: "ඔබට බලාපොරොත්තු විය හැකි දේ",
+    agenda: "න්‍යාය පත්‍රය",
   },
   home: {
     whoWeAre: "අපි කවුද",
@@ -147,6 +156,9 @@ const si: typeof en = {
     newsletter: "වැඩසටහන්, සිදුවීම් සහ සම්පත් පිළිබඳ දැනුවත් වන්න",
     subscribe: "දායක වන්න",
     emailPlaceholder: "විද්‍යුත් තැපැල් ලිපිනය",
+    getInTouch: "සම්බන්ධ වන්න",
+    contactHeading: "පසුබට නොවී අප හා සම්බන්ධ වන්න",
+    callUs: "අමතන්න",
   },
   about: {
     overview: "දළ විශ්ලේෂණය",
@@ -222,6 +234,9 @@ const ta: typeof en = {
     outOfStock: "கையிருப்பு இல்லை",
     thankYou: "நன்றி!",
     backHome: "முகப்புக்கு திரும்ப",
+    keyPoints: "முக்கிய அம்சங்கள்",
+    whatToExpect: "எதிர்பார்க்கக்கூடியவை",
+    agenda: "நிகழ்ச்சி நிரல்",
   },
   home: {
     whoWeAre: "நாங்கள் யார்",
@@ -239,6 +254,9 @@ const ta: typeof en = {
     newsletter: "நிகழ்ச்சிகள், நிகழ்வுகள் மற்றும் வளங்கள் பற்றி அறிந்திருங்கள்",
     subscribe: "பதிவு செய்ய",
     emailPlaceholder: "மின்னஞ்சல் முகவரி",
+    getInTouch: "தொடர்பு கொள்ளுங்கள்",
+    contactHeading: "தயங்காமல் எங்களை தொடர்பு கொள்ளுங்கள்",
+    callUs: "அழைக்கவும்",
   },
   about: {
     overview: "மேலோட்டம்",
