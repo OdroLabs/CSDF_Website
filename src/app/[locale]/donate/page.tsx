@@ -1,14 +1,9 @@
-import { Landmark, ShieldCheck, Heart } from "lucide-react";
+import { Landmark, Heart, HandHeart, ShieldCheck, Users } from "lucide-react";
 import type { Locale } from "@/lib/i18n";
 import { getDictionary } from "@/lib/dictionaries";
 import { getSettings, s } from "@/lib/settings";
 import { PageHero } from "@/components/site/page-hero";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { AmountField } from "@/components/site/amount-field";
+import { DonationForm } from "@/components/site/donation-form";
 
 export default async function DonatePage({
   params,
@@ -25,69 +20,76 @@ export default async function DonatePage({
 
   return (
     <>
-      <PageHero title={dict.donate.title} intro={intro} />
-      <div className="container grid gap-8 py-12 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Heart className="h-5 w-5 text-primary" /> {dict.donate.donateNow}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+      <PageHero title={dict.donate.title} intro={intro} eyebrow={dict.home.supportUs} />
+
+      <div className="container grid items-start gap-8 py-12 md:py-16 lg:grid-cols-[1.15fr_0.85fr]">
+        {/* Donation form */}
+        <div data-animate className="relative">
+          <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-brand-50 via-transparent to-destructive/5" />
+          <div className="relative rounded-3xl border border-border bg-white p-7 shadow-card md:p-9">
+            <div className="mb-7 flex items-center gap-3">
+              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-destructive to-red-700 text-white shadow-md shadow-destructive/25">
+                <Heart className="h-5 w-5 fill-current" />
+              </span>
+              <h2 className="text-xl font-extrabold text-navy-900">{dict.donate.donateNow}</h2>
+            </div>
+
             {searchParams.cancelled && (
-              <p className="mb-4 rounded-md border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-800">
+              <p className="mb-5 rounded-2xl border border-yellow-300 bg-yellow-50 p-4 text-sm text-yellow-800">
                 {dict.donate.cancelledText}
               </p>
             )}
-            <form action="/api/donate" method="POST" className="space-y-4">
-              <input type="hidden" name="locale" value={locale} />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <Label htmlFor="d-name">{dict.common.name} *</Label>
-                  <Input id="d-name" name="name" required />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="d-email">{dict.common.email} *</Label>
-                  <Input id="d-email" name="email" type="email" required />
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="d-phone">
-                  {dict.common.phone} <span className="text-muted-foreground">({dict.common.optional})</span>
-                </Label>
-                <Input id="d-phone" name="phone" />
-              </div>
-              <AmountField label={dict.donate.amount} />
-              <div className="space-y-1.5">
-                <Label htmlFor="d-message">
-                  {dict.common.message} <span className="text-muted-foreground">({dict.common.optional})</span>
-                </Label>
-                <Textarea id="d-message" name="message" rows={3} />
-              </div>
-              <Button type="submit" size="lg" className="w-full">
-                <Heart className="h-4 w-4" /> {dict.donate.donateNow}
-              </Button>
-              <p className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                <ShieldCheck className="h-3.5 w-3.5" /> {dict.donate.securePayment}
-              </p>
-            </form>
-          </CardContent>
-        </Card>
 
-        {bankDetails && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Landmark className="h-5 w-5 text-secondary" /> {dict.donate.bankTitle}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <pre className="whitespace-pre-wrap rounded-lg bg-muted p-4 font-sans text-sm leading-relaxed">
+            <DonationForm locale={locale} dict={dict} />
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Why give */}
+          <div
+            data-animate
+            data-delay="0.1"
+            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-navy-900 via-brand-800 to-brand-600 p-8 text-white shadow-glow"
+          >
+            <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-accent/20 blur-3xl" />
+            <h3 className="text-lg font-extrabold">{dict.home.supportUs}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-white/80">{dict.home.supportText}</p>
+            <ul className="mt-5 space-y-3 text-sm">
+              {[
+                { Icon: HandHeart, label: dict.donate.purposeGeneral },
+                { Icon: ShieldCheck, label: dict.donate.purposeHealth },
+                { Icon: Users, label: dict.donate.purposeCommunity },
+              ].map(({ Icon, label }) => (
+                <li key={label} className="flex items-center gap-3">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white/10 ring-1 ring-white/20">
+                    <Icon className="h-4 w-4 text-accent" />
+                  </span>
+                  {label}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Bank transfer */}
+          {bankDetails && (
+            <div
+              data-animate
+              data-delay="0.18"
+              className="rounded-3xl border border-border bg-white p-7 shadow-card"
+            >
+              <div className="mb-4 flex items-center gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-primary ring-1 ring-brand-100">
+                  <Landmark className="h-5 w-5" />
+                </span>
+                <h3 className="font-extrabold text-navy-900">{dict.donate.bankTitle}</h3>
+              </div>
+              <pre className="whitespace-pre-wrap rounded-2xl bg-muted p-5 font-sans text-sm leading-relaxed text-navy-900">
                 {bankDetails}
               </pre>
-            </CardContent>
-          </Card>
-        )}
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

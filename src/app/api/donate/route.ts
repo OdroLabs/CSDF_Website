@@ -10,6 +10,15 @@ export async function POST(request: NextRequest) {
   const message = ((form.get("message") as string) || "").trim();
   const locale = ((form.get("locale") as string) || "en").trim();
   const amountRaw = parseFloat((form.get("amount") as string) || "0");
+  const monthly = (form.get("frequency") as string) === "monthly";
+  const purposeRaw = ((form.get("purpose") as string) || "").trim();
+  const purposeLabels: Record<string, string> = {
+    general: "Where it's needed most",
+    health: "Health services",
+    education: "Education & awareness",
+    community: "Community programs",
+  };
+  const purpose = purposeLabels[purposeRaw];
 
   if (!name || !email || !amountRaw || amountRaw <= 0) {
     return NextResponse.json({ error: "Invalid input" }, { status: 400 });
@@ -27,8 +36,14 @@ export async function POST(request: NextRequest) {
   const currency = "LKR";
   const orderId = `CSDF-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
+  // No dedicated columns for frequency/purpose — encode them in the message
+  const storedMessage =
+    [monthly ? "[Monthly]" : null, purpose ? `[${purpose}]` : null, message || null]
+      .filter(Boolean)
+      .join(" ") || null;
+
   await prisma.donation.create({
-    data: { orderId, name, email, phone: phone || null, amount, currency, message: message || null },
+    data: { orderId, name, email, phone: phone || null, amount, currency, message: storedMessage },
   });
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -40,9 +55,11 @@ export async function POST(request: NextRequest) {
     cancel_url: `${siteUrl}/${locale}/donate?cancelled=1`,
     notify_url: `${siteUrl}/api/payhere/notify`,
     order_id: orderId,
-    items: "Donation to CSDF",
+    items: `${monthly ? "Monthly donation" : "Donation"} to CSDF${purpose ? ` — ${purpose}` : ""}`,
     currency,
     amount,
+    // PayHere recurring-payment fields (ignored for one-time donations)
+    ...(monthly ? { recurrence: "1 Month", duration: "Forever" } : {}),
     first_name: firstName,
     last_name: rest.join(" ") || "-",
     email,

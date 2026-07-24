@@ -53,6 +53,12 @@ const config: Config = {
           900: "#023e5c",
           950: "#062a3f",
         },
+        navy: {
+          700: "#123b63",
+          800: "#0d2b4a",
+          900: "#081f38",
+          950: "#051225",
+        },
         teal: {
           50: "#f0fdfa",
           100: "#ccfbf1",
@@ -67,6 +73,12 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        card: "0 1px 2px rgba(5, 18, 37, 0.04), 0 8px 24px -8px rgba(5, 18, 37, 0.10)",
+        "card-hover":
+          "0 2px 4px rgba(5, 18, 37, 0.05), 0 20px 40px -12px rgba(0, 119, 182, 0.22)",
+        glow: "0 0 0 1px rgba(255,255,255,0.08), 0 24px 60px -20px rgba(0, 0, 0, 0.5)",
       },
       keyframes: {
         "accordion-down": {

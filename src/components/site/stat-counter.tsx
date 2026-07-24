@@ -8,6 +8,12 @@ export function StatCounter({ value }: { value: string }) {
   const [display, setDisplay] = useState(value);
 
   useEffect(() => {
+    // Respect reduced-motion: show the final value immediately
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setDisplay(value);
+      return;
+    }
+
     // Split the original value into prefix / number (may contain commas) / suffix
     const match = value.match(/^(\D*)([\d,]*\d)(.*)$/);
     if (!match || !ref.current) return;
@@ -21,11 +27,11 @@ export function StatCounter({ value }: { value: string }) {
       (entries) => {
         if (!entries[0].isIntersecting) return;
         observer.disconnect();
-        const duration = 1400;
+        const duration = 1600;
         const start = performance.now();
         const tick = (now: number) => {
           const t = Math.min((now - start) / duration, 1);
-          const eased = 1 - Math.pow(1 - t, 3);
+          const eased = 1 - Math.pow(1 - t, 4);
           setDisplay(`${prefix}${Math.round(target * eased).toLocaleString()}${suffix}`);
           if (t < 1) requestAnimationFrame(tick);
         };

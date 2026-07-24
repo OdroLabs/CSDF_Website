@@ -7,21 +7,21 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 217 33% 14%;
+    --foreground: 215 45% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 217 33% 14%;
+    --card-foreground: 215 45% 12%;
     --primary: 201 100% 36%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 203 100% 28%;
+    --secondary: 213 55% 16%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 210 40% 97%;
-    --muted-foreground: 215 16% 44%;
-    --accent: 45 96% 51%;
-    --accent-foreground: 217 33% 14%;
-    --destructive: 0 69% 50%;
+    --muted: 208 45% 97%;
+    --muted-foreground: 213 18% 42%;
+    --accent: 190 92% 42%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
-    --border: 214 25% 90%;
-    --input: 214 25% 87%;
+    --border: 212 30% 90%;
+    --input: 212 30% 87%;
     --ring: 201 100% 36%;
     --radius: 0.75rem;
   }
@@ -30,6 +30,14 @@
 @layer base {
   * {
     @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
   body {
     @apply text-foreground antialiased;
@@ -41,6 +49,9 @@
   h3,
   h4 {
     font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  }
+  ::selection {
+    background: hsl(var(--accent) / 0.25);
   }
 }
 
@@ -57,7 +68,48 @@
   line-height: 1.8;
 }
 
-/* Scroll-reveal animation (used with the <Reveal> component) */
+/* ---------------------------------------------------------------------------
+   Design-system helpers
+--------------------------------------------------------------------------- */
+
+/* Frosted glass panel on dark backgrounds */
+.glass-dark {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Frosted glass panel on light backgrounds */
+.glass-light {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Cyan → blue gradient text */
+.text-gradient {
+  background: linear-gradient(100deg, #4fc3f7 0%, #22d3ee 55%, #7dd3fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------------------------------------------------------------------------
+   GSAP reveal system.
+   A tiny inline script in the root layout adds `anim` to <html> only when
+   JavaScript runs AND the user has not requested reduced motion. Elements
+   tagged for animation start invisible only in that case, so content is
+   always readable without JS or with reduced motion.
+--------------------------------------------------------------------------- */
+html.anim [data-hero],
+html.anim [data-animate],
+html.anim [data-stagger] > * {
+  opacity: 0;
+}
+
+/* Legacy scroll-reveal (still used on inner pages via <Reveal>) */
 .reveal {
   opacity: 0;
   transform: translateY(32px);
@@ -75,5 +127,25 @@
     opacity: 1;
     transform: none;
     transition: none;
+  }
+}
+
+/* Testimonial quote crossfade */
+@keyframes quote-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.quote-enter {
+  animation: quote-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .quote-enter {
+    animation: none;
   }
 }
