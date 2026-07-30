@@ -3,20 +3,26 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/dictionaries";
+import { getLabels } from "@/lib/labels";
+import { getSettings, s } from "@/lib/settings";
 import { PageHero } from "@/components/site/page-hero";
+import { EmptyState } from "@/components/site/empty-state";
 
 export default async function ServicesPage({ params }: { params: { locale: Locale } }) {
   const { locale } = params;
-  const dict = getDictionary(locale);
-  const services = await prisma.service.findMany({
-    where: { published: true },
-    orderBy: { order: "asc" },
-  });
+  const [settings, services] = await Promise.all([
+    getSettings(),
+    prisma.service.findMany({ where: { published: true }, orderBy: { order: "asc" } }),
+  ]);
+  const dict = getLabels(locale, settings);
 
   return (
     <>
-      <PageHero title={dict.nav.services} eyebrow="CSDF" />
+      <PageHero
+        title={s(settings, "services_hero_title", locale)}
+        intro={s(settings, "services_hero_intro", locale)}
+        image={s(settings, "services_hero_image") || undefined}
+      />
       <div className="container grid gap-6 py-12 sm:grid-cols-2 md:py-16 lg:grid-cols-3">
         {services.map((service) => (
           <Link
@@ -53,6 +59,11 @@ export default async function ServicesPage({ params }: { params: { locale: Local
             </div>
           </Link>
         ))}
+        {services.length === 0 && (
+          <EmptyState
+            message={s(settings, "services_empty_text", locale)}
+          />
+        )}
       </div>
     </>
   );

@@ -1,57 +1,170 @@
-import { Eye, Target, Users, BookOpen } from "lucide-react";
+import { Eye, Target, Users, BookOpen, Sparkles, History } from "lucide-react";
 import type { Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/dictionaries";
-import { getSettings, s } from "@/lib/settings";
+import { getLabels } from "@/lib/labels";
+import { getSettings, s, sPairs } from "@/lib/settings";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHero } from "@/components/site/page-hero";
 
 export default async function AboutPage({ params }: { params: { locale: Locale } }) {
   const { locale } = params;
-  const dict = getDictionary(locale);
   const settings = await getSettings();
+  const dict = getLabels(locale, settings);
 
+  const overviewTitle = s(settings, "about_overview_title", locale);
+  const overview = s(settings, "about_overview", locale);
+  const overviewImage = s(settings, "about_overview_image");
+
+  const visionTitle = s(settings, "about_vision_title", locale);
+  const vision = s(settings, "about_vision", locale);
+  const missionTitle = s(settings, "about_mission_title", locale);
+  const mission = s(settings, "about_mission", locale);
+
+  const valuesTitle = s(settings, "about_values_title", locale);
+  const values = sPairs(settings, "about_values", locale);
+
+  const communityTitle = s(settings, "about_community_title", locale);
+  const community = s(settings, "about_community", locale);
+
+  const historyTitle = s(settings, "about_history_title", locale);
+  const history = s(settings, "about_history", locale);
+  const historyImage = s(settings, "about_history_image");
+
+  const extraTitle = s(settings, "about_extra_title", locale);
+  const extraText = s(settings, "about_extra_text", locale);
+
+  // Each card only appears when it has text.
   const blocks = [
-    { icon: Eye, title: dict.about.vision, text: s(settings, "about_vision", locale), color: "bg-primary" },
-    { icon: Target, title: dict.about.mission, text: s(settings, "about_mission", locale), color: "bg-teal-600" },
-  ];
+    { icon: Eye, title: visionTitle, text: vision, color: "bg-primary" },
+    { icon: Target, title: missionTitle, text: mission, color: "bg-teal-600" },
+  ].filter((b) => b.text);
+
+  /** Heading + prose block, rendered only when there is text. */
+  const TextBlock = ({
+    id,
+    icon: Icon,
+    title,
+    text,
+    image,
+  }: {
+    id: string;
+    icon: typeof Eye;
+    title: string;
+    text: string;
+    image?: string;
+  }) => {
+    if (!text) return null;
+    return (
+      <section
+        id={id}
+        className={`grid items-start gap-8 ${image ? "lg:grid-cols-2" : "max-w-3xl"}`}
+      >
+        <div data-animate>
+          {title && (
+            <div className="mb-3 flex items-center gap-2 text-primary">
+              <Icon className="h-5 w-5" />
+              <h2 className="text-xl font-bold">{title}</h2>
+            </div>
+          )}
+          <p className="whitespace-pre-line leading-relaxed text-muted-foreground">{text}</p>
+        </div>
+        {image && (
+          <div data-animate data-delay="0.12" className="overflow-hidden rounded-3xl shadow-card">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={image} alt={title} className="aspect-[4/3] w-full object-cover" />
+          </div>
+        )}
+      </section>
+    );
+  };
 
   return (
     <>
-      <PageHero title={dict.nav.about} intro={s(settings, "site_tagline", locale)} />
-      <div className="container py-12 md:py-16">
-        <div className="mb-12 max-w-3xl">
-          <div className="mb-3 flex items-center gap-2 text-primary">
-            <BookOpen className="h-5 w-5" />
-            <h2 className="text-xl font-bold">{dict.about.overview}</h2>
-          </div>
-          <p className="whitespace-pre-line leading-relaxed text-muted-foreground">
-            {s(settings, "about_overview", locale)}
-          </p>
-        </div>
+      <PageHero
+        title={s(settings, "about_hero_title", locale)}
+        intro={s(settings, "about_hero_intro", locale)}
+        image={s(settings, "about_hero_image") || undefined}
+      />
 
-        <div className="mb-12 grid gap-6 md:grid-cols-2">
-          {blocks.map((block) => (
-            <Card key={block.title} className="overflow-hidden">
-              <CardContent className="pt-6">
-                <div className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full ${block.color} text-white`}>
-                  <block.icon className="h-6 w-6" />
+      <div className="container space-y-12 py-12 md:space-y-16 md:py-16">
+        <TextBlock
+          id="sec-overview"
+          icon={BookOpen}
+          title={overviewTitle}
+          text={overview}
+          image={overviewImage || undefined}
+        />
+
+        {blocks.length > 0 && (
+          <div id="sec-visionmission" className="grid gap-6 md:grid-cols-2">
+            {blocks.map((block) => (
+              <Card key={block.title || block.text} className="overflow-hidden" data-animate>
+                <CardContent className="pt-6">
+                  <div
+                    className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full ${block.color} text-white`}
+                  >
+                    <block.icon className="h-6 w-6" />
+                  </div>
+                  {block.title && <h3 className="mb-2 text-lg font-bold">{block.title}</h3>}
+                  <p className="whitespace-pre-line leading-relaxed text-muted-foreground">
+                    {block.text}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {values.length > 0 && (
+          <section id="sec-values" data-animate>
+            {valuesTitle && (
+              <div className="mb-5 flex items-center gap-2 text-primary">
+                <Sparkles className="h-5 w-5" />
+                <h2 className="text-xl font-bold">{valuesTitle}</h2>
+              </div>
+            )}
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {values.map((value, i) => (
+                <div
+                  key={i}
+                  className="rounded-3xl border border-border bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover"
+                >
+                  <span className="font-number text-sm font-bold text-primary/60">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="mt-2 font-bold text-navy-900">{value.left}</h3>
+                  {value.right && (
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                      {value.right}
+                    </p>
+                  )}
                 </div>
-                <h3 className="mb-2 text-lg font-bold">{block.title}</h3>
-                <p className="whitespace-pre-line leading-relaxed text-muted-foreground">{block.text}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+              ))}
+            </div>
+          </section>
+        )}
 
-        <div className="max-w-3xl">
-          <div className="mb-3 flex items-center gap-2 text-primary">
-            <Users className="h-5 w-5" />
-            <h2 className="text-xl font-bold">{dict.about.community}</h2>
-          </div>
-          <p className="whitespace-pre-line leading-relaxed text-muted-foreground">
-            {s(settings, "about_community", locale)}
-          </p>
-        </div>
+        <TextBlock id="sec-community" icon={Users} title={communityTitle} text={community} />
+
+        <TextBlock
+          id="sec-history"
+          icon={History}
+          title={historyTitle}
+          text={history}
+          image={historyImage || undefined}
+        />
+
+        {extraText && (
+          <section
+            id="sec-extra"
+            data-animate
+            className="rounded-[2rem] bg-gradient-to-br from-navy-900 via-brand-800 to-brand-600 p-10 text-white shadow-glow md:p-14"
+          >
+            {extraTitle && <h2 className="text-2xl font-extrabold md:text-3xl">{extraTitle}</h2>}
+            <p className="mt-3 max-w-3xl whitespace-pre-line leading-relaxed text-white/80">
+              {extraText}
+            </p>
+          </section>
+        )}
       </div>
     </>
   );

@@ -8,14 +8,9 @@ import {
   Mail,
   ShoppingBag,
   FileText,
-  KeyRound,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { changePassword } from "@/lib/actions";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { formatMoney } from "@/lib/utils";
 
 export default async function DashboardPage() {
@@ -71,24 +66,6 @@ export default async function DashboardPage() {
           </Link>
         ))}
       </div>
-      <Card className="max-w-md">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <KeyRound className="h-4 w-4" /> Change Password
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form action={changePassword} className="space-y-3">
-            <div className="space-y-1.5">
-              <Label htmlFor="password">New password (min. 8 characters)</Label>
-              <Input id="password" name="password" type="password" minLength={8} required />
-            </div>
-            <Button type="submit" size="sm">
-              Update Password
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
     </div>
   );
 }

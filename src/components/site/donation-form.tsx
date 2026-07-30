@@ -9,12 +9,22 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Dictionary } from "@/lib/dictionaries";
 
-const PRESETS = [1000, 2500, 5000, 10000, 25000];
+const DEFAULT_PRESETS = [1000, 2500, 5000, 10000, 25000];
 
-export function DonationForm({ locale, dict }: { locale: string; dict: Dictionary }) {
+export function DonationForm({
+  locale,
+  dict,
+  /** Suggested amounts from Site Settings → Donation Page. */
+  presets,
+}: {
+  locale: string;
+  dict: Dictionary;
+  presets?: number[];
+}) {
   const d = dict.donate;
+  const PRESETS = presets && presets.length > 0 ? presets : DEFAULT_PRESETS;
   const [frequency, setFrequency] = useState<"one_time" | "monthly">("one_time");
-  const [amount, setAmount] = useState<string>("2500");
+  const [amount, setAmount] = useState<string>(String(PRESETS[Math.min(1, PRESETS.length - 1)]));
 
   const purposes = [
     { value: "general", label: d.purposeGeneral },

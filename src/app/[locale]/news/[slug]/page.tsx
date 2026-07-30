@@ -11,7 +11,9 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/dictionaries";
+import { getLabels } from "@/lib/labels";
+import { getSettings, s } from "@/lib/settings";
+import { RichText } from "@/components/site/rich-text";
 import { formatDate } from "@/lib/utils";
 
 export default async function NewsDetailPage({
@@ -20,7 +22,8 @@ export default async function NewsDetailPage({
   params: { locale: Locale; slug: string };
 }) {
   const { locale } = params;
-  const dict = getDictionary(locale);
+  const settings = await getSettings();
+  const dict = getLabels(locale, settings);
   const param = decodeURIComponent(params.slug);
   let item = await prisma.news.findFirst({ where: { slug: param } });
   if (!item && /^\d+$/.test(param)) {
@@ -41,10 +44,6 @@ export default async function NewsDetailPage({
   const [quoteText, quoteAuthor] = rawQuote
     ? rawQuote.split("::").map((p) => p.trim())
     : ["", ""];
-
-  // Split content into paragraphs so the pull quote can sit mid-article
-  const paragraphs = loc(item, "content", locale).split(/\n\s*\n/).filter(Boolean);
-  const quoteAfter = Math.min(1, Math.max(0, paragraphs.length - 1));
 
   return (
     <>
@@ -100,27 +99,25 @@ export default async function NewsDetailPage({
             </div>
           )}
 
-          {/* Article body with pull quote woven in */}
-          <div className="prose-basic max-w-none leading-relaxed text-muted-foreground">
-            {paragraphs.map((p, i) => (
-              <div key={i}>
-                <p className="mb-4 whitespace-pre-line">{p}</p>
-                {quoteText && i === quoteAfter && (
-                  <blockquote className="relative my-8 rounded-2xl bg-brand-950 p-8 text-white">
-                    <Quote className="absolute right-6 top-6 h-8 w-8 text-accent/40" />
-                    <p className="max-w-2xl text-lg font-semibold leading-relaxed md:text-xl">
-                      “{quoteText}”
-                    </p>
-                    {quoteAuthor && (
-                      <footer className="mt-4 flex items-center gap-2 text-sm text-white/70">
-                        <span className="block h-0.5 w-6 bg-accent" /> {quoteAuthor}
-                      </footer>
-                    )}
-                  </blockquote>
-                )}
-              </div>
-            ))}
-          </div>
+          {/* Article body — written in the rich editor, so it may contain
+              headings, lists, links and inline images. */}
+          <RichText value={loc(item, "content", locale)} />
+
+          {/* Optional pull quote, kept as its own field so it can be styled
+              differently from a quote typed inside the editor. */}
+          {quoteText && (
+            <blockquote className="relative my-8 rounded-2xl bg-brand-950 p-8 text-white">
+              <Quote className="absolute right-6 top-6 h-8 w-8 text-accent/40" />
+              <p className="max-w-2xl text-lg font-semibold leading-relaxed md:text-xl">
+                “{quoteText}”
+              </p>
+              {quoteAuthor && (
+                <footer className="mt-4 flex items-center gap-2 text-sm text-white/70">
+                  <span className="block h-0.5 w-6 bg-accent" /> {quoteAuthor}
+                </footer>
+              )}
+            </blockquote>
+          )}
 
           {/* Gallery images */}
           {(item.image2 || item.image3) && (
@@ -138,7 +135,9 @@ export default async function NewsDetailPage({
         {latest.length > 0 && (
           <aside className="lg:sticky lg:top-24 lg:self-start">
             <div className="rounded-2xl bg-muted p-5">
-              <h3 className="mb-4 px-1 font-bold">{dict.home.latestNews}</h3>
+              <h3 className="mb-4 px-1 font-bold">
+                {s(settings, "home_news_title", locale)}
+              </h3>
               <ul className="space-y-2.5">
                 {latest.map((n) => (
                   <li key={n.id}>

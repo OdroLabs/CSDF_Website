@@ -1,5 +1,14 @@
 import type { Locale } from "./i18n";
 
+/**
+ * Interface labels — buttons, menu items, form fields and other short strings.
+ *
+ * These are the built-in defaults. Every one of them can be overridden per
+ * language from the admin panel (Site Settings → Labels & Translations); the
+ * values here are used whenever an override is blank. Longer page content
+ * (headings, body text, images) lives in Site Settings instead — see
+ * `src/lib/settings.ts`.
+ */
 const en = {
   nav: {
     home: "Home",
@@ -14,6 +23,8 @@ const en = {
     business: "Community Business",
     suggestions: "Suggestions",
     media: "News & Media",
+    getInvolved: "Get Involved",
+    menu: "Menu",
   },
   common: {
     readMore: "Read More",
@@ -42,39 +53,25 @@ const en = {
     keyPoints: "Key Points",
     whatToExpect: "What to Expect",
     agenda: "Agenda",
+    objectives: "Objectives",
+    outcomes: "Key Outcomes",
+    features: "Key Features",
+    benefits: "Benefits",
+    faqs: "Frequently Asked Questions",
+    beneficiaries: "Beneficiaries",
+    gallery: "Gallery",
+    nothingHere: "Nothing to show here yet.",
   },
   home: {
-    whoWeAre: "Who We Are",
-    impact: "Our Impact",
-    ourServices: "Our Services",
-    featuredProjects: "Featured Projects",
-    latestNews: "Latest News",
-    upcomingEvents: "Upcoming Events",
-    testimonials: "Community Voices",
-    partners: "Our Partners",
-    supportUs: "Support CSDF",
-    supportText: "Your support funds direct services, peer leadership, health education, and safe community spaces.",
     makeDonation: "Make a Donation",
     getSupport: "Get Support",
-    newsletter: "Stay informed about programs, events, and resources",
     subscribe: "Subscribe",
     emailPlaceholder: "Email address",
-    getInTouch: "Get In Touch",
-    contactHeading: "Don't hesitate to contact us",
-    callUs: "Call Us",
-  },
-  about: {
-    overview: "Overview",
-    vision: "Our Vision",
-    mission: "Our Mission",
-    community: "Communities We Serve",
+    subscribed: "Thank you for subscribing!",
   },
   donate: {
-    title: "Make a Donation",
-    intro: "Every contribution helps sustain healthcare, outreach, and advocacy programs.",
     amount: "Amount (LKR)",
     donateNow: "Donate Now",
-    bankTitle: "Direct Bank Transfer",
     successTitle: "Thank you for your donation!",
     successText: "Your payment was received. A confirmation has been recorded.",
     cancelledText: "Your donation was cancelled. You can try again at any time.",
@@ -91,17 +88,10 @@ const en = {
     purposeCommunity: "Community programs",
     yourDetails: "Your details",
   },
-  suggestions: {
-    title: "Suggestions",
-    intro: "We value your ideas. Share your suggestions to help us improve our services.",
-    submitted: "Your suggestion has been submitted. Thank you!",
-  },
   contact: {
-    title: "Contact Us",
-    intro: "Reach out to us — all inquiries are treated confidentially.",
-    sent: "Your message has been sent. We will get back to you soon.",
     address: "Address",
     hours: "Office Hours",
+    followUs: "Follow Us",
   },
   footer: {
     explore: "Explore",
@@ -124,6 +114,8 @@ const si: typeof en = {
     business: "ප්‍රජා ව්‍යාපාර",
     suggestions: "යෝජනා",
     media: "පුවත් සහ මාධ්‍ය",
+    getInvolved: "සම්බන්ධ වන්න",
+    menu: "මෙනුව",
   },
   common: {
     readMore: "වැඩිදුර කියවන්න",
@@ -152,39 +144,25 @@ const si: typeof en = {
     keyPoints: "ප්‍රධාන කරුණු",
     whatToExpect: "ඔබට බලාපොරොත්තු විය හැකි දේ",
     agenda: "න්‍යාය පත්‍රය",
+    objectives: "අරමුණු",
+    outcomes: "ප්‍රධාන ප්‍රතිඵල",
+    features: "ප්‍රධාන ලක්ෂණ",
+    benefits: "ප්‍රතිලාභ",
+    faqs: "නිතර අසන ප්‍රශ්න",
+    beneficiaries: "ප්‍රතිලාභීන්",
+    gallery: "ගැලරිය",
+    nothingHere: "තවම පෙන්වීමට කිසිවක් නැත.",
   },
   home: {
-    whoWeAre: "අපි කවුද",
-    impact: "අපගේ බලපෑම",
-    ourServices: "අපගේ සේවාවන්",
-    featuredProjects: "විශේෂ ව්‍යාපෘති",
-    latestNews: "නවතම පුවත්",
-    upcomingEvents: "ඉදිරි සිදුවීම්",
-    testimonials: "ප්‍රජා හඬ",
-    partners: "අපගේ හවුල්කරුවන්",
-    supportUs: "CSDF සඳහා සහාය වන්න",
-    supportText: "ඔබගේ සහාය සෘජු සේවා, නායකත්ව පුහුණුව, සෞඛ්‍ය අධ්‍යාපනය සහ ආරක්ෂිත ප්‍රජා අවකාශයන් සඳහා යොදවනු ලැබේ.",
     makeDonation: "පරිත්‍යාගයක් කරන්න",
     getSupport: "සහාය ලබාගන්න",
-    newsletter: "වැඩසටහන්, සිදුවීම් සහ සම්පත් පිළිබඳ දැනුවත් වන්න",
     subscribe: "දායක වන්න",
     emailPlaceholder: "විද්‍යුත් තැපැල් ලිපිනය",
-    getInTouch: "සම්බන්ධ වන්න",
-    contactHeading: "පසුබට නොවී අප හා සම්බන්ධ වන්න",
-    callUs: "අමතන්න",
-  },
-  about: {
-    overview: "දළ විශ්ලේෂණය",
-    vision: "අපගේ දැක්ම",
-    mission: "අපගේ මෙහෙවර",
-    community: "අප සේවය කරන ප්‍රජාවන්",
+    subscribed: "දායක වීම සඳහා ස්තූතියි!",
   },
   donate: {
-    title: "පරිත්‍යාගයක් කරන්න",
-    intro: "සෑම දායකත්වයක්ම සෞඛ්‍ය, ප්‍රජා සම්බන්ධතා සහ අයිතිවාසිකම් වැඩසටහන් පවත්වාගෙන යාමට උපකාරී වේ.",
     amount: "මුදල (රු.)",
     donateNow: "දැන් පරිත්‍යාග කරන්න",
-    bankTitle: "බැංකු හුවමාරුව",
     successTitle: "ඔබගේ පරිත්‍යාගයට ස්තූතියි!",
     successText: "ඔබගේ ගෙවීම ලැබුණි. තහවුරු කිරීම සටහන් කර ඇත.",
     cancelledText: "ඔබගේ පරිත්‍යාගය අවලංගු විය. ඕනෑම වේලාවක නැවත උත්සාහ කළ හැක.",
@@ -201,17 +179,10 @@ const si: typeof en = {
     purposeCommunity: "ප්‍රජා වැඩසටහන්",
     yourDetails: "ඔබගේ විස්තර",
   },
-  suggestions: {
-    title: "යෝජනා",
-    intro: "ඔබගේ අදහස් අපට වටී. අපගේ සේවාවන් වැඩිදියුණු කිරීමට ඔබගේ යෝජනා බෙදාගන්න.",
-    submitted: "ඔබගේ යෝජනාව යොමු කරන ලදී. ස්තූතියි!",
-  },
   contact: {
-    title: "අප අමතන්න",
-    intro: "අප වෙත සම්බන්ධ වන්න — සියලුම විමසීම් රහස්‍යභාවයෙන් යුතුව සලකනු ලැබේ.",
-    sent: "ඔබගේ පණිවිඩය යවන ලදී. අපි ඉක්මනින් ඔබ හා සම්බන්ධ වන්නෙමු.",
     address: "ලිපිනය",
     hours: "කාර්යාල වේලාවන්",
+    followUs: "අපව අනුගමනය කරන්න",
   },
   footer: {
     explore: "ගවේෂණය",
@@ -234,6 +205,8 @@ const ta: typeof en = {
     business: "சமூக வணிகம்",
     suggestions: "ஆலோசனைகள்",
     media: "செய்திகள் & ஊடகம்",
+    getInvolved: "பங்கேற்க",
+    menu: "பட்டியல்",
   },
   common: {
     readMore: "மேலும் வாசிக்க",
@@ -262,39 +235,25 @@ const ta: typeof en = {
     keyPoints: "முக்கிய அம்சங்கள்",
     whatToExpect: "எதிர்பார்க்கக்கூடியவை",
     agenda: "நிகழ்ச்சி நிரல்",
+    objectives: "நோக்கங்கள்",
+    outcomes: "முக்கிய விளைவுகள்",
+    features: "முக்கிய அம்சங்கள்",
+    benefits: "நன்மைகள்",
+    faqs: "அடிக்கடி கேட்கப்படும் கேள்விகள்",
+    beneficiaries: "பயனாளிகள்",
+    gallery: "படத்தொகுப்பு",
+    nothingHere: "இன்னும் காட்ட எதுவும் இல்லை.",
   },
   home: {
-    whoWeAre: "நாங்கள் யார்",
-    impact: "எங்கள் தாக்கம்",
-    ourServices: "எங்கள் சேவைகள்",
-    featuredProjects: "சிறப்புத் திட்டங்கள்",
-    latestNews: "சமீபத்திய செய்திகள்",
-    upcomingEvents: "வரவிருக்கும் நிகழ்வுகள்",
-    testimonials: "சமூகக் குரல்கள்",
-    partners: "எங்கள் பங்காளிகள்",
-    supportUs: "CSDF-க்கு ஆதரவு",
-    supportText: "உங்கள் ஆதரவு நேரடி சேவைகள், தலைமைத்துவ பயிற்சி, சுகாதாரக் கல்வி மற்றும் பாதுகாப்பான சமூக இடங்களுக்கு பயன்படுகிறது.",
     makeDonation: "நன்கொடை வழங்க",
     getSupport: "உதவி பெற",
-    newsletter: "நிகழ்ச்சிகள், நிகழ்வுகள் மற்றும் வளங்கள் பற்றி அறிந்திருங்கள்",
     subscribe: "பதிவு செய்ய",
     emailPlaceholder: "மின்னஞ்சல் முகவரி",
-    getInTouch: "தொடர்பு கொள்ளுங்கள்",
-    contactHeading: "தயங்காமல் எங்களை தொடர்பு கொள்ளுங்கள்",
-    callUs: "அழைக்கவும்",
-  },
-  about: {
-    overview: "மேலோட்டம்",
-    vision: "எங்கள் தொலைநோக்கு",
-    mission: "எங்கள் பணி",
-    community: "நாங்கள் சேவை செய்யும் சமூகங்கள்",
+    subscribed: "பதிவு செய்ததற்கு நன்றி!",
   },
   donate: {
-    title: "நன்கொடை வழங்க",
-    intro: "ஒவ்வொரு பங்களிப்பும் சுகாதாரம், சமூக அணுகல் மற்றும் உரிமைகள் திட்டங்களை நிலைநிறுத்த உதவுகிறது.",
     amount: "தொகை (ரூ.)",
     donateNow: "இப்போது நன்கொடை வழங்க",
-    bankTitle: "நேரடி வங்கி பரிமாற்றம்",
     successTitle: "உங்கள் நன்கொடைக்கு நன்றி!",
     successText: "உங்கள் கட்டணம் பெறப்பட்டது. உறுதிப்படுத்தல் பதிவு செய்யப்பட்டுள்ளது.",
     cancelledText: "உங்கள் நன்கொடை ரத்து செய்யப்பட்டது. எப்போது வேண்டுமானாலும் மீண்டும் முயற்சிக்கலாம்.",
@@ -311,17 +270,10 @@ const ta: typeof en = {
     purposeCommunity: "சமூக திட்டங்கள்",
     yourDetails: "உங்கள் விவரங்கள்",
   },
-  suggestions: {
-    title: "ஆலோசனைகள்",
-    intro: "உங்கள் கருத்துக்கள் எங்களுக்கு முக்கியம். எங்கள் சேவைகளை மேம்படுத்த உங்கள் ஆலோசனைகளைப் பகிரவும்.",
-    submitted: "உங்கள் ஆலோசனை சமர்ப்பிக்கப்பட்டது. நன்றி!",
-  },
   contact: {
-    title: "தொடர்பு கொள்ள",
-    intro: "எங்களை அணுகவும் — அனைத்து விசாரணைகளும் இரகசியமாக கையாளப்படும்.",
-    sent: "உங்கள் செய்தி அனுப்பப்பட்டது. விரைவில் உங்களைத் தொடர்பு கொள்வோம்.",
     address: "முகவரி",
     hours: "அலுவலக நேரம்",
+    followUs: "எங்களைப் பின்தொடரவும்",
   },
   footer: {
     explore: "மேலும் பார்க்க",
@@ -330,10 +282,12 @@ const ta: typeof en = {
   },
 };
 
-const dictionaries = { en, si, ta };
+export const dictionaries = { en, si, ta };
 
 export type Dictionary = typeof en;
+export type DictionaryGroup = keyof Dictionary;
 
+/** Built-in labels for a locale, ignoring any admin overrides. */
 export function getDictionary(locale: Locale): Dictionary {
   return dictionaries[locale] ?? en;
 }

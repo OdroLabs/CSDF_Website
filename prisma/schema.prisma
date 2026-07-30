@@ -9,12 +9,17 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  role      String   @default("admin")
-  createdAt DateTime @default(now())
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+  /// owner = full access including users and site settings
+  /// editor = content only (news, projects, events, products, inbox)
+  role     String @default("editor")
+  /// Suspended accounts keep their history but cannot sign in.
+  active      Boolean   @default(true)
+  lastLoginAt DateTime?
+  createdAt   DateTime  @default(now())
 }
 
 // Key-value site settings, trilingual where needed

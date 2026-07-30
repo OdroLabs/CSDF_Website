@@ -2,12 +2,14 @@ import Image from "next/image";
 import { FileText, Download } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/dictionaries";
+import { getLabels } from "@/lib/labels";
+import { getSettings, s } from "@/lib/settings";
 import { formatDate } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/page-hero";
+import { EmptyState } from "@/components/site/empty-state";
 
 const categoryLabels: Record<string, string> = {
   research: "Research",
@@ -18,15 +20,19 @@ const categoryLabels: Record<string, string> = {
 
 export default async function PublicationsPage({ params }: { params: { locale: Locale } }) {
   const { locale } = params;
-  const dict = getDictionary(locale);
-  const publications = await prisma.publication.findMany({
-    where: { published: true },
-    orderBy: { publishedAt: "desc" },
-  });
+  const [settings, publications] = await Promise.all([
+    getSettings(),
+    prisma.publication.findMany({ where: { published: true }, orderBy: { publishedAt: "desc" } }),
+  ]);
+  const dict = getLabels(locale, settings);
 
   return (
     <>
-      <PageHero title={dict.nav.publications} />
+      <PageHero
+        title={s(settings, "publications_hero_title", locale)}
+        intro={s(settings, "publications_hero_intro", locale)}
+        image={s(settings, "publications_hero_image") || undefined}
+      />
       <div className="container grid gap-6 py-12 sm:grid-cols-2 lg:grid-cols-3">
         {publications.map((pub) => (
           <Card key={pub.id} className="flex flex-col overflow-hidden">
@@ -42,7 +48,9 @@ export default async function PublicationsPage({ params }: { params: { locale: L
             <CardContent className="flex flex-1 flex-col pt-5">
               <div className="mb-2 flex items-center gap-2">
                 <Badge variant="secondary">{categoryLabels[pub.category] ?? pub.category}</Badge>
-                <span className="text-xs text-muted-foreground">{formatDate(pub.publishedAt, locale)}</span>
+                <span className="text-xs text-muted-foreground">
+                  {formatDate(pub.publishedAt, locale)}
+                </span>
               </div>
               <h2 className="mb-2 font-bold leading-snug">{loc(pub, "title", locale)}</h2>
               <p className="mb-4 line-clamp-3 text-sm text-muted-foreground">
@@ -58,6 +66,11 @@ export default async function PublicationsPage({ params }: { params: { locale: L
             </CardContent>
           </Card>
         ))}
+        {publications.length === 0 && (
+          <EmptyState
+            message={s(settings, "publications_empty_text", locale)}
+          />
+        )}
       </div>
     </>
   );

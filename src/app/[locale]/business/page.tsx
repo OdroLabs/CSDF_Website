@@ -2,26 +2,31 @@ import Image from "next/image";
 import { ShoppingBag, MessageCircle } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/dictionaries";
+import { getLabels } from "@/lib/labels";
 import { getSettings, s } from "@/lib/settings";
 import { formatMoney } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/page-hero";
+import { EmptyState } from "@/components/site/empty-state";
 
 export default async function BusinessPage({ params }: { params: { locale: Locale } }) {
   const { locale } = params;
-  const dict = getDictionary(locale);
   const [products, settings] = await Promise.all([
     prisma.product.findMany({ where: { published: true }, orderBy: { order: "asc" } }),
     getSettings(),
   ]);
+  const dict = getLabels(locale, settings);
   const whatsapp = s(settings, "whatsapp").replace(/\D/g, "");
 
   return (
     <>
-      <PageHero title={dict.nav.business} />
+      <PageHero
+        title={s(settings, "business_hero_title", locale)}
+        intro={s(settings, "business_hero_intro", locale)}
+        image={s(settings, "business_hero_image") || undefined}
+      />
       <div className="container grid gap-6 py-12 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((product) => {
           const name = loc(product, "name", locale);
@@ -65,6 +70,11 @@ export default async function BusinessPage({ params }: { params: { locale: Local
             </Card>
           );
         })}
+        {products.length === 0 && (
+          <EmptyState
+            message={s(settings, "business_empty_text", locale)}
+          />
+        )}
       </div>
     </>
   );

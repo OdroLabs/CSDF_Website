@@ -1,15 +1,26 @@
 import type { Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/dictionaries";
+import { getLabels } from "@/lib/labels";
+import { getSettings, s } from "@/lib/settings";
 import { PageHero } from "@/components/site/page-hero";
 import { SuggestionForm } from "@/components/site/suggestion-form";
 
-export default function SuggestionsPage({ params }: { params: { locale: Locale } }) {
-  const dict = getDictionary(params.locale);
+export default async function SuggestionsPage({ params }: { params: { locale: Locale } }) {
+  const { locale } = params;
+  const settings = await getSettings();
+  const dict = getLabels(locale, settings);
+
   return (
     <>
-      <PageHero title={dict.suggestions.title} intro={dict.suggestions.intro} />
+      <PageHero
+        title={s(settings, "suggestions_hero_title", locale)}
+        intro={s(settings, "suggestions_hero_intro", locale)}
+        image={s(settings, "suggestions_hero_image") || undefined}
+      />
       <div className="container max-w-2xl py-12">
-        <SuggestionForm dict={dict} />
+        <SuggestionForm
+          dict={dict}
+          successMessage={s(settings, "suggestions_success_message", locale)}
+        />
       </div>
     </>
   );

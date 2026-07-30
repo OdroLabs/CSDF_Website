@@ -8,13 +8,20 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import type { Dictionary } from "@/lib/dictionaries";
 
-export function SuggestionForm({ dict }: { dict: Dictionary }) {
+export function SuggestionForm({
+  dict,
+  /** Set in Site Settings → Other Pages. Falls back to a generic thank-you. */
+  successMessage,
+}: {
+  dict: Dictionary;
+  successMessage?: string;
+}) {
   const [done, setDone] = useState(false);
 
   if (done) {
     return (
       <div className="rounded-lg border border-teal-500/40 bg-teal-50 p-6 text-teal-800">
-        ✓ {dict.suggestions.submitted}
+        ✓ {successMessage || dict.common.thankYou}
       </div>
     );
   }

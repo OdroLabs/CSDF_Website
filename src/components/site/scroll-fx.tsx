@@ -26,6 +26,16 @@ export function ScrollFX() {
   const pathname = usePathname();
 
   useEffect(() => {
+    /**
+     * The admin preview loads pages with ?adminPreview=… inside an iframe.
+     * Scroll-triggered reveals would leave sections invisible there, so skip
+     * all motion and show everything immediately.
+     */
+    if (new URLSearchParams(window.location.search).has("adminPreview")) {
+      document.documentElement.classList.remove("anim");
+      return;
+    }
+
     const mm = gsap.matchMedia();
 
     mm.add("(prefers-reduced-motion: no-preference)", () => {

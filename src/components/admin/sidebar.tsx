@@ -22,8 +22,29 @@ import {
   Users,
   LogOut,
   ExternalLink,
+  Globe,
+  PanelTop,
+  PanelBottom,
+  Home,
+  Info,
+  Phone,
+  Languages,
+  Files,
+  UsersRound,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const settingsLinks = [
+  { href: "/admin/settings/general", label: "General", icon: Globe },
+  { href: "/admin/settings/header", label: "Header & Menu", icon: PanelTop },
+  { href: "/admin/settings/footer", label: "Footer", icon: PanelBottom },
+  { href: "/admin/settings/home", label: "Home Page", icon: Home },
+  { href: "/admin/settings/about", label: "About Page", icon: Info },
+  { href: "/admin/settings/contact", label: "Contact Page", icon: Phone },
+  { href: "/admin/settings/donate", label: "Donation Page", icon: Heart },
+  { href: "/admin/settings/pages", label: "Other Pages", icon: Files },
+  { href: "/admin/settings/labels", label: "Labels & Translations", icon: Languages },
+];
 
 const contentLinks = [
   { href: "/admin/content/projects", label: "Projects", icon: FolderKanban },
@@ -45,8 +66,10 @@ const inboxLinks = [
   { href: "/admin/content/subscribers", label: "Subscribers", icon: Users },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ role }: { role: string }) {
   const pathname = usePathname();
+  // Site settings and user management are owner-only.
+  const isOwner = role === "owner";
 
   const NavLink = ({ href, label, icon: Icon }: { href: string; label: string; icon: any }) => (
     <Link
@@ -74,8 +97,20 @@ export function AdminSidebar() {
       <nav className="flex-1 space-y-4 overflow-y-auto p-3">
         <div className="space-y-0.5">
           <NavLink href="/admin/dashboard" label="Dashboard" icon={LayoutDashboard} />
-          <NavLink href="/admin/settings" label="Site Settings" icon={Settings} />
+          {isOwner && <NavLink href="/admin/users" label="Users" icon={UsersRound} />}
         </div>
+        {isOwner && (
+          <div>
+            <p className="mb-1 flex items-center gap-1.5 px-3 text-[11px] font-bold uppercase tracking-wider text-white/40">
+              <Settings className="h-3 w-3" /> Site Settings
+            </p>
+            <div className="space-y-0.5">
+              {settingsLinks.map((l) => (
+                <NavLink key={l.href} {...l} />
+              ))}
+            </div>
+          </div>
+        )}
         <div>
           <p className="mb-1 px-3 text-[11px] font-bold uppercase tracking-wider text-white/40">
             Content

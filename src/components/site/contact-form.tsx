@@ -8,13 +8,20 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import type { Dictionary } from "@/lib/dictionaries";
 
-export function ContactForm({ dict }: { dict: Dictionary }) {
+export function ContactForm({
+  dict,
+  /** Set in Site Settings → Contact Page. Falls back to a generic thank-you. */
+  successMessage,
+}: {
+  dict: Dictionary;
+  successMessage?: string;
+}) {
   const [done, setDone] = useState(false);
 
   if (done) {
     return (
       <div className="rounded-lg border border-teal-500/40 bg-teal-50 p-6 text-teal-800">
-        ✓ {dict.contact.sent}
+        ✓ {successMessage || dict.common.thankYou}
       </div>
     );
   }

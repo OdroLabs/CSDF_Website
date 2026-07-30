@@ -3,17 +3,19 @@ import Link from "next/link";
 import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/dictionaries";
+import { getLabels } from "@/lib/labels";
+import { getSettings, s, show } from "@/lib/settings";
 import { formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { PageHero } from "@/components/site/page-hero";
 import { Section } from "@/components/site/section";
+import { EmptyState } from "@/components/site/empty-state";
 
 export default async function EventsPage({ params }: { params: { locale: Locale } }) {
   const { locale } = params;
-  const dict = getDictionary(locale);
   const now = new Date();
-  const [upcoming, past, gallery] = await Promise.all([
+  const [settings, upcoming, past, gallery] = await Promise.all([
+    getSettings(),
     prisma.event.findMany({
       where: { published: true, startDate: { gte: now } },
       orderBy: { startDate: "asc" },
@@ -25,6 +27,12 @@ export default async function EventsPage({ params }: { params: { locale: Locale 
     }),
     prisma.galleryImage.findMany({ orderBy: [{ order: "asc" }, { createdAt: "desc" }] }),
   ]);
+  const dict = getLabels(locale, settings);
+
+  const upcomingTitle = s(settings, "home_events_title", locale);
+  const galleryTitle = s(settings, "gallery_title", locale);
+  const showGallery = show(settings, "show_gallery", gallery);
+  const emptyText = s(settings, "events_empty_text", locale);
 
   const EventCard = ({ event, isPast }: { event: (typeof upcoming)[number]; isPast?: boolean }) => (
     <Link
@@ -71,17 +79,27 @@ export default async function EventsPage({ params }: { params: { locale: Locale 
 
   return (
     <>
-      <PageHero title={dict.nav.events} eyebrow="CSDF" />
-      <Section title={dict.home.upcomingEvents}>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {upcoming.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
-          {upcoming.length === 0 && <p className="text-muted-foreground">—</p>}
-        </div>
-      </Section>
+      <PageHero
+        title={s(settings, "events_hero_title", locale)}
+        intro={s(settings, "events_hero_intro", locale)}
+        image={s(settings, "events_hero_image") || undefined}
+      />
+
+      {/* Upcoming — hidden entirely when there is nothing scheduled and no
+          empty-state message has been set in the admin. */}
+      {(upcoming.length > 0 || emptyText) && (
+        <Section title={upcoming.length > 0 ? upcomingTitle : undefined}>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {upcoming.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+            {upcoming.length === 0 && <EmptyState message={emptyText} />}
+          </div>
+        </Section>
+      )}
+
       {past.length > 0 && (
-        <Section title={`${dict.common.past} — ${dict.nav.events.split(" ")[0]}`} className="pt-0">
+        <Section title={dict.common.past} className={upcoming.length > 0 || emptyText ? "pt-0" : ""}>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {past.map((event) => (
               <EventCard key={event.id} event={event} isPast />
@@ -89,25 +107,32 @@ export default async function EventsPage({ params }: { params: { locale: Locale 
           </div>
         </Section>
       )}
-      {gallery.length > 0 && (
+
+      {showGallery && (
         <section className="bg-muted">
-          <Section title="Gallery">
+          <Section title={galleryTitle}>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-              {gallery.map((img) => (
-                <figure key={img.id} className="group relative aspect-square overflow-hidden rounded-xl">
-                  <Image
-                    src={img.image}
-                    alt={loc(img, "caption", locale)}
-                    fill
-                    className="object-cover transition-transform group-hover:scale-105"
-                  />
-                  {loc(img, "caption", locale) && (
-                    <figcaption className="absolute inset-x-0 bottom-0 bg-black/60 p-2 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
-                      {loc(img, "caption", locale)}
-                    </figcaption>
-                  )}
-                </figure>
-              ))}
+              {gallery.map((img) => {
+                const caption = loc(img, "caption", locale);
+                return (
+                  <figure
+                    key={img.id}
+                    className="group relative aspect-square overflow-hidden rounded-xl"
+                  >
+                    <Image
+                      src={img.image}
+                      alt={caption}
+                      fill
+                      className="object-cover transition-transform group-hover:scale-105"
+                    />
+                    {caption && (
+                      <figcaption className="absolute inset-x-0 bottom-0 bg-black/60 p-2 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
+                        {caption}
+                      </figcaption>
+                    )}
+                  </figure>
+                );
+              })}
             </div>
           </Section>
         </section>

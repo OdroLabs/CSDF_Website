@@ -3,37 +3,48 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/dictionaries";
+import { getLabels } from "@/lib/labels";
+import { getSettings, s } from "@/lib/settings";
 import { formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { PageHero } from "@/components/site/page-hero";
+import { EmptyState } from "@/components/site/empty-state";
 
 export default async function ProjectsPage({ params }: { params: { locale: Locale } }) {
   const { locale } = params;
-  const dict = getDictionary(locale);
-  const projects = await prisma.project.findMany({
-    where: { published: true },
-    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-  });
+  const [settings, projects] = await Promise.all([
+    getSettings(),
+    prisma.project.findMany({
+      where: { published: true },
+      orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    }),
+  ]);
+  const dict = getLabels(locale, settings);
 
   return (
     <>
-      <PageHero title={dict.nav.projects} eyebrow="CSDF" />
+      <PageHero
+        title={s(settings, "projects_hero_title", locale)}
+        intro={s(settings, "projects_hero_intro", locale)}
+        image={s(settings, "projects_hero_image") || undefined}
+      />
       <div className="container grid gap-6 py-12 sm:grid-cols-2 md:py-16 lg:grid-cols-3">
-        {projects.map((project, i) => (
+        {projects.map((project) => (
           <Link
             key={project.id}
             href={`/${locale}/projects/${project.slug ?? project.id}`}
             className="group flex flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-brand-500/10"
           >
-            <div className="relative aspect-[16/10] w-full overflow-hidden">
-              <Image
-                src={project.image ?? `https://picsum.photos/seed/csdf-project-${i}/800/500`}
-                alt=""
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            </div>
+            {project.image && (
+              <div className="relative aspect-[16/10] w-full overflow-hidden">
+                <Image
+                  src={project.image}
+                  alt=""
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+            )}
             <div className="flex flex-1 flex-col p-6">
               <div className="mb-3 flex items-center gap-2">
                 <Badge
@@ -61,7 +72,11 @@ export default async function ProjectsPage({ params }: { params: { locale: Local
             </div>
           </Link>
         ))}
-        {projects.length === 0 && <p className="text-muted-foreground">—</p>}
+        {projects.length === 0 && (
+          <EmptyState
+            message={s(settings, "projects_empty_text", locale)}
+          />
+        )}
       </div>
     </>
   );

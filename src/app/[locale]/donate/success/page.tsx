@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import type { Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/dictionaries";
+import { getLabels } from "@/lib/labels";
+import { getSettings } from "@/lib/settings";
 import { Button } from "@/components/ui/button";
 
-export default function DonateSuccessPage({ params }: { params: { locale: Locale } }) {
-  const dict = getDictionary(params.locale);
+export default async function DonateSuccessPage({ params }: { params: { locale: Locale } }) {
+  const settings = await getSettings();
+  const dict = getLabels(params.locale, settings);
   return (
     <div className="container flex flex-col items-center py-24 text-center">
       <CheckCircle2 className="mb-4 h-16 w-16 text-teal-600" />

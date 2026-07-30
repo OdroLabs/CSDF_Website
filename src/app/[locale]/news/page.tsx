@@ -3,21 +3,28 @@ import Image from "next/image";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/dictionaries";
+import { getLabels } from "@/lib/labels";
+import { getSettings, s } from "@/lib/settings";
+import { toPlainText } from "@/lib/sanitize";
 import { formatDate } from "@/lib/utils";
 import { PageHero } from "@/components/site/page-hero";
+import { EmptyState } from "@/components/site/empty-state";
 
 export default async function NewsPage({ params }: { params: { locale: Locale } }) {
   const { locale } = params;
-  const dict = getDictionary(locale);
-  const news = await prisma.news.findMany({
-    where: { published: true },
-    orderBy: { publishedAt: "desc" },
-  });
+  const [settings, news] = await Promise.all([
+    getSettings(),
+    prisma.news.findMany({ where: { published: true }, orderBy: { publishedAt: "desc" } }),
+  ]);
+  const dict = getLabels(locale, settings);
 
   return (
     <>
-      <PageHero title={dict.nav.news} eyebrow="CSDF" />
+      <PageHero
+        title={s(settings, "news_hero_title", locale)}
+        intro={s(settings, "news_hero_intro", locale)}
+        image={s(settings, "news_hero_image") || undefined}
+      />
       <div className="container grid gap-6 py-12 sm:grid-cols-2 md:py-16 lg:grid-cols-3">
         {news.map((item) => (
           <Link
@@ -43,7 +50,8 @@ export default async function NewsPage({ params }: { params: { locale: Locale } 
                 {loc(item, "title", locale)}
               </h2>
               <p className="mb-4 line-clamp-3 text-sm text-muted-foreground">
-                {loc(item, "excerpt", locale) || loc(item, "content", locale)}
+                {/* The body is HTML now, so flatten it for the card preview. */}
+                {loc(item, "excerpt", locale) || toPlainText(loc(item, "content", locale), 220)}
               </p>
               <span className="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
                 {dict.common.readMore}
@@ -52,6 +60,9 @@ export default async function NewsPage({ params }: { params: { locale: Locale } 
             </div>
           </Link>
         ))}
+        {news.length === 0 && (
+          <EmptyState message={s(settings, "news_empty_text", locale)} />
+        )}
       </div>
     </>
   );

@@ -8,23 +8,45 @@ import { Button } from "@/components/ui/button";
 import { LocaleSwitcher } from "./locale-switcher";
 import { cn } from "@/lib/utils";
 import type { Dictionary } from "@/lib/dictionaries";
+import type { NavConfig, NavGroup, NavItem } from "@/lib/nav";
 
-type NavLink = { href: string; label: string };
-type NavGroup = { label: string; items: NavLink[] };
+export interface HeaderProps {
+  locale: string;
+  dict: Dictionary;
+  nav: NavConfig;
+  /** Full organisation name, shown small under the wordmark. */
+  siteName: string;
+  /** Abbreviation used as the wordmark, e.g. CSDF. */
+  shortName: string;
+  logoImage?: string;
+  logoLetter: string;
+  phones: string[];
+  emails: string[];
+  donateLabel: string;
+  announceText?: string;
+  announceLink?: string;
+  showTopbar: boolean;
+  showLangs: boolean;
+  showDonate: boolean;
+}
 
 export function SiteHeader({
   locale,
   dict,
+  nav,
   siteName,
-  phone,
-  email,
-}: {
-  locale: string;
-  dict: Dictionary;
-  siteName: string;
-  phone?: string;
-  email?: string;
-}) {
+  shortName,
+  logoImage,
+  logoLetter,
+  phones,
+  emails,
+  donateLabel,
+  announceText,
+  announceLink,
+  showTopbar,
+  showLangs,
+  showDonate,
+}: HeaderProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -45,30 +67,8 @@ export function SiteHeader({
     };
   }, [open]);
 
-  const primary: NavLink[] = [
-    { href: "", label: dict.nav.home },
-    { href: "/about", label: dict.nav.about },
-    { href: "/projects", label: dict.nav.projects },
-    { href: "/services", label: dict.nav.services },
-  ];
-  const groups: NavGroup[] = [
-    {
-      label: dict.nav.media,
-      items: [
-        { href: "/publications", label: dict.nav.publications },
-        { href: "/news", label: dict.nav.news },
-        { href: "/events", label: dict.nav.events },
-      ],
-    },
-    {
-      label: dict.footer.getInvolved,
-      items: [
-        { href: "/business", label: dict.nav.business },
-        { href: "/suggestions", label: dict.nav.suggestions },
-      ],
-    },
-  ];
-  const contactLink: NavLink = { href: "/contact", label: dict.nav.contact };
+  const { primary, groups, contact } = nav;
+  const hasContactStrip = phones.length > 0 || emails.length > 0;
 
   const isActive = (href: string) => {
     const full = `/${locale}${href}`;
@@ -91,7 +91,7 @@ export function SiteHeader({
     />
   );
 
-  const mobileLink = (link: NavLink) => {
+  const mobileLink = (link: NavItem) => {
     const active = isActive(link.href);
     return (
       <Link
@@ -112,35 +112,57 @@ export function SiteHeader({
     );
   };
 
+  const mobileItems = contact ? [...primary, contact] : primary;
+
   return (
     <>
-      {/* Utility strip */}
-      <div className="hidden bg-navy-950 text-white md:block">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-2 text-xs md:px-6">
-          <div className="flex items-center gap-6 text-white/75">
-            {phone && (
-              <a
-                href={`tel:${phone.replace(/\s/g, "")}`}
-                className="flex items-center gap-1.5 transition-colors hover:text-white"
-              >
-                <Phone className="h-3.5 w-3.5 text-accent" /> {phone}
-              </a>
-            )}
-            {email && (
-              <a
-                href={`mailto:${email}`}
-                className="flex items-center gap-1.5 transition-colors hover:text-white"
-              >
-                <Mail className="h-3.5 w-3.5 text-accent" /> {email}
-              </a>
+      {/* Announcement bar — hidden when no text is set in the admin */}
+      {announceText && (
+        <div id="sec-announce" className="bg-gradient-to-r from-brand-700 via-brand-600 to-accent text-white">
+          <div className="mx-auto max-w-[1400px] px-4 py-2 text-center text-xs font-semibold md:px-6">
+            {announceLink ? (
+              <Link href={announceLink} className="hover:underline">
+                {announceText}
+              </Link>
+            ) : (
+              announceText
             )}
           </div>
-          <LocaleSwitcher current={locale} dark />
         </div>
-      </div>
+      )}
+
+      {/* Utility strip — hidden when switched off, or when there is nothing to show */}
+      {showTopbar && (hasContactStrip || showLangs) && (
+        <div id="sec-topbar" className="hidden bg-navy-950 text-white md:block">
+          <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-2 text-xs md:px-6">
+            <div className="flex items-center gap-6 text-white/75">
+              {phones.map((phone) => (
+                <a
+                  key={phone}
+                  href={`tel:${phone.replace(/\s/g, "")}`}
+                  className="flex items-center gap-1.5 transition-colors hover:text-white"
+                >
+                  <Phone className="h-3.5 w-3.5 text-accent" /> {phone}
+                </a>
+              ))}
+              {emails.map((email) => (
+                <a
+                  key={email}
+                  href={`mailto:${email}`}
+                  className="flex items-center gap-1.5 transition-colors hover:text-white"
+                >
+                  <Mail className="h-3.5 w-3.5 text-accent" /> {email}
+                </a>
+              ))}
+            </div>
+            {showLangs && <LocaleSwitcher current={locale} dark />}
+          </div>
+        </div>
+      )}
 
       {/* Sticky glass nav */}
       <header
+        id="sec-header"
         className={cn(
           "sticky top-0 z-40 border-b transition-all duration-300",
           scrolled
@@ -155,17 +177,34 @@ export function SiteHeader({
           )}
         >
           <Link href={`/${locale}`} className="group flex shrink-0 items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-700 via-brand-600 to-accent text-lg font-bold text-white shadow-md shadow-brand-600/25 transition-transform duration-300 group-hover:scale-105">
-              C
-            </span>
-            <span className="leading-tight">
-              <span className="block text-lg font-extrabold tracking-tight text-navy-900">
-                CSDF
+            {logoImage ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={logoImage}
+                alt={siteName || shortName}
+                className="h-10 w-auto max-w-[170px] object-contain transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              logoLetter && (
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-700 via-brand-600 to-accent text-lg font-bold text-white shadow-md shadow-brand-600/25 transition-transform duration-300 group-hover:scale-105">
+                  {logoLetter}
+                </span>
+              )
+            )}
+            {(shortName || siteName) && (
+              <span className="leading-tight">
+                {shortName && (
+                  <span className="block text-lg font-extrabold tracking-tight text-navy-900">
+                    {shortName}
+                  </span>
+                )}
+                {siteName && (
+                  <span className="block max-w-[220px] truncate text-[10px] text-muted-foreground">
+                    {siteName}
+                  </span>
+                )}
               </span>
-              <span className="block max-w-[220px] truncate text-[10px] text-muted-foreground">
-                {siteName}
-              </span>
-            </span>
+            )}
           </Link>
 
           {/* Desktop nav */}
@@ -223,30 +262,34 @@ export function SiteHeader({
               );
             })}
 
-            <Link
-              href={`/${locale}${contactLink.href}`}
-              aria-current={isActive(contactLink.href) ? "page" : undefined}
-              className={pillClass(isActive(contactLink.href))}
-            >
-              {contactLink.label}
-              {pillUnderline(isActive(contactLink.href))}
-            </Link>
+            {contact && (
+              <Link
+                href={`/${locale}${contact.href}`}
+                aria-current={isActive(contact.href) ? "page" : undefined}
+                className={pillClass(isActive(contact.href))}
+              >
+                {contact.label}
+                {pillUnderline(isActive(contact.href))}
+              </Link>
+            )}
           </nav>
 
           <div className="flex items-center gap-3">
-            <Button
-              asChild
-              size="sm"
-              className="hidden rounded-full bg-destructive px-5 font-bold hover:bg-destructive/90 md:inline-flex"
-            >
-              <Link href={`/${locale}/donate`}>
-                <Heart className="h-4 w-4 fill-current" /> {dict.nav.donate}
-              </Link>
-            </Button>
+            {showDonate && donateLabel && (
+              <Button
+                asChild
+                size="sm"
+                className="hidden rounded-full bg-destructive px-5 font-bold hover:bg-destructive/90 md:inline-flex"
+              >
+                <Link href={`/${locale}/donate`}>
+                  <Heart className="h-4 w-4 fill-current" /> {donateLabel}
+                </Link>
+              </Button>
+            )}
             <button
               className="grid h-10 w-10 place-items-center rounded-full transition-colors hover:bg-muted lg:hidden"
               onClick={() => setOpen(!open)}
-              aria-label="Menu"
+              aria-label={dict.nav.menu}
               aria-expanded={open}
             >
               {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -279,9 +322,7 @@ export function SiteHeader({
             )}
           >
             <div className="mx-auto max-w-[1400px] px-4 py-4 md:px-6">
-              <div className="grid gap-1 sm:grid-cols-2">
-                {[...primary, contactLink].map(mobileLink)}
-              </div>
+              <div className="grid gap-1 sm:grid-cols-2">{mobileItems.map(mobileLink)}</div>
 
               {groups.map((group) => (
                 <div key={group.label} className="mt-3 border-t pt-3">
@@ -292,30 +333,43 @@ export function SiteHeader({
                 </div>
               ))}
 
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t pt-4">
-                <LocaleSwitcher current={locale} />
-                <Button
-                  asChild
-                  size="sm"
-                  className="rounded-full bg-destructive px-6 font-bold hover:bg-destructive/90"
-                >
-                  <Link href={`/${locale}/donate`} onClick={() => setOpen(false)}>
-                    <Heart className="h-4 w-4 fill-current" /> {dict.nav.donate}
-                  </Link>
-                </Button>
-              </div>
-              {(phone || email) && (
+              {(showLangs || (showDonate && donateLabel)) && (
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t pt-4">
+                  {showLangs && <LocaleSwitcher current={locale} />}
+                  {showDonate && donateLabel && (
+                    <Button
+                      asChild
+                      size="sm"
+                      className="rounded-full bg-destructive px-6 font-bold hover:bg-destructive/90"
+                    >
+                      <Link href={`/${locale}/donate`} onClick={() => setOpen(false)}>
+                        <Heart className="h-4 w-4 fill-current" /> {donateLabel}
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              )}
+
+              {hasContactStrip && (
                 <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 border-t pt-4 text-xs text-muted-foreground">
-                  {phone && (
-                    <a href={`tel:${phone.replace(/\s/g, "")}`} className="flex items-center gap-1.5 hover:text-primary">
+                  {phones.map((phone) => (
+                    <a
+                      key={phone}
+                      href={`tel:${phone.replace(/\s/g, "")}`}
+                      className="flex items-center gap-1.5 hover:text-primary"
+                    >
                       <Phone className="h-3.5 w-3.5 text-primary" /> {phone}
                     </a>
-                  )}
-                  {email && (
-                    <a href={`mailto:${email}`} className="flex items-center gap-1.5 hover:text-primary">
+                  ))}
+                  {emails.map((email) => (
+                    <a
+                      key={email}
+                      href={`mailto:${email}`}
+                      className="flex items-center gap-1.5 hover:text-primary"
+                    >
                       <Mail className="h-3.5 w-3.5 text-primary" /> {email}
                     </a>
-                  )}
+                  ))}
                 </div>
               )}
             </div>

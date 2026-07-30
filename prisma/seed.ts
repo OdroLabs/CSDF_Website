@@ -5,13 +5,15 @@ const prisma = new PrismaClient();
 
 async function main() {
   // ---------- Admin user ----------
+  // The first account is an owner: full access, including user management.
   await prisma.user.upsert({
     where: { email: "admin@csdf.lk" },
-    update: {},
+    update: { role: "owner", active: true },
     create: {
       name: "CSDF Admin",
       email: "admin@csdf.lk",
       password: await hash("admin12345", 10),
+      role: "owner",
     },
   });
 

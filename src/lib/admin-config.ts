@@ -1,13 +1,19 @@
 export type FieldType =
   | "text"
   | "textarea"
+  /** Full HTML editor — formatting, links, inline images. */
+  | "richtext"
   | "image"
   | "file"
   | "number"
   | "date"
   | "datetime"
   | "boolean"
-  | "select";
+  | "select"
+  /** Repeatable rows of "heading + text", stored as `Left :: Right` lines. */
+  | "pairs"
+  /** Repeatable single-value rows, stored one per line. */
+  | "lines";
 
 export interface FieldDef {
   name: string; // base name; i18n fields become nameEn/nameSi/nameTa
@@ -17,6 +23,14 @@ export interface FieldDef {
   required?: boolean;
   options?: { value: string; label: string }[];
   help?: string;
+  /** For "pairs": label of the first box. Default "Title". */
+  leftLabel?: string;
+  /** For "pairs": label of the second box. Default "Description". */
+  rightLabel?: string;
+  /** Noun used for each row, e.g. "Objective". Default "Item". */
+  itemLabel?: string;
+  /** Text on the add button. */
+  addLabel?: string;
 }
 
 export interface EntityDef {
@@ -54,23 +68,29 @@ export const entities: EntityDef[] = [
       {
         name: "content",
         label: "Detail page content",
-        type: "textarea",
+        type: "richtext",
         i18n: true,
-        help: "Long description shown on the project detail page. Separate paragraphs with a blank line.",
+        help: "Long write-up shown on the project page. Add headings, lists, links and images.",
       },
       {
         name: "objectives",
-        label: "Objectives (checklist)",
-        type: "textarea",
+        label: "Objectives",
+        type: "lines",
         i18n: true,
-        help: "One item per line. Shown as a two-column checklist with check icons.",
+        itemLabel: "Objective",
+        addLabel: "Add an objective",
+        help: "Shown as a two-column checklist with tick icons.",
       },
       {
         name: "outcomes",
-        label: "Key outcomes (numbered cards)",
-        type: "textarea",
+        label: "Key outcomes",
+        type: "pairs",
         i18n: true,
-        help: "One per line in the format: Title :: Description",
+        leftLabel: "Outcome",
+        rightLabel: "Detail",
+        itemLabel: "Outcome",
+        addLabel: "Add an outcome",
+        help: "Each one becomes a numbered card on the project page.",
       },
       { name: "location", label: "Location / districts", type: "text" },
       { name: "beneficiaries", label: "Beneficiaries", type: "text", i18n: true, help: "e.g. 1,200 women across 6 districts" },
@@ -121,30 +141,39 @@ export const entities: EntityDef[] = [
       {
         name: "content",
         label: "Detail page content",
-        type: "textarea",
+        type: "richtext",
         i18n: true,
-        help: "Long description shown on the service detail page. Separate paragraphs with a blank line.",
+        help: "Long write-up shown on the service page. Add headings, lists, links and images.",
       },
       {
         name: "features",
-        label: "Key features (checklist)",
-        type: "textarea",
+        label: "Key features",
+        type: "lines",
         i18n: true,
-        help: "One item per line. Shown as a two-column checklist with check icons.",
+        itemLabel: "Feature",
+        addLabel: "Add a feature",
+        help: "Shown as a two-column checklist with tick icons.",
       },
       {
         name: "benefits",
-        label: "Benefits (numbered cards)",
-        type: "textarea",
+        label: "Benefits",
+        type: "pairs",
         i18n: true,
-        help: "One per line in the format: Title :: Description",
+        leftLabel: "Benefit",
+        rightLabel: "Detail",
+        itemLabel: "Benefit",
+        addLabel: "Add a benefit",
+        help: "Each one becomes a numbered card on the service page.",
       },
       {
         name: "faqs",
         label: "FAQs",
-        type: "textarea",
+        type: "pairs",
         i18n: true,
-        help: "One per line in the format: Question :: Answer",
+        leftLabel: "Question",
+        rightLabel: "Answer",
+        itemLabel: "Question",
+        addLabel: "Add a question",
       },
       { name: "image2", label: "Gallery image 1", type: "image" },
       { name: "image3", label: "Gallery image 2", type: "image" },
@@ -204,18 +233,20 @@ export const entities: EntityDef[] = [
       {
         name: "content",
         label: "Content",
-        type: "textarea",
+        type: "richtext",
         i18n: true,
         required: true,
-        help: "Separate paragraphs with a blank line.",
+        help: "The article body. Add headings, lists, links, quotes and images.",
       },
       { name: "image", label: "Main image", type: "image" },
       {
         name: "highlights",
-        label: "Key points (checklist)",
-        type: "textarea",
+        label: "Key points",
+        type: "lines",
         i18n: true,
-        help: "One item per line. Shown as a highlighted key-points box on the article.",
+        itemLabel: "Point",
+        addLabel: "Add a key point",
+        help: "Shown as a highlighted key-points box on the article.",
       },
       {
         name: "quote",
@@ -259,23 +290,29 @@ export const entities: EntityDef[] = [
       {
         name: "content",
         label: "Detail page content",
-        type: "textarea",
+        type: "richtext",
         i18n: true,
-        help: "Long description shown on the event detail page. Separate paragraphs with a blank line.",
+        help: "Long write-up shown on the event page. Add headings, lists, links and images.",
       },
       {
         name: "highlights",
-        label: "What to expect (checklist)",
-        type: "textarea",
+        label: "What to expect",
+        type: "lines",
         i18n: true,
-        help: "One item per line. Shown as a two-column checklist with check icons.",
+        itemLabel: "Point",
+        addLabel: "Add a point",
+        help: "Shown as a two-column checklist with tick icons.",
       },
       {
         name: "agenda",
         label: "Agenda / schedule",
-        type: "textarea",
+        type: "pairs",
         i18n: true,
-        help: "One per line in the format: Time :: Item (e.g. 9.00 am :: Registration)",
+        leftLabel: "Time",
+        rightLabel: "What happens",
+        itemLabel: "Slot",
+        addLabel: "Add a time slot",
+        help: "Shown as a timeline, e.g. 9.00 am / Registration.",
       },
       { name: "image2", label: "Gallery image 1", type: "image" },
       { name: "image3", label: "Gallery image 2", type: "image" },

@@ -1,13 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
+/**
+ * Bare fallback only. The public site's real title, description, favicon and
+ * share image come from Site Settings → General and are applied in
+ * `src/app/[locale]/layout.tsx`.
+ */
 export const metadata: Metadata = {
-  title: {
-    default: "CSDF — Community Strength Development Foundation",
-    template: "%s | CSDF",
-  },
-  description:
-    "CSDF improves health, safety, dignity, and rights through community-led support, advocacy, and education.",
+  title: "CSDF",
 };
 
 export const viewport: Viewport = {
@@ -21,7 +21,7 @@ export const viewport: Viewport = {
  * for reduced motion. Without JS (or with reduced motion) content stays fully
  * visible.
  */
-const animBootstrap = `try{if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("anim")}catch(e){}`;
+const animBootstrap = `try{var p=new URLSearchParams(location.search);if(!p.has("adminPreview")&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("anim")}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

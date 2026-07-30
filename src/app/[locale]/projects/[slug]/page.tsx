@@ -13,7 +13,9 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/dictionaries";
+import { getLabels } from "@/lib/labels";
+import { getSettings, s } from "@/lib/settings";
+import { RichText } from "@/components/site/rich-text";
 import { formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,7 +37,8 @@ export default async function ProjectDetailPage({
   params: { locale: Locale; slug: string };
 }) {
   const { locale } = params;
-  const dict = getDictionary(locale);
+  const settings = await getSettings();
+  const dict = getLabels(locale, settings);
   const param = decodeURIComponent(params.slug);
   let project = await prisma.project.findFirst({ where: { slug: param } });
   if (!project && /^\d+$/.test(param)) {
@@ -69,8 +72,12 @@ export default async function ProjectDetailPage({
         : null,
     },
     { icon: MapPin, label: dict.common.location, value: project.location },
-    { icon: Users, label: dict.home.impact, value: beneficiaries || null },
+    { icon: Users, label: dict.common.beneficiaries, value: beneficiaries || null },
   ].filter((f) => f.value);
+
+  // Sidebar donate card text comes from the home-page CTA settings.
+  const donateTitle = s(settings, "home_donate_title", locale);
+  const donateText = s(settings, "home_donate_text", locale);
 
   return (
     <>
@@ -124,9 +131,7 @@ export default async function ProjectDetailPage({
             </div>
           )}
 
-          <div className="prose-basic max-w-none whitespace-pre-line leading-relaxed text-muted-foreground">
-            {content}
-          </div>
+          <RichText value={content} />
 
           {/* Objectives checklist */}
           {objectives.length > 0 && (
@@ -155,7 +160,7 @@ export default async function ProjectDetailPage({
           {outcomes.length > 0 && (
             <div className="mt-12">
               <h3 className="mb-6 text-xl font-extrabold tracking-tight md:text-2xl">
-                {dict.home.impact}
+                {dict.common.outcomes}
               </h3>
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {outcomes.map((o, i) => (
@@ -199,21 +204,23 @@ export default async function ProjectDetailPage({
             </ul>
           </div>
 
-          {/* Donate card */}
+          {/* Donate card — hidden when the donate CTA text is cleared in the admin */}
+          {(donateTitle || donateText) && (
           <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-900 to-brand-700 p-7 text-white">
-            <h3 className="text-xl font-extrabold leading-tight">{dict.home.supportUs}</h3>
-            <p className="mt-2 text-sm text-white/75">{dict.home.supportText}</p>
+            {donateTitle && <h3 className="text-xl font-extrabold leading-tight">{donateTitle}</h3>}
+            {donateText && <p className="mt-2 text-sm text-white/75">{donateText}</p>}
             <Button asChild className="mt-5 w-full rounded-full bg-accent font-bold text-accent-foreground hover:bg-accent/90">
               <Link href={`/${locale}/donate`}>
                 <Heart className="h-4 w-4" /> {dict.home.makeDonation}
               </Link>
             </Button>
           </div>
+          )}
 
           {/* Other projects */}
           {others.length > 0 && (
             <div className="rounded-2xl bg-muted p-5">
-              <h3 className="mb-4 px-1 font-bold">{dict.home.featuredProjects}</h3>
+              <h3 className="mb-4 px-1 font-bold">{dict.nav.projects}</h3>
               <ul className="space-y-2.5">
                 {others.map((p) => (
                   <li key={p.id}>

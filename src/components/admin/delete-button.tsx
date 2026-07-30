@@ -1,12 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Trash2, Loader2 } from "lucide-react";
 import { deleteEntity } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
+import { useToast } from "./toast";
 
 export function DeleteButton({ slug, id }: { slug: string; id: number }) {
   const [deleting, setDeleting] = useState(false);
+  const { toast, update } = useToast();
+  const router = useRouter();
 
   return (
     <Button
@@ -17,8 +21,25 @@ export function DeleteButton({ slug, id }: { slug: string; id: number }) {
       onClick={async () => {
         if (!confirm("Delete this item? This cannot be undone.")) return;
         setDeleting(true);
+        const toastId = toast({ title: "Deleting…", variant: "loading" });
         try {
-          await deleteEntity(slug, id);
+          const result = await deleteEntity(slug, id);
+          if (result.ok) {
+            update(toastId, { title: "Deleted", variant: "success" });
+            router.refresh();
+          } else {
+            update(toastId, {
+              title: "Not deleted",
+              description: result.error,
+              variant: "error",
+            });
+          }
+        } catch {
+          update(toastId, {
+            title: "Not deleted",
+            description: "Could not reach the server. Check your connection and try again.",
+            variant: "error",
+          });
         } finally {
           setDeleting(false);
         }

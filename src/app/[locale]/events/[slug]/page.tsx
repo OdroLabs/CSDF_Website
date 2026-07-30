@@ -12,7 +12,9 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/dictionaries";
+import { getLabels } from "@/lib/labels";
+import { getSettings, s } from "@/lib/settings";
+import { RichText } from "@/components/site/rich-text";
 import { formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,7 +36,8 @@ export default async function EventDetailPage({
   params: { locale: Locale; slug: string };
 }) {
   const { locale } = params;
-  const dict = getDictionary(locale);
+  const settings = await getSettings();
+  const dict = getLabels(locale, settings);
   const param = decodeURIComponent(params.slug);
   let event = await prisma.event.findFirst({ where: { slug: param } });
   if (!event && /^\d+$/.test(param)) {
@@ -111,9 +114,7 @@ export default async function EventDetailPage({
             </div>
           )}
 
-          <div className="prose-basic max-w-none whitespace-pre-line leading-relaxed text-muted-foreground">
-            {content}
-          </div>
+          <RichText value={content} />
 
           {/* What to expect */}
           {highlights.length > 0 && (
@@ -200,7 +201,9 @@ export default async function EventDetailPage({
           {/* Upcoming events */}
           {upcoming.length > 0 && (
             <div className="rounded-2xl bg-muted p-5">
-              <h3 className="mb-4 px-1 font-bold">{dict.home.upcomingEvents}</h3>
+              <h3 className="mb-4 px-1 font-bold">
+                {s(settings, "home_events_title", locale)}
+              </h3>
               <ul className="space-y-2.5">
                 {upcoming.map((ev) => (
                   <li key={ev.id}>

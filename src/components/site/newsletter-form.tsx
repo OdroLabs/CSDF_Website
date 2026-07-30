@@ -10,7 +10,7 @@ export function NewsletterForm({ dict }: { dict: Dictionary }) {
   const [done, setDone] = useState(false);
 
   if (done) {
-    return <p className="text-sm text-teal-100">✓ {dict.common.thankYou}</p>;
+    return <p className="text-sm text-teal-100">✓ {dict.home.subscribed}</p>;
   }
 
   return (

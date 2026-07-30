@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { saveEntity } from "@/lib/actions";
+import { useToast } from "./toast";
 import type { EntityDef, FieldDef } from "@/lib/admin-config";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,6 +13,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FileUploadField } from "./image-upload";
+import { LineListField, PairListField } from "./repeater-field";
+import { RichTextField } from "./rich-text-field";
 
 const langs = [
   { suffix: "En", label: "English" },
@@ -39,6 +43,8 @@ function SingleField({
   switch (field.type) {
     case "textarea":
       return <Textarea name={name} rows={5} defaultValue={toInputValue(field, defaultValue)} required={required} />;
+    case "richtext":
+      return <RichTextField name={name} defaultValue={defaultValue} />;
     case "image":
       return <FileUploadField name={name} defaultValue={defaultValue} />;
     case "file":
@@ -91,19 +97,45 @@ export function EntityForm({
   record: Record<string, any> | null;
 }) {
   const [saving, setSaving] = useState(false);
+  const { toast, update } = useToast();
+  const router = useRouter();
+
+  async function handleSave(fd: FormData) {
+    setSaving(true);
+    const id = toast({
+      title: record ? "Saving changes…" : `Creating ${entity.titleSingular.toLowerCase()}…`,
+      variant: "loading",
+    });
+    try {
+      const result = await saveEntity(entity.slug, record?.id ?? null, fd);
+      if (result.ok) {
+        update(id, {
+          title: record ? "Changes saved" : `${entity.titleSingular} created`,
+          description: "Live on the site now.",
+          variant: "success",
+        });
+        // Only leave the form once the save actually succeeded.
+        router.push(`/admin/content/${entity.slug}`);
+      } else {
+        update(id, {
+          title: record ? "Not saved" : "Not created",
+          description: result.error,
+          variant: "error",
+        });
+      }
+    } catch {
+      update(id, {
+        title: "Not saved",
+        description: "Could not reach the server. Check your connection and try again.",
+        variant: "error",
+      });
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
-    <form
-      action={async (fd) => {
-        setSaving(true);
-        try {
-          await saveEntity(entity.slug, record?.id ?? null, fd);
-        } finally {
-          setSaving(false);
-        }
-      }}
-      className="space-y-5"
-    >
+    <form action={handleSave} className="space-y-5">
       {entity.fields.map((field) => (
         <Card key={field.name}>
           <CardContent className="pt-5">
@@ -112,8 +144,47 @@ export function EntityForm({
               {field.required && <span className="text-destructive"> *</span>}
             </Label>
             {field.help && <p className="-mt-2 mb-3 text-xs text-muted-foreground">{field.help}</p>}
-            {field.i18n ? (
-              <div className="grid gap-4 lg:grid-cols-3">
+            {field.type === "pairs" || field.type === "lines" ? (
+              // Repeatable lists manage all three languages together, so they
+              // replace the usual three-column layout entirely.
+              (() => {
+                const names = {
+                  en: `${field.name}En`,
+                  si: `${field.name}Si`,
+                  ta: `${field.name}Ta`,
+                };
+                const values = {
+                  en: record?.[`${field.name}En`] ?? "",
+                  si: record?.[`${field.name}Si`] ?? "",
+                  ta: record?.[`${field.name}Ta`] ?? "",
+                };
+                return field.type === "pairs" ? (
+                  <PairListField
+                    names={names}
+                    values={values}
+                    leftLabel={field.leftLabel}
+                    rightLabel={field.rightLabel}
+                    itemLabel={field.itemLabel}
+                    addLabel={field.addLabel}
+                  />
+                ) : (
+                  <LineListField
+                    names={names}
+                    values={values}
+                    itemLabel={field.itemLabel}
+                    addLabel={field.addLabel}
+                    translated={field.i18n !== false}
+                  />
+                );
+              })()
+            ) : field.i18n ? (
+              <div
+                className={
+                  // Three rich editors side by side would be unusable, so those
+                  // stack full-width instead of sitting in three columns.
+                  field.type === "richtext" ? "space-y-5" : "grid gap-4 lg:grid-cols-3"
+                }
+              >
                 {langs.map((lang) => (
                   <div key={lang.suffix} className="space-y-1.5">
                     <p className="text-xs font-medium text-muted-foreground">{lang.label}</p>

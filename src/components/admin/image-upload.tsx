@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import { Upload, X, FileText, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "./toast";
 
 export function FileUploadField({
   name,
@@ -20,10 +21,12 @@ export function FileUploadField({
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const { toast, update } = useToast();
 
   async function handleFile(file: File) {
     setUploading(true);
     setError("");
+    const toastId = toast({ title: `Uploading ${file.name}…`, variant: "loading" });
     const fd = new FormData();
     fd.append("file", file);
     try {
@@ -31,8 +34,15 @@ export function FileUploadField({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Upload failed");
       setUrl(data.url);
+      update(toastId, {
+        title: "Uploaded",
+        description: "Remember to save the form to keep it.",
+        variant: "success",
+      });
     } catch (e: any) {
-      setError(e.message);
+      const message = e?.message ?? "Upload failed";
+      setError(message);
+      update(toastId, { title: "Upload failed", description: message, variant: "error" });
     } finally {
       setUploading(false);
     }

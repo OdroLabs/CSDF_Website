@@ -4,15 +4,33 @@ export function PageHero({
   title,
   intro,
   eyebrow,
+  image,
 }: {
   title: string;
   intro?: string;
   eyebrow?: string;
+  /** Optional background photo set in Site Settings. */
+  image?: string;
 }) {
+  // Nothing set in the admin for this page header — render nothing at all.
+  if (!title && !intro && !eyebrow) return null;
+
   return (
-    <section className="relative overflow-hidden bg-navy-950 text-white">
+    <section id="sec-page-header" className="relative overflow-hidden bg-navy-950 text-white">
+      {/* Optional photo, sitting under the gradient */}
+      {image && (
+        <div
+          data-parallax="6"
+          className="absolute -inset-y-[10%] inset-x-0 scale-110 bg-cover bg-center opacity-40"
+          style={{ backgroundImage: `url(${image})` }}
+        />
+      )}
       {/* Deep navy → brand gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-brand-800" />
+      <div
+        className={`absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-brand-800 ${
+          image ? "opacity-80" : ""
+        }`}
+      />
       {/* Subtle grid pattern */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.06]"
@@ -32,11 +50,13 @@ export function PageHero({
             {eyebrow}
           </p>
         )}
-        <h1 data-hero className="text-3xl font-extrabold tracking-tight md:text-5xl">
-          {title}
-        </h1>
+        {title && (
+          <h1 data-hero className="text-3xl font-extrabold tracking-tight md:text-5xl">
+            {title}
+          </h1>
+        )}
         {intro && (
-          <p data-hero className="mt-4 max-w-2xl leading-relaxed text-white/75 md:text-lg">
+          <p data-hero className="mt-4 max-w-2xl whitespace-pre-line leading-relaxed text-white/75 md:text-lg">
             {intro}
           </p>
         )}

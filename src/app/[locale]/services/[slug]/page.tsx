@@ -11,8 +11,9 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
-import { getDictionary } from "@/lib/dictionaries";
+import { getLabels } from "@/lib/labels";
 import { getSettings, s } from "@/lib/settings";
+import { RichText } from "@/components/site/rich-text";
 import { Button } from "@/components/ui/button";
 
 function parsePairs(text: string) {
@@ -32,9 +33,9 @@ export default async function ServiceDetailPage({
   params: { locale: Locale; slug: string };
 }) {
   const { locale } = params;
-  const dict = getDictionary(locale);
   const param = decodeURIComponent(params.slug);
   const settings = await getSettings();
+  const dict = getLabels(locale, settings);
   let service = await prisma.service.findFirst({ where: { slug: param } });
   if (!service && /^\d+$/.test(param)) {
     // Legacy numeric URL — look up by id and redirect to the slug URL
@@ -54,6 +55,11 @@ export default async function ServiceDetailPage({
   const benefits = parsePairs(loc(service, "benefits", locale));
   const faqs = parsePairs(loc(service, "faqs", locale));
   const phone = s(settings, "phone");
+
+  // Promo and CTA copy is shared with the home page settings.
+  const contactPromoText = s(settings, "home_contact_text", locale);
+  const donateTitle = s(settings, "home_donate_title", locale);
+  const donateText = s(settings, "home_donate_text", locale);
 
   return (
     <>
@@ -97,9 +103,7 @@ export default async function ServiceDetailPage({
             <h2 className="text-2xl font-extrabold tracking-tight md:text-4xl">{title}</h2>
           </div>
 
-          <div className="prose-basic max-w-none whitespace-pre-line leading-relaxed text-muted-foreground">
-            {content}
-          </div>
+          <RichText value={content} />
 
           {/* Feature checklist */}
           {features.length > 0 && (
@@ -128,7 +132,7 @@ export default async function ServiceDetailPage({
           {benefits.length > 0 && (
             <div className="mt-12">
               <h3 className="mb-6 text-xl font-extrabold tracking-tight md:text-2xl">
-                {dict.home.impact}
+                {dict.common.benefits}
               </h3>
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {benefits.map((b, i) => (
@@ -201,7 +205,10 @@ export default async function ServiceDetailPage({
           {/* Contact promo card */}
           <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-900 to-brand-700 p-7 text-white">
             <h3 className="text-2xl font-extrabold leading-tight">{dict.home.getSupport}</h3>
-            <p className="mt-2 text-sm text-white/75">{dict.contact.intro}</p>
+            {/* Body copy comes from Site Settings → Home Page → Get in touch band. */}
+            {contactPromoText && (
+              <p className="mt-2 text-sm text-white/75">{contactPromoText}</p>
+            )}
             {phone && (
               <a
                 href={`tel:${phone.replace(/\s/g, "")}`}
@@ -225,8 +232,10 @@ export default async function ServiceDetailPage({
       <section className="container pb-16">
         <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-gradient-to-r from-brand-700 to-brand-500 p-10 text-white shadow-xl shadow-brand-600/20 md:p-12">
           <div>
-            <h2 className="max-w-xl text-2xl font-extrabold md:text-3xl">{dict.home.supportUs}</h2>
-            <p className="mt-2 max-w-xl text-white/85">{dict.home.supportText}</p>
+            {donateTitle && (
+              <h2 className="max-w-xl text-2xl font-extrabold md:text-3xl">{donateTitle}</h2>
+            )}
+            {donateText && <p className="mt-2 max-w-xl text-white/85">{donateText}</p>}
           </div>
           <Button
             asChild
