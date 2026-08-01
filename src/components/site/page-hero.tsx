@@ -63,7 +63,7 @@ export function PageHero({
         <span data-hero className="mt-6 block h-1 w-16 rounded-full bg-gradient-to-r from-accent to-brand-400" />
       </div>
 
-      <Curve className="absolute inset-x-0 bottom-0 text-background" />
+      <Curve className="absolute inset-x-0 -bottom-px text-background" />
     </section>
   );
 }
