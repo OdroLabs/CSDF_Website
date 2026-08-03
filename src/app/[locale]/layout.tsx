@@ -8,7 +8,6 @@ import { SiteHeader } from "@/components/site/header";
 import { SiteFooter } from "@/components/site/footer";
 import { ScrollProgress } from "@/components/site/scroll-progress";
 import { FloatingDonate } from "@/components/site/floating-donate";
-import { RouteLoader } from "@/components/site/route-loader";
 
 export const dynamic = "force-dynamic";
 
@@ -64,7 +63,6 @@ export default async function LocaleLayout({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <RouteLoader />
       <ScrollProgress />
       <SiteHeader
         locale={locale}

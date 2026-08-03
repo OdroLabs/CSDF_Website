@@ -1,4 +1,4 @@
-import { FadeIn, Parallax } from "./motion";
+import { FadeIn, Parallax, TextReveal } from "./motion";
 
 export function PageHero({
   title,
@@ -47,11 +47,12 @@ export function PageHero({
           </FadeIn>
         )}
         {title && (
-          <FadeIn immediate delay={0.08}>
-            <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight md:text-6xl">
-              {title}
-            </h1>
-          </FadeIn>
+          <TextReveal
+            as="h1"
+            text={title}
+            delay={0.08}
+            className="mt-5 block max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight md:text-6xl"
+          />
         )}
         {intro && (
           <FadeIn immediate delay={0.16}>

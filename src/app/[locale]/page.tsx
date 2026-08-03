@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TestimonialCarousel } from "@/components/site/testimonial-carousel";
 import { StatCounter } from "@/components/site/stat-counter";
-import { FadeIn, Stagger, StaggerItem, Parallax } from "@/components/site/motion";
+import { FadeIn, Stagger, StaggerItem, Parallax, TextReveal } from "@/components/site/motion";
 import { Marquee } from "@/components/site/marquee";
 
 function SectionTag({ children, light }: { children: React.ReactNode; light?: boolean }) {
@@ -228,11 +228,12 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                 </FadeIn>
               )}
               {heroTitle && (
-                <FadeIn immediate delay={0.08}>
-                  <h1 className="mb-8 mt-6 text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl md:text-6xl lg:text-7xl">
-                    {heroTitle}
-                  </h1>
-                </FadeIn>
+                <TextReveal
+                  as="h1"
+                  text={heroTitle}
+                  delay={0.08}
+                  className="mb-8 mt-6 block text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl md:text-6xl lg:text-7xl"
+                />
               )}
               {(heroCta1 || heroCta2) && (
                 <FadeIn immediate delay={0.18} className="flex flex-wrap items-center gap-5">

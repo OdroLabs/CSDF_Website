@@ -1,9 +1,4 @@
-import { BrandLoader } from "@/components/site/brand-loader";
-
+// No loading UI — pages render as soon as they're ready.
 export default function RootLoading() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <BrandLoader />
-    </div>
-  );
+  return null;
 }

@@ -51,6 +51,50 @@ export function FadeIn({
   );
 }
 
+const wordContainer: Variants = {
+  hidden: {},
+  show: (delay: number) => ({ transition: { staggerChildren: 0.07, delayChildren: delay } }),
+};
+
+const wordItem: Variants = {
+  hidden: { y: "115%" },
+  show: { y: "0%", transition: { duration: 0.65, ease: EASE } },
+};
+
+/** Splits text into words that rise up into place, staggered — for hero headlines. */
+export function TextReveal({
+  text,
+  className,
+  delay = 0,
+  as = "span",
+}: {
+  text: string;
+  className?: string;
+  delay?: number;
+  as?: "span" | "h1" | "h2";
+}) {
+  const reduce = useReducedMotion();
+  const Comp = motion[as];
+
+  if (reduce) {
+    const Static = as;
+    return <Static className={className}>{text}</Static>;
+  }
+
+  return (
+    <Comp className={className} variants={wordContainer} initial="hidden" animate="show" custom={delay}>
+      {text.split(" ").map((word, i) => (
+        <span key={i} className="inline-block overflow-hidden pb-[0.08em] align-top">
+          <motion.span variants={wordItem} className="inline-block">
+            {word}
+            {i < text.split(" ").length - 1 ? " " : ""}
+          </motion.span>
+        </span>
+      ))}
+    </Comp>
+  );
+}
+
 const staggerContainer: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.09, delayChildren: 0.04 } },
