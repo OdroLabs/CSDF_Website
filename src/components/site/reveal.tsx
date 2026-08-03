@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { FadeIn } from "./motion";
 
-/** Fades + slides content in when it scrolls into view. */
+/** Fades + slides content in when it scrolls into view. Thin wrapper kept for
+ *  call-site compatibility across the inner pages. */
 export function Reveal({
   children,
   delay = 0,
@@ -13,27 +13,9 @@ export function Reveal({
   delay?: number;
   className?: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add("reveal-visible");
-          io.disconnect();
-        }
-      },
-      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
   return (
-    <div ref={ref} className={cn("reveal", className)} style={{ transitionDelay: `${delay}ms` }}>
+    <FadeIn delay={delay / 1000} className={className}>
       {children}
-    </div>
+    </FadeIn>
   );
 }

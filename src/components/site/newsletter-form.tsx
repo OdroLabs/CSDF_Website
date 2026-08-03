@@ -10,7 +10,7 @@ export function NewsletterForm({ dict }: { dict: Dictionary }) {
   const [done, setDone] = useState(false);
 
   if (done) {
-    return <p className="text-sm text-teal-100">✓ {dict.home.subscribed}</p>;
+    return <p className="text-sm font-medium text-accent">✓ {dict.home.subscribed}</p>;
   }
 
   return (
@@ -26,9 +26,9 @@ export function NewsletterForm({ dict }: { dict: Dictionary }) {
         type="email"
         required
         placeholder={dict.home.emailPlaceholder}
-        className="bg-white/10 text-white placeholder:text-white/50 border-white/20"
+        className="border-white/15 bg-white/5 text-white placeholder:text-white/40 focus-visible:border-white/30 focus-visible:ring-white/20"
       />
-      <Button type="submit" variant="secondary">
+      <Button type="submit" className="shrink-0 bg-white text-secondary hover:bg-white/90">
         {dict.home.subscribe}
       </Button>
     </form>

@@ -20,7 +20,7 @@ export function ContactForm({
 
   if (done) {
     return (
-      <div className="rounded-lg border border-teal-500/40 bg-teal-50 p-6 text-teal-800">
+      <div className="rounded-2xl border border-teal-500/30 bg-teal-50 p-6 text-sm font-medium text-teal-800">
         ✓ {successMessage || dict.common.thankYou}
       </div>
     );
@@ -32,9 +32,9 @@ export function ContactForm({
         const res = await submitContact(fd);
         if (res.ok) setDone(true);
       }}
-      className="space-y-4"
+      className="space-y-5"
     >
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="c-name">{dict.common.name} *</Label>
           <Input id="c-name" name="name" required />
@@ -44,7 +44,7 @@ export function ContactForm({
           <Input id="c-email" name="email" type="email" required />
         </div>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="c-phone">
             {dict.common.phone} <span className="text-muted-foreground">({dict.common.optional})</span>
@@ -62,7 +62,9 @@ export function ContactForm({
         <Label htmlFor="c-message">{dict.common.message} *</Label>
         <Textarea id="c-message" name="message" required rows={6} />
       </div>
-      <Button type="submit">{dict.common.send}</Button>
+      <Button type="submit" size="lg" className="px-8">
+        {dict.common.send}
+      </Button>
     </form>
   );
 }

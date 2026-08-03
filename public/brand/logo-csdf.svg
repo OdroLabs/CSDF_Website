@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 70">
+  <rect x="4" y="5" width="60" height="60" rx="14" fill="#0077B6"/>
+  <circle cx="25.6" cy="42.2" r="9" fill="#FFFFFF"/>
+  <circle cx="42.4" cy="42.2" r="9" fill="#FFFFFF"/>
+  <circle cx="34" cy="25.4" r="10.2" fill="#14B8A6"/>
+  <text x="78" y="45" font-family="Inter, Arial, sans-serif" font-weight="700" font-size="32" letter-spacing="-0.5" fill="#0F172A">CSDF</text>
+</svg>

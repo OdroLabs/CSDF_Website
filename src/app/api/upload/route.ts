@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
 import { authOptions } from "@/lib/auth";
+import { uploadToSpaces } from "@/lib/storage";
 
 const MAX_SIZE = 15 * 1024 * 1024; // 15 MB
 const ALLOWED = [
@@ -27,10 +26,13 @@ export async function POST(request: NextRequest) {
 
   const bytes = Buffer.from(await file.arrayBuffer());
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-  const filename = `${Date.now()}-${safeName}`;
-  const dir = path.join(process.cwd(), "public", "uploads");
-  await mkdir(dir, { recursive: true });
-  await writeFile(path.join(dir, filename), bytes);
+  const key = `uploads/${Date.now()}-${safeName}`;
 
-  return NextResponse.json({ url: `/uploads/${filename}` });
+  try {
+    const url = await uploadToSpaces(bytes, key, file.type);
+    return NextResponse.json({ url });
+  } catch (error) {
+    console.error("DigitalOcean Spaces upload failed:", error);
+    return NextResponse.json({ error: "Upload failed" }, { status: 502 });
+  }
 }

@@ -20,7 +20,7 @@ export function SuggestionForm({
 
   if (done) {
     return (
-      <div className="rounded-lg border border-teal-500/40 bg-teal-50 p-6 text-teal-800">
+      <div className="rounded-2xl border border-teal-500/30 bg-teal-50 p-6 text-sm font-medium text-teal-800">
         ✓ {successMessage || dict.common.thankYou}
       </div>
     );
@@ -32,9 +32,9 @@ export function SuggestionForm({
         const res = await submitSuggestion(fd);
         if (res.ok) setDone(true);
       }}
-      className="space-y-4"
+      className="space-y-5"
     >
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="s-name">
             {dict.common.name} <span className="text-muted-foreground">({dict.common.optional})</span>
@@ -52,7 +52,9 @@ export function SuggestionForm({
         <Label htmlFor="s-message">{dict.common.message} *</Label>
         <Textarea id="s-message" name="message" required rows={6} />
       </div>
-      <Button type="submit">{dict.common.submit}</Button>
+      <Button type="submit" size="lg" className="px-8">
+        {dict.common.submit}
+      </Button>
     </form>
   );
 }

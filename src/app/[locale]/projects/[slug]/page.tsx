@@ -11,6 +11,7 @@ import {
   MapPin,
   Users,
 } from "lucide-react";
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
 import { getLabels } from "@/lib/labels";
@@ -19,6 +20,36 @@ import { RichText } from "@/components/site/rich-text";
 import { formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { FadeIn, Stagger, StaggerItem } from "@/components/site/motion";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { locale: Locale; slug: string };
+}): Promise<Metadata> {
+  const { locale } = params;
+  const settings = await getSettings();
+  const siteName = s(settings, "site_name", locale);
+  const param = decodeURIComponent(params.slug);
+  const project = await prisma.project.findFirst({ where: { slug: param } });
+
+  if (!project) {
+    return { title: siteName || undefined };
+  }
+
+  const title = loc(project, "title", locale) || undefined;
+  const description = loc(project, "description", locale) || undefined;
+
+  return {
+    title: siteName ? `${title} | ${siteName}` : title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: project.image ? [project.image] : undefined,
+    },
+  };
+}
 
 function parsePairs(text: string) {
   return text
@@ -82,53 +113,61 @@ export default async function ProjectDetailPage({
   return (
     <>
       {/* Banner with breadcrumb */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-brand-900 via-brand-800 to-brand-600 py-16 text-white md:py-20">
+      <section className="relative overflow-hidden bg-secondary py-16 text-white md:py-20">
         {project.image && (
           <>
-            <Image src={project.image} alt="" fill className="object-cover opacity-25" />
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-950/80 to-brand-900/40" />
+            <Image src={project.image} alt="" fill className="object-cover opacity-30" />
+            <div className="absolute inset-0 bg-secondary/70" />
           </>
         )}
         <div className="container relative">
-          <nav className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm backdrop-blur">
-            <Link href={`/${locale}`} className="flex items-center gap-1.5 text-accent hover:text-white">
-              <Home className="h-4 w-4" /> {dict.nav.home}
-            </Link>
-            <ChevronRight className="h-4 w-4 text-white/50" />
-            <Link href={`/${locale}/projects`} className="text-white/80 hover:text-white">
-              {dict.nav.projects}
-            </Link>
-          </nav>
-          <div className="mb-4 flex flex-wrap items-center gap-3">
-            <Badge className="rounded-full bg-accent capitalize text-accent-foreground hover:bg-accent">
-              {statusLabel}
-            </Badge>
-            {project.startDate && (
-              <span className="flex items-center gap-1.5 text-sm text-white/80">
-                <CalendarDays className="h-4 w-4" />
-                {formatDate(project.startDate, locale)}
-                {project.endDate ? ` – ${formatDate(project.endDate, locale)}` : ""}
-              </span>
-            )}
-            {project.location && (
-              <span className="flex items-center gap-1.5 text-sm text-white/80">
-                <MapPin className="h-4 w-4" /> {project.location}
-              </span>
-            )}
-          </div>
-          <h1 className="max-w-3xl text-3xl font-extrabold leading-tight tracking-tight md:text-5xl">
-            {title}
-          </h1>
+          <FadeIn immediate>
+            <nav className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm backdrop-blur">
+              <Link href={`/${locale}`} className="flex items-center gap-1.5 text-accent hover:text-white">
+                <Home className="h-4 w-4" /> {dict.nav.home}
+              </Link>
+              <ChevronRight className="h-4 w-4 text-white/50" />
+              <Link href={`/${locale}/projects`} className="text-white/80 hover:text-white">
+                {dict.nav.projects}
+              </Link>
+            </nav>
+          </FadeIn>
+          <FadeIn immediate delay={0.06}>
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              <Badge className="bg-accent capitalize text-accent-foreground hover:bg-accent">
+                {statusLabel}
+              </Badge>
+              {project.startDate && (
+                <span className="flex items-center gap-1.5 text-sm text-white/80">
+                  <CalendarDays className="h-4 w-4" />
+                  {formatDate(project.startDate, locale)}
+                  {project.endDate ? ` – ${formatDate(project.endDate, locale)}` : ""}
+                </span>
+              )}
+              {project.location && (
+                <span className="flex items-center gap-1.5 text-sm text-white/80">
+                  <MapPin className="h-4 w-4" /> {project.location}
+                </span>
+              )}
+            </div>
+          </FadeIn>
+          <FadeIn immediate delay={0.12}>
+            <h1 className="max-w-3xl text-3xl font-bold leading-tight tracking-tight md:text-5xl">
+              {title}
+            </h1>
+          </FadeIn>
         </div>
       </section>
 
-      <article className="container grid gap-10 py-12 md:py-16 lg:grid-cols-[1fr_340px]">
+      <article className="container grid gap-10 py-16 md:py-24 lg:grid-cols-[1fr_340px]">
         {/* Main column */}
         <div>
           {project.image && (
-            <div className="relative mb-8 aspect-[16/9] w-full overflow-hidden rounded-2xl border">
-              <Image src={project.image} alt="" fill className="object-cover" />
-            </div>
+            <FadeIn>
+              <div className="relative mb-8 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-border">
+                <Image src={project.image} alt="" fill className="object-cover" />
+              </div>
+            </FadeIn>
           )}
 
           <RichText value={content} />
@@ -149,7 +188,7 @@ export default async function ProjectDetailPage({
           {(project.image2 || project.image3) && (
             <div className="mt-10 grid gap-6 sm:grid-cols-2">
               {[project.image2, project.image3].filter(Boolean).map((img, i) => (
-                <div key={i} className="relative aspect-[4/3] overflow-hidden rounded-2xl border">
+                <div key={i} className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border">
                   <Image src={img as string} alt="" fill className="object-cover" />
                 </div>
               ))}
@@ -159,23 +198,22 @@ export default async function ProjectDetailPage({
           {/* Numbered outcome cards */}
           {outcomes.length > 0 && (
             <div className="mt-12">
-              <h3 className="mb-6 text-xl font-extrabold tracking-tight md:text-2xl">
+              <h3 className="mb-6 text-xl font-bold tracking-tight md:text-2xl">
                 {dict.common.outcomes}
               </h3>
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <Stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {outcomes.map((o, i) => (
-                  <div
-                    key={i}
-                    className="rounded-2xl border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-brand-500/10"
-                  >
-                    <span className="mb-4 grid h-10 w-10 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <h4 className="mb-2 font-bold leading-snug">{o.title}</h4>
-                    <p className="text-sm leading-relaxed text-muted-foreground">{o.text}</p>
-                  </div>
+                  <StaggerItem key={i}>
+                    <div className="h-full rounded-2xl border border-border bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-card-hover">
+                      <span className="mb-4 grid h-10 w-10 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <h4 className="mb-2 font-bold leading-snug">{o.title}</h4>
+                      <p className="text-sm leading-relaxed text-muted-foreground">{o.text}</p>
+                    </div>
+                  </StaggerItem>
                 ))}
-              </div>
+              </Stagger>
             </div>
           )}
         </div>
@@ -183,12 +221,12 @@ export default async function ProjectDetailPage({
         {/* Sidebar */}
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
           {/* Project facts */}
-          <div className="rounded-2xl border bg-card p-6 shadow-sm">
+          <div className="rounded-2xl border border-border bg-white p-6 shadow-card">
             <h3 className="mb-4 font-bold">{dict.nav.projects}</h3>
             <ul className="space-y-4 text-sm">
-              <li className="flex items-start justify-between gap-4 border-b pb-3">
+              <li className="flex items-start justify-between gap-4 border-b border-border pb-3">
                 <span className="text-muted-foreground">Status</span>
-                <Badge variant="secondary" className="rounded-full capitalize">
+                <Badge variant="secondary" className="capitalize">
                   {statusLabel}
                 </Badge>
               </li>
@@ -206,15 +244,15 @@ export default async function ProjectDetailPage({
 
           {/* Donate card — hidden when the donate CTA text is cleared in the admin */}
           {(donateTitle || donateText) && (
-          <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-900 to-brand-700 p-7 text-white">
-            {donateTitle && <h3 className="text-xl font-extrabold leading-tight">{donateTitle}</h3>}
-            {donateText && <p className="mt-2 text-sm text-white/75">{donateText}</p>}
-            <Button asChild className="mt-5 w-full rounded-full bg-accent font-bold text-accent-foreground hover:bg-accent/90">
-              <Link href={`/${locale}/donate`}>
-                <Heart className="h-4 w-4" /> {dict.home.makeDonation}
-              </Link>
-            </Button>
-          </div>
+            <div className="overflow-hidden rounded-2xl bg-secondary p-7 text-white shadow-card">
+              {donateTitle && <h3 className="text-xl font-bold leading-tight tracking-tight">{donateTitle}</h3>}
+              {donateText && <p className="mt-2 text-sm text-white/75">{donateText}</p>}
+              <Button asChild className="mt-5 w-full bg-accent font-bold text-accent-foreground hover:bg-accent/90">
+                <Link href={`/${locale}/donate`}>
+                  <Heart className="h-4 w-4" /> {dict.home.makeDonation}
+                </Link>
+              </Button>
+            </div>
           )}
 
           {/* Other projects */}
@@ -226,7 +264,7 @@ export default async function ProjectDetailPage({
                   <li key={p.id}>
                     <Link
                       href={`/${locale}/projects/${p.slug ?? p.id}`}
-                      className="group flex items-center justify-between gap-3 rounded-xl border bg-card px-4 py-3.5 text-sm font-semibold shadow-sm transition-all hover:border-primary/40 hover:text-primary"
+                      className="group flex items-center justify-between gap-3 rounded-xl border border-border bg-white px-4 py-3.5 text-sm font-semibold shadow-xs transition-all hover:border-primary/40 hover:text-primary"
                     >
                       <span className="line-clamp-2">{loc(p, "title", locale)}</span>
                       <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />

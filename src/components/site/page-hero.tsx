@@ -1,4 +1,4 @@
-import { Curve } from "./curve";
+import { FadeIn, Parallax } from "./motion";
 
 export function PageHero({
   title,
@@ -16,54 +16,51 @@ export function PageHero({
   if (!title && !intro && !eyebrow) return null;
 
   return (
-    <section id="sec-page-header" className="relative overflow-hidden bg-navy-950 text-white">
-      {/* Optional photo, sitting under the gradient */}
+    <section
+      id="sec-page-header"
+      className="relative overflow-hidden bg-gradient-to-br from-teal-700 via-secondary to-secondary text-white [clip-path:polygon(0_0,100%_0,100%_100%,0_calc(100%-32px))]"
+    >
+      {/* Optional photo, blended into the gradient */}
       {image && (
-        <div
-          data-parallax="6"
-          className="absolute -inset-y-[10%] inset-x-0 scale-110 bg-cover bg-center opacity-40"
-          style={{ backgroundImage: `url(${image})` }}
-        />
+        <div className="absolute inset-0 overflow-hidden">
+          <Parallax travel={24} className="h-full w-full scale-110">
+            <div
+              className="h-full w-full bg-cover bg-center opacity-25 mix-blend-luminosity"
+              style={{ backgroundImage: `url(${image})` }}
+            />
+          </Parallax>
+          <div className="absolute inset-0 bg-gradient-to-br from-teal-700/80 via-secondary/85 to-secondary" />
+        </div>
       )}
-      {/* Deep navy → brand gradient */}
-      <div
-        className={`absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-900 to-brand-800 ${
-          image ? "opacity-80" : ""
-        }`}
-      />
-      {/* Subtle grid pattern */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.06]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-      />
-      {/* Cyan glow accents */}
-      <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-accent/15 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-32 left-1/4 h-72 w-72 rounded-full bg-brand-500/15 blur-3xl" />
 
-      <div className="container relative pb-20 pt-16 md:pb-28 md:pt-20">
+      {/* Decorative soft glows */}
+      <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-accent/20 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-teal-500/15 blur-3xl" />
+
+      <div className="container relative pb-24 pt-20 md:pb-32 md:pt-28">
         {eyebrow && (
-          <p data-hero className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-accent">
-            {eyebrow}
-          </p>
+          <FadeIn immediate>
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-white/90 backdrop-blur">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              {eyebrow}
+            </span>
+          </FadeIn>
         )}
         {title && (
-          <h1 data-hero className="text-3xl font-extrabold tracking-tight md:text-5xl">
-            {title}
-          </h1>
+          <FadeIn immediate delay={0.08}>
+            <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight md:text-6xl">
+              {title}
+            </h1>
+          </FadeIn>
         )}
         {intro && (
-          <p data-hero className="mt-4 max-w-2xl whitespace-pre-line leading-relaxed text-white/75 md:text-lg">
-            {intro}
-          </p>
+          <FadeIn immediate delay={0.16}>
+            <p className="mt-5 max-w-2xl whitespace-pre-line text-base leading-relaxed text-white/70 md:text-lg">
+              {intro}
+            </p>
+          </FadeIn>
         )}
-        <span data-hero className="mt-6 block h-1 w-16 rounded-full bg-gradient-to-r from-accent to-brand-400" />
       </div>
-
-      <Curve className="absolute inset-x-0 bottom-0 text-background" />
     </section>
   );
 }

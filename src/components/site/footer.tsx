@@ -51,14 +51,9 @@ export function SiteFooter({
     1 + Number(showExplore) + Number(showInvolved) + Number(showNewsletter);
 
   return (
-    <footer id="sec-footer" className="relative bg-navy-950 text-white/90">
-      {/* Brand gradient rule */}
-      <div className="h-1 bg-gradient-to-r from-brand-600 via-accent to-destructive" />
-      {/* Soft cyan glow */}
-      <div className="pointer-events-none absolute -top-24 left-1/4 h-64 w-64 rounded-full bg-accent/10 blur-3xl" />
-
+    <footer id="sec-footer" className="relative bg-secondary text-white/85">
       <div
-        className={`container relative grid gap-10 py-16 md:grid-cols-2 ${
+        className={`container relative grid gap-12 py-20 md:grid-cols-2 ${
           columnCount >= 4 ? "lg:grid-cols-4" : columnCount === 3 ? "lg:grid-cols-3" : ""
         }`}
       >
@@ -66,23 +61,23 @@ export function SiteFooter({
           <div className="mb-4 flex items-center gap-2.5">
             {logoImage ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={logoImage} alt={shortName} className="h-10 w-auto max-w-[170px] object-contain" />
+              <img src={logoImage} alt={shortName} className="h-9 w-auto max-w-[160px] object-contain" />
             ) : (
               <>
                 {logoLetter && (
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-accent text-lg font-bold shadow-lg shadow-accent/20">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-base font-bold">
                     {logoLetter}
                   </span>
                 )}
                 {shortName && (
-                  <span className="text-xl font-extrabold tracking-tight">{shortName}</span>
+                  <span className="text-lg font-bold tracking-tight">{shortName}</span>
                 )}
               </>
             )}
           </div>
 
           {about && (
-            <p className="mb-5 max-w-xs whitespace-pre-line text-sm leading-relaxed text-white/60">
+            <p className="mb-5 max-w-xs whitespace-pre-line text-sm leading-relaxed text-white/55">
               {about}
             </p>
           )}
@@ -133,7 +128,7 @@ export function SiteFooter({
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={social.label}
-                      className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white/80 transition-colors hover:bg-accent hover:text-navy-950"
+                      className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white/80 transition-colors hover:bg-accent hover:text-secondary"
                     >
                       <Icon className="h-4 w-4" />
                     </a>

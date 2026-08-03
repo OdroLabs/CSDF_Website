@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X, Heart, Phone, Mail, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LocaleSwitcher } from "./locale-switcher";
+import { GlobalSearch } from "./global-search";
 import { cn } from "@/lib/utils";
 import type { Dictionary } from "@/lib/dictionaries";
 import type { NavConfig, NavGroup, NavItem } from "@/lib/nav";
@@ -78,14 +79,14 @@ export function SiteHeader({
 
   const pillClass = (active: boolean) =>
     cn(
-      "relative flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-semibold transition-colors duration-200",
-      active ? "bg-brand-50 text-primary" : "text-foreground/70 hover:bg-muted hover:text-primary"
+      "relative flex items-center gap-1 whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold transition-colors duration-200",
+      active ? "bg-muted text-primary" : "text-foreground/65 hover:bg-muted hover:text-foreground"
     );
 
   const pillUnderline = (active: boolean) => (
     <span
       className={cn(
-        "absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-gradient-to-r from-primary to-accent transition-opacity duration-200",
+        "absolute inset-x-3.5 -bottom-px h-0.5 rounded-full bg-primary transition-opacity duration-200",
         active ? "opacity-100" : "opacity-0"
       )}
     />
@@ -102,12 +103,12 @@ export function SiteHeader({
         className={cn(
           "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition-colors",
           active
-            ? "bg-brand-50 text-primary"
-            : "text-foreground/80 hover:bg-muted hover:text-primary"
+            ? "bg-muted text-primary"
+            : "text-foreground/75 hover:bg-muted hover:text-primary"
         )}
       >
         {link.label}
-        {active && <span className="h-1.5 w-1.5 rounded-full bg-accent" />}
+        {active && <span className="h-1.5 w-1.5 rounded-full bg-primary" />}
       </Link>
     );
   };
@@ -118,8 +119,8 @@ export function SiteHeader({
     <>
       {/* Announcement bar — hidden when no text is set in the admin */}
       {announceText && (
-        <div id="sec-announce" className="bg-gradient-to-r from-brand-700 via-brand-600 to-accent text-white">
-          <div className="mx-auto max-w-[1400px] px-4 py-2 text-center text-xs font-semibold md:px-6">
+        <div id="sec-announce" className="bg-secondary text-white">
+          <div className="mx-auto max-w-8xl px-4 py-2 text-center text-xs font-medium tracking-tight md:px-6">
             {announceLink ? (
               <Link href={announceLink} className="hover:underline">
                 {announceText}
@@ -133,9 +134,9 @@ export function SiteHeader({
 
       {/* Utility strip — hidden when switched off, or when there is nothing to show */}
       {showTopbar && (hasContactStrip || showLangs) && (
-        <div id="sec-topbar" className="hidden bg-navy-950 text-white md:block">
-          <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-2 text-xs md:px-6">
-            <div className="flex items-center gap-6 text-white/75">
+        <div id="sec-topbar" className="hidden bg-secondary text-white md:block">
+          <div className="mx-auto flex max-w-8xl items-center justify-between px-4 py-2 text-xs md:px-6">
+            <div className="flex items-center gap-6 text-white/70">
               {phones.map((phone) => (
                 <a
                   key={phone}
@@ -160,20 +161,20 @@ export function SiteHeader({
         </div>
       )}
 
-      {/* Sticky glass nav */}
+      {/* Sticky nav */}
       <header
         id="sec-header"
         className={cn(
           "sticky top-0 z-40 border-b transition-all duration-300",
           scrolled
-            ? "border-border/80 bg-white/85 shadow-lg shadow-navy-950/[0.06] backdrop-blur-xl supports-[backdrop-filter]:bg-white/75"
+            ? "border-border bg-white/90 shadow-soft backdrop-blur-xl supports-[backdrop-filter]:bg-white/80"
             : "border-transparent bg-white"
         )}
       >
         <div
           className={cn(
-            "mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-4 transition-[padding] duration-300 md:px-6",
-            scrolled ? "py-2" : "py-3"
+            "mx-auto flex max-w-8xl items-center justify-between gap-6 px-4 transition-[padding] duration-300 md:px-6",
+            scrolled ? "py-3" : "py-4"
           )}
         >
           <Link href={`/${locale}`} className="group flex shrink-0 items-center gap-2.5">
@@ -182,24 +183,25 @@ export function SiteHeader({
               <img
                 src={logoImage}
                 alt={siteName || shortName}
-                className="h-10 w-auto max-w-[170px] object-contain transition-transform duration-300 group-hover:scale-105"
+                className="h-9 w-auto max-w-[160px] object-contain transition-transform duration-300 group-hover:scale-105"
               />
             ) : (
               logoLetter && (
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-700 via-brand-600 to-accent text-lg font-bold text-white shadow-md shadow-brand-600/25 transition-transform duration-300 group-hover:scale-105">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-base font-bold text-white transition-transform duration-300 group-hover:scale-105">
                   {logoLetter}
                 </span>
               )
             )}
-            {(shortName || siteName) && (
+            {/* Wordmark text is redundant once an uploaded logo image already carries the brand name */}
+            {!logoImage && (shortName || siteName) && (
               <span className="leading-tight">
                 {shortName && (
-                  <span className="block text-lg font-extrabold tracking-tight text-navy-900">
+                  <span className="block text-[15px] font-bold tracking-tight text-foreground">
                     {shortName}
                   </span>
                 )}
                 {siteName && (
-                  <span className="block max-w-[220px] truncate text-[10px] text-muted-foreground">
+                  <span className="block max-w-[220px] truncate text-[11px] text-muted-foreground">
                     {siteName}
                   </span>
                 )}
@@ -236,7 +238,7 @@ export function SiteHeader({
                   </button>
                   {/* pt-2 bridges the hover gap between pill and panel */}
                   <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 translate-y-1 pt-2 opacity-0 transition-all duration-200 group-focus-within/nav:visible group-focus-within/nav:translate-y-0 group-focus-within/nav:opacity-100 group-hover/nav:visible group-hover/nav:translate-y-0 group-hover/nav:opacity-100">
-                    <div className="min-w-[230px] overflow-hidden rounded-2xl border border-border bg-white/95 p-2 shadow-xl shadow-navy-950/10 backdrop-blur-xl">
+                    <div className="min-w-[230px] overflow-hidden rounded-2xl border border-border bg-white p-2 shadow-card">
                       {group.items.map((item) => {
                         const itemActive = isActive(item.href);
                         return (
@@ -247,12 +249,12 @@ export function SiteHeader({
                             className={cn(
                               "flex items-center justify-between rounded-xl px-4 py-2.5 text-[13px] font-semibold transition-colors",
                               itemActive
-                                ? "bg-brand-50 text-primary"
+                                ? "bg-muted text-primary"
                                 : "text-foreground/75 hover:bg-muted hover:text-primary"
                             )}
                           >
                             {item.label}
-                            {itemActive && <span className="h-1.5 w-1.5 rounded-full bg-accent" />}
+                            {itemActive && <span className="h-1.5 w-1.5 rounded-full bg-primary" />}
                           </Link>
                         );
                       })}
@@ -274,12 +276,13 @@ export function SiteHeader({
             )}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 md:gap-3">
+            <GlobalSearch locale={locale} dict={dict} />
             {showDonate && donateLabel && (
               <Button
                 asChild
                 size="sm"
-                className="hidden rounded-full bg-destructive px-5 font-bold hover:bg-destructive/90 md:inline-flex"
+                className="hidden bg-destructive px-5 hover:bg-destructive/90 md:inline-flex"
               >
                 <Link href={`/${locale}/donate`}>
                   <Heart className="h-4 w-4 fill-current" /> {donateLabel}
@@ -309,7 +312,7 @@ export function SiteHeader({
             aria-hidden
             onClick={() => setOpen(false)}
             className={cn(
-              "absolute inset-x-0 top-0 h-screen bg-navy-950/45 backdrop-blur-sm transition-opacity duration-300",
+              "absolute inset-x-0 top-0 h-screen bg-foreground/40 transition-opacity duration-300",
               open ? "opacity-100" : "opacity-0"
             )}
           />
@@ -317,7 +320,7 @@ export function SiteHeader({
           <nav
             aria-label="Mobile"
             className={cn(
-              "relative max-h-[calc(100dvh-4.5rem)] overflow-y-auto rounded-b-3xl border-b border-border bg-white shadow-2xl shadow-navy-950/20 transition-all duration-300 ease-out",
+              "relative max-h-[calc(100dvh-4.5rem)] overflow-y-auto rounded-b-3xl border-b border-border bg-white shadow-pop transition-all duration-300 ease-out",
               open ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"
             )}
           >

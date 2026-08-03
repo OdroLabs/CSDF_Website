@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { FadeIn } from "./motion";
 
 export function Section({
   eyebrow,
@@ -14,14 +15,14 @@ export function Section({
   center?: boolean;
 }) {
   return (
-    <section className={cn("container py-12 md:py-16", className)}>
+    <section className={cn("container py-16 md:py-24", className)}>
       {(eyebrow || title) && (
-        <div className={cn("mb-8 max-w-3xl", center && "mx-auto text-center")}>
+        <FadeIn className={cn("mb-10 max-w-3xl", center && "mx-auto text-center")}>
           {eyebrow && (
-            <p className="mb-2 text-sm font-bold uppercase tracking-widest text-primary">{eyebrow}</p>
+            <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-primary">{eyebrow}</p>
           )}
-          {title && <h2 className="text-2xl font-extrabold tracking-tight md:text-3xl">{title}</h2>}
-        </div>
+          {title && <h2 className="text-2xl font-bold tracking-tight md:text-3xl">{title}</h2>}
+        </FadeIn>
       )}
       {children}
     </section>

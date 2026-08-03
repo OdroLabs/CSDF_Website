@@ -1,29 +1,37 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&family=Montserrat:wght@600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/*
+  Design system, v2 — minimal / premium (Stripe · Vercel · Linear · Notion inspired).
+  One typeface (Inter), a restrained neutral palette, a single confident brand
+  accent, soft low-contrast shadows, and generous whitespace. Legacy helper
+  classes (.font-heading, .glass-dark, .text-gradient, etc.) are kept so every
+  component that already references them updates automatically.
+*/
+
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 215 45% 12%;
+    --foreground: 222 39% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 215 45% 12%;
+    --card-foreground: 222 39% 11%;
     --primary: 201 100% 36%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 213 55% 16%;
+    --secondary: 222 39% 11%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 208 45% 97%;
-    --muted-foreground: 213 18% 42%;
-    --accent: 190 92% 42%;
+    --muted: 210 25% 97.5%;
+    --muted-foreground: 215 16% 44%;
+    --accent: 190 85% 40%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
-    --border: 212 30% 90%;
-    --input: 212 30% 87%;
+    --border: 216 20% 91%;
+    --input: 216 20% 88%;
     --ring: 201 100% 36%;
-    --radius: 0.75rem;
+    --radius: 1rem;
   }
 }
 
@@ -42,25 +50,31 @@
   body {
     @apply text-foreground antialiased;
     font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     background: hsl(var(--background));
   }
   h1,
   h2,
   h3,
   h4 {
-    font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.02em;
+    font-weight: 700;
   }
   ::selection {
-    background: hsl(var(--accent) / 0.25);
+    background: hsl(var(--primary) / 0.16);
   }
 }
 
 .font-heading {
-  font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.02em;
 }
 
 .font-number {
-  font-family: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 /* ---------------------------------------------------------------------------
@@ -277,80 +291,38 @@
    Design-system helpers
 --------------------------------------------------------------------------- */
 
-/* Frosted glass panel on dark backgrounds */
+/* Subtle frosted panel on dark backgrounds — used sparingly for emphasis */
 .glass-dark {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 /* Frosted glass panel on light backgrounds */
 .glass-light {
-  background: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
-/* Cyan → blue gradient text */
+/* Restrained brand gradient text — used only for single emphasized words */
 .text-gradient {
-  background: linear-gradient(100deg, #4fc3f7 0%, #22d3ee 55%, #7dd3fc 100%);
+  background: linear-gradient(100deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-/* ---------------------------------------------------------------------------
-   GSAP reveal system.
-   A tiny inline script in the root layout adds `anim` to <html> only when
-   JavaScript runs AND the user has not requested reduced motion. Elements
-   tagged for animation start invisible only in that case, so content is
-   always readable without JS or with reduced motion.
---------------------------------------------------------------------------- */
-html.anim [data-hero],
-html.anim [data-animate],
-html.anim [data-stagger] > * {
-  opacity: 0;
-}
-
-/* Legacy scroll-reveal (still used on inner pages via <Reveal>) */
-.reveal {
-  opacity: 0;
-  transform: translateY(32px);
-  transition:
-    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
-}
-.reveal-visible {
-  opacity: 1;
-  transform: none;
-}
+/* Framer Motion drives all scroll/entrance animation now (see
+   components/site/reveal.tsx, motion.tsx). These CSS-only fallbacks keep
+   content fully visible without JS or with reduced motion. */
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
-
-/* Testimonial quote crossfade */
-@keyframes quote-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-.quote-enter {
-  animation: quote-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-@media (prefers-reduced-motion: reduce) {
-  .quote-enter {
-    animation: none;
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }

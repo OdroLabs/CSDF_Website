@@ -69,16 +69,34 @@ const config: Config = {
           900: "#134e4a",
         },
       },
+      fontFamily: {
+        sans: ["var(--font-inter)", "Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+      },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "calc(var(--radius) - 4px)",
+        sm: "calc(var(--radius) - 8px)",
+        xl: "calc(var(--radius) + 4px)",
+        "2xl": "calc(var(--radius) + 8px)",
+        "3xl": "calc(var(--radius) + 16px)",
       },
       boxShadow: {
-        card: "0 1px 2px rgba(5, 18, 37, 0.04), 0 8px 24px -8px rgba(5, 18, 37, 0.10)",
+        xs: "0 1px 2px rgba(15, 23, 42, 0.04)",
+        soft: "0 1px 2px rgba(15, 23, 42, 0.03), 0 2px 8px -2px rgba(15, 23, 42, 0.06)",
+        card: "0 1px 1px rgba(15, 23, 42, 0.02), 0 8px 24px -12px rgba(15, 23, 42, 0.10)",
         "card-hover":
-          "0 2px 4px rgba(5, 18, 37, 0.05), 0 20px 40px -12px rgba(0, 119, 182, 0.22)",
-        glow: "0 0 0 1px rgba(255,255,255,0.08), 0 24px 60px -20px rgba(0, 0, 0, 0.5)",
+          "0 2px 4px rgba(15, 23, 42, 0.04), 0 16px 32px -12px rgba(15, 23, 42, 0.16)",
+        pop: "0 20px 48px -16px rgba(15, 23, 42, 0.22)",
+        glow: "0 0 0 1px rgba(255,255,255,0.08), 0 24px 60px -24px rgba(0, 0, 0, 0.45)",
+      },
+      letterSpacing: {
+        tightest: "-0.045em",
+      },
+      maxWidth: {
+        "8xl": "88rem",
+      },
+      transitionTimingFunction: {
+        premium: "cubic-bezier(0.22, 1, 0.36, 1)",
       },
       keyframes: {
         "accordion-down": {
@@ -97,12 +115,17 @@ const config: Config = {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(6px)" },
         },
+        "line-grow": {
+          "0%": { width: "0%" },
+          "100%": { width: "100%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-up": "fade-up 0.9s ease both",
         "bounce-soft": "bounce-soft 1.6s ease-in-out infinite",
+        "line-grow": "line-grow 1.4s linear infinite",
       },
     },
   },

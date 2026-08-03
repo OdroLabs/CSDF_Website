@@ -54,7 +54,7 @@ export function DonationForm({
             className={cn(
               "flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all duration-200",
               frequency === key
-                ? "bg-white text-primary shadow-md shadow-navy-950/[0.08]"
+                ? "bg-white text-primary shadow-soft"
                 : "text-muted-foreground hover:text-foreground"
             )}
           >
@@ -65,7 +65,7 @@ export function DonationForm({
 
       {/* Amount */}
       <div className="space-y-2.5">
-        <Label className="text-sm font-bold text-navy-900">{d.chooseAmount} *</Label>
+        <Label className="text-sm font-bold text-foreground">{d.chooseAmount} *</Label>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
           {PRESETS.map((p) => (
             <button
@@ -76,8 +76,8 @@ export function DonationForm({
               className={cn(
                 "rounded-xl border-2 px-2 py-3 text-center text-sm font-bold transition-all duration-200 motion-safe:active:scale-95",
                 amount === String(p)
-                  ? "border-primary bg-primary text-white shadow-md shadow-primary/25"
-                  : "border-border bg-white text-navy-900 hover:border-primary/50 hover:text-primary"
+                  ? "border-primary bg-primary text-white shadow-soft"
+                  : "border-border bg-white text-foreground hover:border-primary/50 hover:text-primary"
               )}
             >
               {p.toLocaleString()}
@@ -108,14 +108,14 @@ export function DonationForm({
 
       {/* Purpose */}
       <div className="space-y-1.5">
-        <Label htmlFor="d-purpose" className="text-sm font-bold text-navy-900">
+        <Label htmlFor="d-purpose" className="text-sm font-bold text-foreground">
           {d.purpose}
         </Label>
         <select
           id="d-purpose"
           name="purpose"
           defaultValue="general"
-          className="h-11 w-full rounded-xl border border-input bg-white px-3 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="h-11 w-full rounded-xl border border-input bg-white px-3 text-sm shadow-xs transition-colors focus-visible:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
         >
           {purposes.map((p) => (
             <option key={p.value} value={p.value}>
@@ -127,8 +127,8 @@ export function DonationForm({
 
       {/* Donor details */}
       <div className="space-y-4">
-        <p className="text-sm font-bold text-navy-900">{d.yourDetails}</p>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <p className="text-sm font-bold text-foreground">{d.yourDetails}</p>
+        <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="d-name">{dict.common.name} *</Label>
             <Input id="d-name" name="name" required className="h-11 rounded-xl" />
@@ -157,7 +157,7 @@ export function DonationForm({
       <Button
         type="submit"
         size="lg"
-        className="h-13 w-full rounded-full bg-destructive py-6 text-base font-bold shadow-lg shadow-destructive/25 hover:bg-destructive/90"
+        className="h-12 w-full bg-destructive text-base font-bold shadow-card hover:bg-destructive/90"
       >
         <Heart className="h-5 w-5 fill-current" />
         {d.donateNow}

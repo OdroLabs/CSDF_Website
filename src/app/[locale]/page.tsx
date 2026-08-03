@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   Heart,
@@ -20,12 +21,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TestimonialCarousel } from "@/components/site/testimonial-carousel";
 import { StatCounter } from "@/components/site/stat-counter";
-import { Curve } from "@/components/site/curve";
+import { FadeIn, Stagger, StaggerItem, Parallax } from "@/components/site/motion";
+import { Marquee } from "@/components/site/marquee";
 
 function SectionTag({ children, light }: { children: React.ReactNode; light?: boolean }) {
   return (
     <p
-      className={`flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] ${
+      className={`flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.16em] ${
         light ? "text-accent" : "text-primary"
       }`}
     >
@@ -41,6 +43,25 @@ function link(locale: string, value: string): string {
   if (/^(https?:)?\/\//.test(target) || target.startsWith("mailto:") || target.startsWith("tel:"))
     return target;
   return `/${locale}${target.startsWith("/") ? target : `/${target}`}`;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { locale: Locale };
+}): Promise<Metadata> {
+  const locale = params.locale;
+  const settings = await getSettings();
+  const siteName = s(settings, "site_name", locale);
+  const title = s(settings, "hero_title", locale) || siteName || undefined;
+  const description =
+    s(settings, "hero_subtitle", locale) || s(settings, "site_tagline", locale) || undefined;
+
+  return {
+    title,
+    description,
+    openGraph: { title, description },
+  };
 }
 
 export default async function HomePage({ params }: { params: { locale: Locale } }) {
@@ -144,124 +165,159 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
   const showDonate = show(settings, "show_home_donate", donateTitle, donateText);
 
   const pointIcons = [ShieldCheck, Heart, Users, HandHeart];
+  const avatarColors = ["bg-teal-500", "bg-indigo-500", "bg-violet-500", "bg-pink-500"];
+  const heroAvatars = testimonials
+    .map((t) => loc(t, "author", locale))
+    .filter(Boolean)
+    .slice(0, 4)
+    .map((name) => name.trim().charAt(0).toUpperCase());
+  const heroBlurbTitle = heroPoints[0];
+  const heroChips = heroPoints.slice(1, 4);
+  const heroStat = stats[0];
+  const tickerItems = [aboutTitle, servicesTitle, projectsTitle, testimonialsTitle, donateTitle].filter(
+    Boolean
+  ) as string[];
 
   return (
     <>
       {/* ------------------------------------------------------------------ */}
-      {/* Hero                                                                */}
+      {/* Hero — full screen                                                  */}
       {/* ------------------------------------------------------------------ */}
       {showHero && (
-        <section id="sec-hero" className="relative flex min-h-[82svh] items-center overflow-hidden bg-navy-950 pb-24 pt-16 text-white md:pb-32 md:pt-24">
-          {/* Photo with parallax, fading in from the right */}
+        <section
+          id="sec-hero"
+          className="relative flex min-h-[100svh] flex-col overflow-hidden bg-gradient-to-br from-teal-600 via-teal-700 to-teal-900 text-white md:h-[100svh] md:min-h-[720px]"
+        >
+          {/* Photo, subtly blended into the gradient */}
           {heroImage && (
-            <div className="absolute inset-y-0 right-0 w-full overflow-hidden lg:w-3/4">
-              <div
-                data-parallax="8"
-                className="absolute -inset-y-[12%] inset-x-0 scale-110 bg-cover bg-center opacity-30 lg:opacity-60"
-                style={{ backgroundImage: `url(${heroImage})` }}
-              />
+            <div className="absolute inset-0 overflow-hidden">
+              <Parallax travel={26} className="h-full w-full scale-110">
+                <div
+                  className="h-full w-full bg-cover bg-center opacity-20"
+                  style={{ backgroundImage: `url(${heroImage})` }}
+                />
+              </Parallax>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/95 to-navy-900/35" />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-navy-950/80 to-transparent" />
-          {/* Subtle grid pattern */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.05]"
-            style={{
-              backgroundImage:
-                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
-              backgroundSize: "56px 56px",
-            }}
-          />
-          {/* Cyan glow */}
-          <div className="pointer-events-none absolute -left-32 top-1/4 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.16),transparent_60%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(0,0,0,0.18),transparent_55%)]" />
 
-          <div
-            className={`container relative z-10 grid items-center gap-12 ${
-              heroPoints.length > 0 ? "lg:grid-cols-[1.1fr_0.9fr]" : ""
-            }`}
-          >
-            <div>
+          <div className="relative z-10 mx-auto flex w-full max-w-[1680px] min-h-0 flex-1 flex-col justify-center gap-8 overflow-y-auto px-5 pb-10 pt-24 sm:px-8 md:gap-14 md:px-12 md:pt-32 lg:px-16">
+            <div className="max-w-4xl">
               {heroBadge && (
-                <p
-                  data-hero
-                  className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.22em] text-accent"
-                >
-                  <span className="block h-0.5 w-10 bg-gradient-to-r from-accent to-brand-400" />
-                  {heroBadge}
-                </p>
+                <FadeIn immediate>
+                  <div className="inline-flex max-w-full flex-wrap items-center gap-3 rounded-full border border-white/15 bg-white/10 py-1.5 pl-1.5 pr-5 backdrop-blur">
+                    {heroAvatars.length > 0 && (
+                      <span className="flex -space-x-2">
+                        {heroAvatars.map((initial, i) => (
+                          <span
+                            key={i}
+                            className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white ring-2 ring-teal-700 ${
+                              avatarColors[i % avatarColors.length]
+                            }`}
+                          >
+                            {initial}
+                          </span>
+                        ))}
+                      </span>
+                    )}
+                    <span className="text-xs font-semibold tracking-tight text-white/90 md:text-sm">
+                      {heroBadge}
+                    </span>
+                  </div>
+                </FadeIn>
               )}
               {heroTitle && (
-                <h1
-                  data-hero
-                  className="mb-6 mt-5 text-4xl font-extrabold leading-[1.08] tracking-tight md:text-6xl"
-                >
-                  {heroTitle}
-                </h1>
-              )}
-              {heroSubtitle && (
-                <p
-                  data-hero
-                  className="mb-9 max-w-xl whitespace-pre-line leading-relaxed text-white/75 md:text-lg"
-                >
-                  {heroSubtitle}
-                </p>
+                <FadeIn immediate delay={0.08}>
+                  <h1 className="mb-8 mt-6 text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl md:text-6xl lg:text-7xl">
+                    {heroTitle}
+                  </h1>
+                </FadeIn>
               )}
               {(heroCta1 || heroCta2) && (
-                <div data-hero className="flex flex-wrap gap-4">
+                <FadeIn immediate delay={0.18} className="flex flex-wrap items-center gap-5">
                   {heroCta1 && (
-                    <Button
-                      asChild
-                      size="lg"
-                      className="rounded-full bg-accent px-8 font-bold text-navy-950 shadow-lg shadow-accent/25 hover:bg-accent/90 hover:shadow-xl hover:shadow-accent/30"
+                    <Link
+                      href={link(locale, s(settings, "hero_cta1_link"))}
+                      className="group inline-flex items-center rounded-full bg-white p-1.5 pl-6 text-secondary shadow-pop transition-transform duration-200 ease-premium hover:scale-[1.02]"
                     >
-                      <Link href={link(locale, s(settings, "hero_cta1_link"))}>
-                        {heroCta1} <ArrowRight className="h-4 w-4" />
-                      </Link>
-                    </Button>
+                      <span className="text-sm font-bold md:text-base">{heroCta1}</span>
+                      <span className="ml-5 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-teal-600 text-white transition-transform duration-200 group-hover:translate-x-0.5">
+                        <ArrowRight className="h-5 w-5" />
+                      </span>
+                    </Link>
                   )}
                   {heroCta2 && (
-                    <Button
-                      asChild
-                      size="lg"
-                      variant="outline"
-                      className="rounded-full border-white/30 bg-white/5 px-8 font-semibold text-white backdrop-blur hover:border-white/50 hover:bg-white/15 hover:text-white"
+                    <Link
+                      href={link(locale, s(settings, "hero_cta2_link"))}
+                      className="text-sm font-semibold text-white/85 underline-offset-4 hover:text-white hover:underline"
                     >
-                      <Link href={link(locale, s(settings, "hero_cta2_link"))}>
-                        {heroCta2}
-                      </Link>
-                    </Button>
+                      {heroCta2}
+                    </Link>
                   )}
-                </div>
+                </FadeIn>
               )}
             </div>
 
-            {/* Commitment card — hidden when no highlight points are set */}
-            {heroPoints.length > 0 && (
-              <div data-hero className="glass-dark rounded-3xl p-8 shadow-glow md:p-9">
-                <ul className="grid gap-5">
-                  {heroPoints.map((point, i) => {
-                    const Icon = pointIcons[i % pointIcons.length];
-                    return (
-                      <li key={i} className="flex items-center gap-4">
-                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-brand-500/30 to-accent/20 ring-1 ring-white/15">
-                          <Icon className="h-5 w-5 text-accent" />
+            {/* Bottom row: comprehensive-care blurb + floating stat/tag cards */}
+            <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+              {(heroBlurbTitle || heroSubtitle) && (
+                <FadeIn immediate delay={0.28} className="max-w-lg">
+                  {heroBlurbTitle && <h2 className="mb-2 text-lg font-bold">{heroBlurbTitle}</h2>}
+                  {heroSubtitle && (
+                    <p className="whitespace-pre-line text-sm leading-relaxed text-white/70">
+                      {heroSubtitle}
+                    </p>
+                  )}
+                </FadeIn>
+              )}
+
+              {(heroStat || heroChips.length > 0) && (
+                <FadeIn
+                  immediate
+                  delay={0.36}
+                  className="flex flex-wrap items-end justify-start gap-5 lg:justify-end"
+                >
+                  {heroChips.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-2.5 lg:w-[170px] lg:flex-col lg:items-stretch">
+                      {heroChips.map((chip, i) => (
+                        <span
+                          key={i}
+                          className={`rounded-full px-4 py-2 text-center text-xs font-semibold shadow-soft ${
+                            i % 2 === 0
+                              ? "bg-white text-secondary"
+                              : "border border-white/25 bg-white/10 text-white backdrop-blur"
+                          } ${i === 1 ? "lg:ml-6" : ""}`}
+                        >
+                          {chip}
                         </span>
-                        <span className="text-sm font-medium text-white md:text-base">{point}</span>
-                      </li>
-                    );
-                  })}
-                </ul>
-                {heroFootnote && (
-                  <p className="mt-7 border-t border-white/15 pt-5 text-center text-sm text-white/60">
-                    {heroFootnote}
-                  </p>
-                )}
-              </div>
-            )}
+                      ))}
+                    </div>
+                  )}
+                  {heroStat && (
+                    <div className="w-[220px] max-w-full rounded-3xl bg-white p-6 text-secondary shadow-pop">
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                        {loc(heroStat, "label", locale)}
+                      </p>
+                      <p className="mt-2 font-number text-4xl font-bold text-primary">
+                        <StatCounter value={heroStat.value} />
+                      </p>
+                      {heroFootnote && (
+                        <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{heroFootnote}</p>
+                      )}
+                    </div>
+                  )}
+                </FadeIn>
+              )}
+            </div>
           </div>
 
-          <Curve className="absolute inset-x-0 bottom-0 z-10 text-background" />
+          {/* Bottom ticker */}
+          {tickerItems.length > 0 && (
+            <div className="relative z-10 border-t border-white/10 bg-black/10 py-3">
+              <Marquee items={tickerItems} className="text-white/70" />
+            </div>
+          )}
         </section>
       )}
 
@@ -270,18 +326,14 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       {/* ------------------------------------------------------------------ */}
       {showAbout && (
         <section id="sec-about" className="container py-20 md:py-28">
-          <div
-            className={`grid items-center gap-12 ${
-              aboutImage ? "lg:grid-cols-[1.05fr_0.95fr]" : ""
-            }`}
-          >
-            <div data-animate>
+          <div className={`grid items-center gap-12 ${aboutImage ? "lg:grid-cols-[1.05fr_0.95fr]" : ""}`}>
+            <FadeIn>
               <div className="mb-6 space-y-3">
                 {s(settings, "home_about_eyebrow", locale) && (
                   <SectionTag>{s(settings, "home_about_eyebrow", locale)}</SectionTag>
                 )}
                 {aboutTitle && (
-                  <h2 className="text-3xl font-extrabold tracking-tight text-navy-900 md:text-4xl">
+                  <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                     {aboutTitle}
                   </h2>
                 )}
@@ -292,91 +344,80 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                 </p>
               )}
               {aboutLinkLabel && (
-                <Button asChild variant="link" className="mt-4 px-0 font-bold">
+                <Button asChild variant="link" className="mt-4 px-0 font-semibold">
                   <Link href={`/${locale}/about`}>
                     {aboutLinkLabel} <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
               )}
-            </div>
+            </FadeIn>
 
             {aboutImage && (
-              <div data-animate data-delay="0.15" className="relative">
-                <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-brand-100 via-transparent to-accent/10" />
-                <div className="relative overflow-hidden rounded-3xl shadow-card-hover">
+              <FadeIn delay={0.12} className="relative">
+                <div className="relative overflow-hidden rounded-3xl border border-border shadow-card">
                   <div className="aspect-[4/3] overflow-hidden">
-                    <div
-                      data-parallax="7"
-                      className="h-full w-full scale-110 bg-cover bg-center"
-                      style={{ backgroundImage: `url(${aboutImage})` }}
-                    />
+                    <Parallax travel={22} className="h-full w-full scale-110">
+                      <div
+                        className="h-full w-full bg-cover bg-center"
+                        style={{ backgroundImage: `url(${aboutImage})` }}
+                      />
+                    </Parallax>
                   </div>
                   {aboutCaption && (
                     <div className="glass-light absolute bottom-4 left-4 right-4 flex items-center gap-3 rounded-2xl px-5 py-4">
-                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-brand-600 to-accent text-white">
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary text-white">
                         <Sparkles className="h-5 w-5" />
                       </span>
-                      <p className="text-sm font-bold text-navy-900">{aboutCaption}</p>
+                      <p className="text-sm font-semibold text-foreground">{aboutCaption}</p>
                     </div>
                   )}
                 </div>
-              </div>
+              </FadeIn>
             )}
           </div>
         </section>
       )}
 
       {/* ------------------------------------------------------------------ */}
-      {/* Impact stats — navy band with curves                                */}
+      {/* Impact stats                                                        */}
       {/* ------------------------------------------------------------------ */}
       {showStats && (
-        <section id="sec-stats">
-          <Curve className="-mb-px text-navy-950" />
-          <div className="relative overflow-hidden bg-navy-950 py-16 text-white md:py-24">
-            {statsImage && (
-              <div className="absolute inset-0 overflow-hidden">
+        <section id="sec-stats" className="relative overflow-hidden bg-secondary py-20 text-white md:py-28">
+          {statsImage && (
+            <div className="absolute inset-0 overflow-hidden opacity-10">
+              <Parallax travel={26} className="h-full w-full scale-110">
                 <div
-                  data-parallax="10"
-                  className="absolute -inset-y-[14%] inset-x-0 scale-110 bg-cover bg-center opacity-15"
+                  className="h-full w-full bg-cover bg-center"
                   style={{ backgroundImage: `url(${statsImage})` }}
                 />
-              </div>
-            )}
-            <div className="absolute inset-0 bg-gradient-to-b from-navy-950/70 via-transparent to-navy-950/70" />
-            <div className="pointer-events-none absolute right-0 top-0 h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
+              </Parallax>
+            </div>
+          )}
 
-            <div className="container relative">
-              {(statsTitle || s(settings, "home_stats_eyebrow", locale)) && (
-                <div data-animate className="mx-auto mb-12 max-w-2xl space-y-3 text-center">
-                  {s(settings, "home_stats_eyebrow", locale) && (
-                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent">
-                      {s(settings, "home_stats_eyebrow", locale)}
-                    </p>
-                  )}
-                  {statsTitle && (
-                    <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl">
-                      {statsTitle}
-                    </h2>
-                  )}
-                  <span className="mx-auto block h-1 w-16 rounded-full bg-gradient-to-r from-accent to-brand-400" />
-                </div>
-              )}
-              <div data-stagger className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-5">
-                {stats.map((stat) => (
-                  <div
-                    key={stat.id}
-                    className="glass-dark group rounded-3xl p-7 text-center transition-all duration-300 hover:-translate-y-1 hover:bg-white/10"
-                  >
-                    <p className="font-number text-3xl font-extrabold text-gradient md:text-4xl">
+          <div className="container relative">
+            {(statsTitle || s(settings, "home_stats_eyebrow", locale)) && (
+              <FadeIn className="mx-auto mb-14 max-w-2xl space-y-3 text-center">
+                {s(settings, "home_stats_eyebrow", locale) && (
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">
+                    {s(settings, "home_stats_eyebrow", locale)}
+                  </p>
+                )}
+                {statsTitle && <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{statsTitle}</h2>}
+              </FadeIn>
+            )}
+            <Stagger className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-5">
+              {stats.map((stat) => (
+                <StaggerItem key={stat.id}>
+                  <div className="glass-dark rounded-2xl p-7 text-center transition-colors duration-300 hover:bg-white/[0.08]">
+                    <p className="font-number text-3xl font-bold md:text-4xl">
                       <StatCounter value={stat.value} />
                     </p>
-                    <p className="mt-2.5 text-sm text-white/70">{loc(stat, "label", locale)}</p>
+                    <p className="mt-2.5 text-sm text-white/60">{loc(stat, "label", locale)}</p>
                   </div>
-                ))}
-              </div>
-            </div>
+                </StaggerItem>
+              ))}
+            </Stagger>
           </div>
-          <Curve flip className="-mt-px text-navy-950" />
         </section>
       )}
 
@@ -384,58 +425,54 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       {/* Services                                                            */}
       {/* ------------------------------------------------------------------ */}
       {showServices && (
-        <section id="sec-services" className="container py-16 md:py-24">
+        <section id="sec-services" className="container py-20 md:py-28">
           {(servicesTitle || servicesText || s(settings, "home_services_eyebrow", locale)) && (
-            <div data-animate className="mx-auto mb-12 max-w-2xl space-y-3 text-center">
+            <FadeIn className="mx-auto mb-14 max-w-2xl space-y-3 text-center">
               {s(settings, "home_services_eyebrow", locale) && (
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
                   {s(settings, "home_services_eyebrow", locale)}
                 </p>
               )}
               {servicesTitle && (
-                <h2 className="text-3xl font-extrabold tracking-tight text-navy-900 md:text-4xl">
+                <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                   {servicesTitle}
                 </h2>
               )}
-              {servicesText && (
-                <p className="leading-relaxed text-muted-foreground">{servicesText}</p>
-              )}
-              <span className="mx-auto block h-1 w-16 rounded-full bg-gradient-to-r from-primary to-accent" />
-            </div>
+              {servicesText && <p className="leading-relaxed text-muted-foreground">{servicesText}</p>}
+            </FadeIn>
           )}
-          <div data-stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service) => (
-              <Link
-                key={service.id}
-                href={`/${locale}/services/${service.slug ?? service.id}`}
-                className="group relative block h-full overflow-hidden rounded-3xl border border-border bg-white p-7 shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:border-brand-200 hover:shadow-card-hover"
-              >
-                {/* Top accent that grows on hover */}
-                <span className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-primary to-accent transition-transform duration-300 group-hover:scale-x-100" />
-                {service.icon && (
-                  <span className="mb-5 grid h-[52px] w-[52px] place-items-center rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100 text-2xl ring-1 ring-brand-100 transition-transform duration-300 group-hover:scale-110">
-                    {service.icon}
+              <StaggerItem key={service.id} className="h-full">
+                <Link
+                  href={`/${locale}/services/${service.slug ?? service.id}`}
+                  className="group relative block h-full overflow-hidden rounded-2xl border border-border bg-white p-7 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-card-hover"
+                >
+                  {service.icon && (
+                    <span className="mb-5 grid h-[52px] w-[52px] place-items-center rounded-2xl bg-brand-50 text-2xl transition-transform duration-300 group-hover:scale-105">
+                      {service.icon}
+                    </span>
+                  )}
+                  <h3 className="mb-2 text-lg font-bold text-foreground transition-colors group-hover:text-primary">
+                    {loc(service, "title", locale)}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {loc(service, "description", locale)}
+                  </p>
+                  <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
+                    {dict.common.readMore}
+                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
                   </span>
-                )}
-                <h3 className="mb-2 text-lg font-bold text-navy-900 transition-colors group-hover:text-primary">
-                  {loc(service, "title", locale)}
-                </h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  {loc(service, "description", locale)}
-                </p>
-                <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-primary">
-                  {dict.common.readMore}
-                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-                </span>
-              </Link>
+                </Link>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
           {servicesLinkLabel && (
-            <div data-animate className="mt-12 text-center">
-              <Button asChild variant="outline" size="lg" className="rounded-full px-8 font-semibold">
+            <FadeIn className="mt-14 text-center">
+              <Button asChild variant="outline" size="lg" className="px-8">
                 <Link href={`/${locale}/services`}>{servicesLinkLabel}</Link>
               </Button>
-            </div>
+            </FadeIn>
           )}
         </section>
       )}
@@ -444,157 +481,131 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       {/* Featured projects                                                   */}
       {/* ------------------------------------------------------------------ */}
       {showProjects && (
-        <section id="sec-projects" className="relative overflow-hidden bg-muted/60 py-16 md:py-24">
-          <div className="pointer-events-none absolute -left-32 top-0 h-72 w-72 rounded-full bg-brand-100/60 blur-3xl" />
-          <div className="container relative">
+        <section id="sec-projects" className="bg-muted/60 py-20 md:py-28">
+          <div className="container">
             {(projectsTitle || projectsText || s(settings, "home_projects_eyebrow", locale)) && (
-              <div data-animate className="mb-12 max-w-3xl space-y-3">
+              <FadeIn className="mb-14 max-w-3xl space-y-3">
                 {s(settings, "home_projects_eyebrow", locale) && (
                   <SectionTag>{s(settings, "home_projects_eyebrow", locale)}</SectionTag>
                 )}
                 {projectsTitle && (
-                  <h2 className="text-3xl font-extrabold tracking-tight text-navy-900 md:text-4xl">
+                  <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                     {projectsTitle}
                   </h2>
                 )}
-                {projectsText && (
-                  <p className="leading-relaxed text-muted-foreground">{projectsText}</p>
-                )}
-              </div>
+                {projectsText && <p className="leading-relaxed text-muted-foreground">{projectsText}</p>}
+              </FadeIn>
             )}
-            <div data-stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {projects.map((project) => (
-                <Link
-                  key={project.id}
-                  href={`/${locale}/projects/${project.slug ?? project.id}`}
-                  className="group flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-card transition-all duration-300 hover:-translate-y-1.5 hover:shadow-card-hover"
-                >
-                  {project.image && (
-                    <div className="relative aspect-[5/4] overflow-hidden">
-                      <div
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
-                        style={{ backgroundImage: `url(${project.image})` }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/60 via-navy-950/10 to-transparent transition-opacity duration-300 group-hover:opacity-80" />
-                      <Badge className="glass-light absolute left-4 top-4 rounded-full border-0 font-semibold capitalize text-navy-900 shadow-sm hover:bg-white/80">
-                        {(dict.common as any)[project.status] ?? project.status}
-                      </Badge>
+                <StaggerItem key={project.id} className="h-full">
+                  <Link
+                    href={`/${locale}/projects/${project.slug ?? project.id}`}
+                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+                  >
+                    {project.image && (
+                      <div className="relative aspect-[5/4] overflow-hidden">
+                        <div
+                          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
+                          style={{ backgroundImage: `url(${project.image})` }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent" />
+                        <Badge className="glass-light absolute left-4 top-4 border-0 font-medium capitalize text-foreground">
+                          {(dict.common as any)[project.status] ?? project.status}
+                        </Badge>
+                      </div>
+                    )}
+                    <div className="flex flex-1 flex-col gap-2 p-6">
+                      <h3 className="font-bold leading-snug text-foreground transition-colors group-hover:text-primary">
+                        {loc(project, "title", locale)}
+                      </h3>
+                      <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                        {loc(project, "description", locale)}
+                      </p>
+                      <span className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-semibold text-primary">
+                        {dict.common.readMore}
+                        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
+                      </span>
                     </div>
-                  )}
-                  <div className="flex flex-1 flex-col gap-2 p-6">
-                    <h3 className="font-bold leading-snug text-navy-900 transition-colors group-hover:text-primary">
-                      {loc(project, "title", locale)}
-                    </h3>
-                    <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-                      {loc(project, "description", locale)}
-                    </p>
-                    <span className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-bold text-primary">
-                      {dict.common.readMore}
-                      <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-                    </span>
-                  </div>
-                </Link>
+                  </Link>
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
             {projectsLinkLabel && (
-              <div data-animate className="mt-12 text-center">
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="rounded-full bg-white px-8 font-semibold"
-                >
+              <FadeIn className="mt-14 text-center">
+                <Button asChild variant="outline" size="lg" className="bg-white px-8">
                   <Link href={`/${locale}/projects`}>{projectsLinkLabel}</Link>
                 </Button>
-              </div>
+              </FadeIn>
             )}
           </div>
         </section>
       )}
 
       {/* ------------------------------------------------------------------ */}
-      {/* Get in touch — navy band                                            */}
+      {/* Get in touch                                                        */}
       {/* ------------------------------------------------------------------ */}
       {showContact && (
-        <section id="sec-contact">
-          <Curve className={`-mb-px text-navy-950 ${showProjects ? "bg-muted/60" : ""}`} />
-          <div className="relative overflow-hidden bg-navy-950 py-16 text-white md:py-24">
-            {contactImage && (
-              <div className="absolute inset-0 overflow-hidden">
+        <section id="sec-contact" className="relative overflow-hidden bg-secondary py-20 text-white md:py-28">
+          {contactImage && (
+            <div className="absolute inset-0 overflow-hidden opacity-10">
+              <Parallax travel={26} className="h-full w-full scale-110">
                 <div
-                  data-parallax="10"
-                  className="absolute -inset-y-[14%] inset-x-0 scale-110 bg-cover bg-center opacity-15"
+                  className="h-full w-full bg-cover bg-center"
                   style={{ backgroundImage: `url(${contactImage})` }}
                 />
-              </div>
-            )}
-            <div className="absolute inset-0 bg-gradient-to-b from-navy-950/70 via-transparent to-navy-950/70" />
-
-            <div className="container relative grid items-center gap-12 lg:grid-cols-[0.85fr_1.15fr]">
-              <div data-animate>
-                <div className="relative mx-auto w-full max-w-sm overflow-hidden rounded-3xl bg-gradient-to-br from-destructive to-red-700 p-10 text-center shadow-glow ring-1 ring-white/15">
-                  <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
-                  <span className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-full bg-white/15 ring-2 ring-white/30">
-                    <PhoneCall className="h-6 w-6" />
-                  </span>
-                  {contactCardTitle && (
-                    <h3 className="text-2xl font-extrabold">{contactCardTitle}</h3>
-                  )}
-                  <span className="mx-auto my-4 block h-0.5 w-8 rounded-full bg-white/50" />
-                  {address && <p className="whitespace-pre-line text-sm text-white/90">{address}</p>}
-                  {phone && (
-                    <a
-                      href={`tel:${phone.replace(/\s/g, "")}`}
-                      className="mt-4 block font-number text-xl font-bold hover:underline"
-                    >
-                      {phone}
-                    </a>
-                  )}
-                  {email && (
-                    <a
-                      href={`mailto:${email}`}
-                      className="mt-2 inline-flex items-center gap-1.5 text-sm text-white/90 hover:underline"
-                    >
-                      <Mail className="h-3.5 w-3.5" /> {email}
-                    </a>
-                  )}
-                </div>
-              </div>
-              <div data-animate data-delay="0.15">
-                {s(settings, "home_contact_eyebrow", locale) && (
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-400">
-                    {s(settings, "home_contact_eyebrow", locale)}
-                  </p>
-                )}
-                {contactTitle && (
-                  <h2 className="mt-3 text-3xl font-extrabold tracking-tight md:text-4xl">
-                    {contactTitle}
-                  </h2>
-                )}
-                <span className="mt-4 flex gap-1.5">
-                  <span className="block h-1 w-8 rounded-full bg-destructive" />
-                  <span className="block h-1 w-4 rounded-full bg-destructive/60" />
-                </span>
-                {contactText && (
-                  <p className="mt-6 max-w-xl whitespace-pre-line leading-relaxed text-white/75">
-                    {contactText}
-                  </p>
-                )}
-                {contactButton && (
-                  <Button
-                    asChild
-                    size="lg"
-                    className="mt-8 rounded-full bg-destructive px-8 font-bold shadow-lg shadow-destructive/30 hover:bg-destructive/90"
-                  >
-                    <Link href={`/${locale}/contact`}>
-                      {contactButton} <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
-                )}
-              </div>
+              </Parallax>
             </div>
+          )}
+
+          <div className="container relative grid items-center gap-12 lg:grid-cols-[0.85fr_1.15fr]">
+            <FadeIn>
+              <div className="relative mx-auto w-full max-w-sm overflow-hidden rounded-3xl bg-destructive p-10 text-center shadow-pop">
+                <span className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-full bg-white/15 ring-2 ring-white/25">
+                  <PhoneCall className="h-6 w-6" />
+                </span>
+                {contactCardTitle && <h3 className="text-2xl font-bold">{contactCardTitle}</h3>}
+                <span className="mx-auto my-4 block h-0.5 w-8 rounded-full bg-white/40" />
+                {address && <p className="whitespace-pre-line text-sm text-white/90">{address}</p>}
+                {phone && (
+                  <a
+                    href={`tel:${phone.replace(/\s/g, "")}`}
+                    className="mt-4 block font-number text-xl font-bold hover:underline"
+                  >
+                    {phone}
+                  </a>
+                )}
+                {email && (
+                  <a
+                    href={`mailto:${email}`}
+                    className="mt-2 inline-flex items-center gap-1.5 text-sm text-white/90 hover:underline"
+                  >
+                    <Mail className="h-3.5 w-3.5" /> {email}
+                  </a>
+                )}
+              </div>
+            </FadeIn>
+            <FadeIn delay={0.12}>
+              {s(settings, "home_contact_eyebrow", locale) && (
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-400">
+                  {s(settings, "home_contact_eyebrow", locale)}
+                </p>
+              )}
+              {contactTitle && (
+                <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">{contactTitle}</h2>
+              )}
+              {contactText && (
+                <p className="mt-6 max-w-xl whitespace-pre-line leading-relaxed text-white/70">{contactText}</p>
+              )}
+              {contactButton && (
+                <Button asChild size="lg" className="mt-8 bg-destructive px-8 hover:bg-destructive/90">
+                  <Link href={`/${locale}/contact`}>
+                    {contactButton} <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              )}
+            </FadeIn>
           </div>
-          <Curve flip className="-mt-px text-navy-950" />
         </section>
       )}
 
@@ -602,21 +613,20 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       {/* Testimonials                                                        */}
       {/* ------------------------------------------------------------------ */}
       {showTestimonials && (
-        <section id="sec-testimonials" className="container py-16 md:py-24">
+        <section id="sec-testimonials" className="container py-20 md:py-28">
           <div className="grid items-center gap-10 lg:grid-cols-[0.7fr_1.3fr]">
-            <div data-animate className="space-y-3">
+            <FadeIn className="space-y-3">
               {s(settings, "home_testimonials_eyebrow", locale) && (
                 <SectionTag>{s(settings, "home_testimonials_eyebrow", locale)}</SectionTag>
               )}
               {testimonialsTitle && (
-                <h2 className="text-3xl font-extrabold tracking-tight text-navy-900 md:text-4xl">
+                <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
                   {testimonialsTitle}
                 </h2>
               )}
-            </div>
-            <div data-animate data-delay="0.15" className="relative">
-              <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-brand-50 via-transparent to-accent/10" />
-              <div className="relative rounded-3xl border border-border bg-white p-8 shadow-card md:p-10">
+            </FadeIn>
+            <FadeIn delay={0.12}>
+              <div className="rounded-3xl border border-border bg-white p-8 shadow-card md:p-10">
                 <TestimonialCarousel
                   items={testimonials.map((t) => ({
                     quote: loc(t, "quote", locale),
@@ -624,7 +634,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                   }))}
                 />
               </div>
-            </div>
+            </FadeIn>
           </div>
         </section>
       )}
@@ -634,95 +644,99 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       {/* ------------------------------------------------------------------ */}
       {showNewsEvents && (
         <section
-          className={`container grid gap-12 pb-16 md:pb-24 ${
+          className={`container grid gap-12 pb-20 md:pb-28 ${
             showNews && showEvents ? "lg:grid-cols-2" : ""
           }`}
         >
           {showNews && (
-            <div id="sec-news" data-animate>
-              <div className="mb-8 space-y-3">
+            <div id="sec-news">
+              <FadeIn className="mb-8 space-y-3">
                 {s(settings, "home_news_eyebrow", locale) && (
                   <SectionTag>{s(settings, "home_news_eyebrow", locale)}</SectionTag>
                 )}
                 {newsTitle && (
-                  <h2 className="text-2xl font-extrabold tracking-tight text-navy-900 md:text-3xl">
-                    {newsTitle}
-                  </h2>
+                  <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">{newsTitle}</h2>
                 )}
-              </div>
-              <div className="grid gap-5">
+              </FadeIn>
+              <Stagger className="grid gap-5">
                 {news.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={`/${locale}/news/${item.slug ?? item.id}`}
-                    className="group block rounded-3xl border border-border bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-brand-200 hover:shadow-card-hover"
-                  >
-                    <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.12em] text-primary">
-                      {formatDate(item.publishedAt, locale)}
-                    </p>
-                    <h3 className="line-clamp-2 font-bold text-navy-900 transition-colors group-hover:text-primary">
-                      {loc(item, "title", locale)}
-                    </h3>
-                    {item.image && (
-                      <div className="mt-4 h-36 w-full overflow-hidden rounded-2xl">
-                        <div
-                          className="h-full w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                          style={{ backgroundImage: `url(${item.image})` }}
-                        />
+                  <StaggerItem key={item.id}>
+                    <Link
+                      href={`/${locale}/news/${item.slug ?? item.id}`}
+                      className="group flex gap-4 rounded-2xl border border-border bg-white p-4 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-card-hover"
+                    >
+                      <div className="h-20 w-24 shrink-0 overflow-hidden rounded-xl bg-muted">
+                        {item.image ? (
+                          <div
+                            className="h-full w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                            style={{ backgroundImage: `url(${item.image})` }}
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center">
+                            <Sparkles className="h-5 w-5 text-muted-foreground/30" />
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </Link>
+                      <div className="min-w-0 py-0.5">
+                        <p className="mb-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-primary">
+                          {formatDate(item.publishedAt, locale)}
+                        </p>
+                        <h3 className="line-clamp-2 font-bold text-foreground transition-colors group-hover:text-primary">
+                          {loc(item, "title", locale)}
+                        </h3>
+                      </div>
+                    </Link>
+                  </StaggerItem>
                 ))}
-              </div>
+              </Stagger>
             </div>
           )}
           {showEvents && (
-            <div id="sec-events" data-animate data-delay="0.12">
-              <div className="mb-8 space-y-3">
+            <div id="sec-events">
+              <FadeIn delay={0.1} className="mb-8 space-y-3">
                 {s(settings, "home_events_eyebrow", locale) && (
                   <SectionTag>{s(settings, "home_events_eyebrow", locale)}</SectionTag>
                 )}
                 {eventsTitle && (
-                  <h2 className="text-2xl font-extrabold tracking-tight text-navy-900 md:text-3xl">
-                    {eventsTitle}
-                  </h2>
+                  <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">{eventsTitle}</h2>
                 )}
-              </div>
-              <div className="space-y-5">
+              </FadeIn>
+              <Stagger className="space-y-5">
                 {events.map((event) => (
-                  <Link
-                    key={event.id}
-                    href={`/${locale}/events/${event.slug ?? event.id}`}
-                    className="group flex gap-4 rounded-3xl border border-border bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-brand-200 hover:shadow-card-hover"
-                  >
-                    <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-brand-700 to-accent text-white shadow-md shadow-brand-600/20">
-                      <span className="font-number text-xl font-bold leading-none">
-                        {new Date(event.startDate).getDate()}
-                      </span>
-                      <span className="mt-0.5 text-[10px] uppercase">
-                        {new Date(event.startDate).toLocaleString("en", { month: "short" })}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="font-bold leading-snug text-navy-900 transition-colors group-hover:text-primary">
-                        {loc(event, "title", locale)}
-                      </h3>
-                      {event.location && (
-                        <p className="mt-1.5 flex items-center gap-1 text-xs text-muted-foreground">
-                          <MapPin className="h-3 w-3 text-primary" /> {event.location}
-                        </p>
-                      )}
-                    </div>
-                  </Link>
+                  <StaggerItem key={event.id}>
+                    <Link
+                      href={`/${locale}/events/${event.slug ?? event.id}`}
+                      className="group flex gap-4 rounded-2xl border border-border bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-card-hover"
+                    >
+                      <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-xl bg-primary text-white">
+                        <span className="font-number text-xl font-bold leading-none">
+                          {new Date(event.startDate).getDate()}
+                        </span>
+                        <span className="mt-0.5 text-[10px] uppercase">
+                          {new Date(event.startDate).toLocaleString("en", { month: "short" })}
+                        </span>
+                      </div>
+                      <div>
+                        <h3 className="font-bold leading-snug text-foreground transition-colors group-hover:text-primary">
+                          {loc(event, "title", locale)}
+                        </h3>
+                        {event.location && (
+                          <p className="mt-1.5 flex items-center gap-1 text-xs text-muted-foreground">
+                            <MapPin className="h-3 w-3 text-primary" /> {event.location}
+                          </p>
+                        )}
+                      </div>
+                    </Link>
+                  </StaggerItem>
                 ))}
                 {eventsLinkLabel && (
-                  <Button asChild variant="outline" className="w-full rounded-full font-semibold">
+                  <Button asChild variant="outline" className="w-full">
                     <Link href={`/${locale}/events`}>
                       <CalendarDays className="h-4 w-4" /> {eventsLinkLabel}
                     </Link>
                   </Button>
                 )}
-              </div>
+              </Stagger>
             </div>
           )}
         </section>
@@ -732,41 +746,39 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       {/* Partners                                                            */}
       {/* ------------------------------------------------------------------ */}
       {showPartners && (
-        <section id="sec-partners" className="container pb-16 md:pb-24">
+        <section id="sec-partners" className="container pb-20 md:pb-28">
           {(partnersTitle || s(settings, "home_partners_eyebrow", locale)) && (
-            <div data-animate className="mx-auto mb-10 max-w-2xl text-center">
+            <FadeIn className="mx-auto mb-10 max-w-2xl text-center">
               {s(settings, "home_partners_eyebrow", locale) && (
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
                   {s(settings, "home_partners_eyebrow", locale)}
                 </p>
               )}
               {partnersTitle && (
-                <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-navy-900 md:text-3xl">
+                <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
                   {partnersTitle}
                 </h2>
               )}
-              <span className="mx-auto mt-3 block h-1 w-12 rounded-full bg-gradient-to-r from-primary to-accent" />
-            </div>
+            </FadeIn>
           )}
-          <div data-stagger className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+          <Stagger className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
             {partners.map((partner) => (
-              <div
-                key={partner.id}
-                className="flex items-center justify-center rounded-2xl border border-border bg-white px-4 py-6 text-center shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-brand-200 hover:shadow-card-hover"
-              >
-                {partner.logo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={partner.logo}
-                    alt={partner.name}
-                    className="h-10 w-auto object-contain opacity-70 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0"
-                  />
-                ) : (
-                  <span className="text-sm font-semibold text-navy-800">{partner.name}</span>
-                )}
-              </div>
+              <StaggerItem key={partner.id}>
+                <div className="flex h-full items-center justify-center rounded-2xl border border-border bg-white px-4 py-6 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-soft">
+                  {partner.logo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={partner.logo}
+                      alt={partner.name}
+                      className="h-10 w-auto object-contain opacity-70 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0"
+                    />
+                  ) : (
+                    <span className="text-sm font-semibold text-foreground">{partner.name}</span>
+                  )}
+                </div>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </section>
       )}
 
@@ -775,38 +787,25 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       {/* ------------------------------------------------------------------ */}
       {showDonate && (
         <section id="sec-donate" className="container pb-20 md:pb-28">
-          <div
-            data-animate
-            className="relative grid items-center gap-8 overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy-900 via-brand-800 to-brand-600 p-10 text-white shadow-glow md:grid-cols-[1.2fr_auto] md:p-14"
+          <FadeIn
+            className="relative grid items-center gap-8 overflow-hidden rounded-3xl bg-secondary p-10 text-white shadow-pop md:grid-cols-[1.2fr_auto] md:p-14"
           >
-            <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-accent/20 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-destructive/15 blur-3xl" />
             <div className="relative">
               {s(settings, "home_donate_eyebrow", locale) && (
-                <p className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.18em] text-accent">
+                <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
                   <span className="block h-0.5 w-8 rounded-full bg-accent" />
                   {s(settings, "home_donate_eyebrow", locale)}
                 </p>
               )}
-              {donateTitle && (
-                <h2 className="mt-4 max-w-2xl text-2xl font-extrabold md:text-4xl">
-                  {donateTitle}
-                </h2>
-              )}
+              {donateTitle && <h2 className="mt-4 max-w-2xl text-2xl font-bold md:text-4xl">{donateTitle}</h2>}
               {donateText && (
-                <p className="mt-3 max-w-xl whitespace-pre-line leading-relaxed text-white/80">
-                  {donateText}
-                </p>
+                <p className="mt-3 max-w-xl whitespace-pre-line leading-relaxed text-white/70">{donateText}</p>
               )}
             </div>
             {(donateButton || donateButton2) && (
               <div className="relative flex flex-wrap gap-3">
                 {donateButton && (
-                  <Button
-                    asChild
-                    size="lg"
-                    className="rounded-full bg-white px-8 font-bold text-brand-700 shadow-xl shadow-navy-950/20 hover:bg-white/90"
-                  >
+                  <Button asChild size="lg" className="bg-white px-8 text-secondary hover:bg-white/90">
                     <Link href={`/${locale}/donate`}>
                       <Heart className="h-4 w-4 fill-destructive text-destructive" /> {donateButton}
                     </Link>
@@ -817,14 +816,14 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                     asChild
                     size="lg"
                     variant="outline"
-                    className="rounded-full border-white/50 bg-transparent px-8 font-semibold text-white hover:border-white hover:bg-white/15 hover:text-white"
+                    className="border-white/30 bg-transparent text-white hover:border-white/50 hover:bg-white/10 hover:text-white"
                   >
                     <Link href={`/${locale}/contact`}>{donateButton2}</Link>
                   </Button>
                 )}
               </div>
             )}
-          </div>
+          </FadeIn>
         </section>
       )}
     </>

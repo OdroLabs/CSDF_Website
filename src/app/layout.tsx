@@ -15,21 +15,10 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-/**
- * Adds the `anim` class before first paint so GSAP-animated elements start
- * hidden without a flash — but only when JS runs and the user has not asked
- * for reduced motion. Without JS (or with reduced motion) content stays fully
- * visible.
- */
-const animBootstrap = `try{var p=new URLSearchParams(location.search);if(!p.has("adminPreview")&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("anim")}catch(e){}`;
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
-        <script dangerouslySetInnerHTML={{ __html: animBootstrap }} />
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
