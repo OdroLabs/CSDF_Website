@@ -291,6 +291,25 @@
    Design-system helpers
 --------------------------------------------------------------------------- */
 
+/* Slim, unobtrusive scrollbar for dark panels (admin sidebar, etc.) */
+.scroll-dark {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+.scroll-dark::-webkit-scrollbar {
+  width: 6px;
+}
+.scroll-dark::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-dark::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+}
+.scroll-dark::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.32);
+}
+
 /* Subtle frosted panel on dark backgrounds — used sparingly for emphasis */
 .glass-dark {
   background: rgba(255, 255, 255, 0.05);

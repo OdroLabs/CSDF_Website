@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FolderKanban } from "lucide-react";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
@@ -55,23 +55,29 @@ export default async function ProjectsPage({ params }: { params: { locale: Local
                 href={`/${locale}/projects/${project.slug ?? project.id}`}
                 className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-card-hover"
               >
-                {project.image && (
-                  <div className="relative aspect-[5/4] w-full overflow-hidden">
-                    <Image
-                      src={project.image}
-                      alt=""
-                      fill
-                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent" />
-                    <Badge
-                      variant={project.status === "completed" ? "success" : "secondary"}
-                      className="absolute left-4 top-4 border-0 capitalize"
-                    >
-                      {(dict.common as any)[project.status] ?? project.status}
-                    </Badge>
-                  </div>
-                )}
+                <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
+                  {project.image ? (
+                    <>
+                      <Image
+                        src={project.image}
+                        alt=""
+                        fill
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent" />
+                    </>
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <FolderKanban className="h-9 w-9 text-muted-foreground/30" />
+                    </div>
+                  )}
+                  <Badge
+                    variant={project.status === "completed" ? "success" : "secondary"}
+                    className="absolute left-4 top-4 border-0 capitalize"
+                  >
+                    {(dict.common as any)[project.status] ?? project.status}
+                  </Badge>
+                </div>
                 <div className="flex flex-1 flex-col gap-2 p-6">
                   {project.startDate && (
                     <span className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">

@@ -79,15 +79,15 @@ export function SiteHeader({
 
   const pillClass = (active: boolean) =>
     cn(
-      "relative flex items-center gap-1 whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold transition-colors duration-200",
-      active ? "bg-muted text-primary" : "text-foreground/65 hover:bg-muted hover:text-foreground"
+      "group relative flex items-center gap-1 whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold transition-colors duration-200",
+      active ? "text-primary" : "text-foreground/65 hover:text-foreground"
     );
 
   const pillUnderline = (active: boolean) => (
     <span
       className={cn(
-        "absolute inset-x-3.5 -bottom-px h-0.5 rounded-full bg-primary transition-opacity duration-200",
-        active ? "opacity-100" : "opacity-0"
+        "pointer-events-none absolute inset-x-3.5 -bottom-px h-0.5 origin-center scale-x-0 rounded-full bg-primary transition-transform duration-300 ease-premium",
+        active ? "scale-x-100" : "group-hover:scale-x-100"
       )}
     />
   );

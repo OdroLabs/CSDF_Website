@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, Suspense } from "react";
+import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Lock } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRight, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -35,20 +35,23 @@ function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <p className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>
+        <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </p>
       )}
       <div className="space-y-1.5">
         <Label htmlFor="email">Email</Label>
-        <Input id="email" name="email" type="email" required autoFocus />
+        <Input id="email" name="email" type="email" required autoFocus placeholder="you@csdf.org" />
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="password">Password</Label>
-        <Input id="password" name="password" type="password" required />
+        <Input id="password" name="password" type="password" required placeholder="••••••••" />
       </div>
-      <Button type="submit" className="w-full" disabled={loading}>
+      <Button type="submit" className="w-full" size="lg" disabled={loading}>
         {loading ? "Signing in…" : "Sign In"}
+        {!loading && <ArrowRight className="h-4 w-4" />}
       </Button>
     </form>
   );
@@ -56,20 +59,37 @@ function LoginForm() {
 
 export default function AdminLoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted p-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white">
-            <Lock className="h-5 w-5" />
-          </div>
-          <CardTitle>CSDF Admin</CardTitle>
-        </CardHeader>
-        <CardContent>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-secondary p-4">
+      <div className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-accent/15 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-32 -right-24 h-96 w-96 rounded-full bg-primary/20 blur-3xl" />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage:
+            "linear-gradient(hsl(0 0% 100%) 1px, transparent 1px), linear-gradient(90deg, hsl(0 0% 100%) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+        }}
+      />
+
+      <div className="relative w-full max-w-sm">
+        <div className="mb-8 flex flex-col items-center text-center text-white">
+          <span className="mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/15">
+            <Image src="/brand/icon-mark.svg" alt="CSDF" width={30} height={30} />
+          </span>
+          <h1 className="text-xl font-bold tracking-tight">CSDF Admin</h1>
+          <p className="mt-1 text-sm text-white/50">Sign in to manage your site</p>
+        </div>
+
+        <div className="rounded-3xl border border-white/10 bg-white p-8 shadow-pop">
           <Suspense>
             <LoginForm />
           </Suspense>
-        </CardContent>
-      </Card>
+        </div>
+
+        <p className="mt-6 flex items-center justify-center gap-1.5 text-xs text-white/40">
+          <ShieldCheck className="h-3.5 w-3.5" /> Restricted access — authorized staff only
+        </p>
+      </div>
     </div>
   );
 }

@@ -44,8 +44,8 @@ export default async function EntityListPage({ params }: { params: { entity: str
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{entity.title}</h1>
-          <p className="text-sm text-muted-foreground">{entity.description}</p>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">{entity.title}</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">{entity.description}</p>
         </div>
         {!entity.readOnly && (
           <Button asChild>
@@ -55,24 +55,28 @@ export default async function EntityListPage({ params }: { params: { entity: str
           </Button>
         )}
       </div>
-      <Card>
-        <CardContent className="pt-4">
+      <Card className="overflow-hidden">
+        <CardContent className="p-2">
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow className="border-none hover:bg-transparent">
                 {entity.listFields.map((col) => (
-                  <TableHead key={col.name}>{col.label}</TableHead>
+                  <TableHead key={col.name} className="rounded-l-lg bg-muted/50 px-4 text-xs font-semibold uppercase tracking-wide first:rounded-l-lg last:rounded-r-lg">
+                    {col.label}
+                  </TableHead>
                 ))}
-                <TableHead className="w-24 text-right">Actions</TableHead>
+                <TableHead className="rounded-r-lg bg-muted/50 px-4 text-right text-xs font-semibold uppercase tracking-wide">
+                  Actions
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow key={row.id} className="border-border/60">
                   {entity.listFields.map((col) => (
-                    <TableCell key={col.name}>{renderCell(row, col)}</TableCell>
+                    <TableCell key={col.name} className="px-4">{renderCell(row, col)}</TableCell>
                   ))}
-                  <TableCell className="text-right">
+                  <TableCell className="px-4 text-right">
                     <div className="flex items-center justify-end gap-1">
                       {!entity.readOnly && (
                         <Button asChild variant="ghost" size="icon" aria-label="Edit">

@@ -11,6 +11,7 @@ import {
   PhoneCall,
   Mail,
   Sparkles,
+  FolderKanban,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
@@ -504,18 +505,24 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                     href={`/${locale}/projects/${project.slug ?? project.id}`}
                     className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
                   >
-                    {project.image && (
-                      <div className="relative aspect-[5/4] overflow-hidden">
-                        <div
-                          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
-                          style={{ backgroundImage: `url(${project.image})` }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent" />
-                        <Badge className="glass-light absolute left-4 top-4 border-0 font-medium capitalize text-foreground">
-                          {(dict.common as any)[project.status] ?? project.status}
-                        </Badge>
-                      </div>
-                    )}
+                    <div className="relative aspect-[16/9] overflow-hidden bg-muted">
+                      {project.image ? (
+                        <>
+                          <div
+                            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
+                            style={{ backgroundImage: `url(${project.image})` }}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent" />
+                        </>
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center">
+                          <FolderKanban className="h-8 w-8 text-muted-foreground/30" />
+                        </div>
+                      )}
+                      <Badge className="glass-light absolute left-4 top-4 border-0 font-medium capitalize text-foreground">
+                        {(dict.common as any)[project.status] ?? project.status}
+                      </Badge>
+                    </div>
                     <div className="flex flex-1 flex-col gap-2 p-6">
                       <h3 className="font-bold leading-snug text-foreground transition-colors group-hover:text-primary">
                         {loc(project, "title", locale)}

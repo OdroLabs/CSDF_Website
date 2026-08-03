@@ -122,7 +122,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       <div
         aria-live="polite"
         aria-atomic="false"
-        className="pointer-events-none fixed bottom-4 right-4 z-[100] flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2"
+        className="pointer-events-none fixed right-4 top-4 z-[100] flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2"
       >
         {toasts.map((t) => {
           const variant = t.variant ?? "info";
@@ -133,7 +133,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               role={variant === "error" ? "alert" : "status"}
               className={cn(
                 "pointer-events-auto flex items-start gap-3 rounded-xl border px-4 py-3 shadow-lg shadow-navy-950/10",
-                "animate-in fade-in slide-in-from-bottom-2 duration-200",
+                "animate-in fade-in slide-in-from-top-2 duration-200",
                 STYLES[variant].wrap
               )}
             >
