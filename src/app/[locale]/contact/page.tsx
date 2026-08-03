@@ -4,6 +4,7 @@ import type { Locale } from "@/lib/i18n";
 import { getLabels } from "@/lib/labels";
 import { buildSocials } from "@/lib/nav";
 import { getSettings, s, show } from "@/lib/settings";
+import { extractIframeSrc } from "@/lib/utils";
 import { PageHero } from "@/components/site/page-hero";
 import { ContactForm } from "@/components/site/contact-form";
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,12 +32,17 @@ export default async function ContactPage({ params }: { params: { locale: Locale
   const settings = await getSettings();
   const dict = getLabels(locale, settings);
 
-  const mapEmbed = s(settings, "map_embed");
+  const address = s(settings, "address", locale);
+  // A custom embed URL (from a Google Maps "Share > Embed a map" iframe) always
+  // wins; otherwise fall back to a map generated straight from the address so
+  // admins don't have to touch iframe HTML just to get a pin on the page.
+  const customMapEmbed = extractIframeSrc(s(settings, "map_embed"));
+  const mapEmbed = customMapEmbed || (address ? `https://maps.google.com/maps?q=${encodeURIComponent(address)}&output=embed` : "");
   const socials = buildSocials(settings);
 
   // Blank values drop out of the details panel entirely.
   const items = [
-    { icon: MapPin, label: dict.contact.address, value: s(settings, "address", locale) },
+    { icon: MapPin, label: dict.contact.address, value: address },
     { icon: Phone, label: dict.common.phone, value: s(settings, "phone") },
     { icon: Phone, label: dict.common.phone, value: s(settings, "phone2") },
     { icon: Mail, label: dict.common.email, value: s(settings, "email") },
@@ -137,7 +143,7 @@ export default async function ContactPage({ params }: { params: { locale: Locale
           <FadeIn className="overflow-hidden rounded-2xl border border-border shadow-card">
             <iframe
               src={mapEmbed}
-              className="h-80 w-full border-0"
+              className="h-[28rem] w-full border-0 md:h-[36rem]"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title="Map"

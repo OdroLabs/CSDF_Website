@@ -20,3 +20,17 @@ export function formatMoney(amount: number | string, currency = "LKR") {
   const n = typeof amount === "string" ? parseFloat(amount) : amount;
   return `${currency} ${n.toLocaleString("en-LK", { minimumFractionDigits: 2 })}`;
 }
+
+/**
+ * Admins often paste the whole `<iframe src="..." ...></iframe>` snippet
+ * Google Maps gives them, rather than just the src URL the field actually
+ * wants. Accept either: if it looks like markup, pull the src attribute out;
+ * otherwise use the value as-is (trimmed).
+ */
+export function extractIframeSrc(value: string | null | undefined): string {
+  if (!value) return "";
+  const trimmed = value.trim();
+  if (!trimmed.includes("<iframe")) return trimmed;
+  const match = trimmed.match(/src=["']([^"']+)["']/i);
+  return match ? match[1] : "";
+}

@@ -256,7 +256,11 @@ export const settingPages: SettingPage[] = [
           P("email2", "Second email", "Optional."),
           P("whatsapp", "WhatsApp number", "International format without +, e.g. 94112534838."),
           T("office_hours", "Office hours"),
-          PA("map_embed", "Google Maps embed URL", "The src URL from a Google Maps iframe."),
+          PA(
+            "map_embed",
+            "Google Maps embed URL (optional)",
+            "Leave blank and a map is generated automatically from the address above. To pin an exact location instead, go to Google Maps → Share → Embed a map, and paste the whole <iframe> snippet or just its src link here — either works."
+          ),
         ],
       },
       {
@@ -328,8 +332,18 @@ export const settingPages: SettingPage[] = [
         preview: { path: "", anchor: "sec-header" },
         items: [
           SW("show_header_donate", "Show the donate button in the header"),
-          SW("show_floating_donate", "Show the floating donate button on every page"),
           T("header_donate_label", "Donate button text", "Leave blank to use the standard label."),
+        ],
+      },
+      {
+        section: "Floating WhatsApp button",
+        preview: { path: "", anchor: "sec-header" },
+        items: [
+          SW(
+            "show_floating_whatsapp",
+            "Show a floating WhatsApp chat button on every page",
+            "Only appears when a WhatsApp number is set under Contact details."
+          ),
         ],
       },
     ],

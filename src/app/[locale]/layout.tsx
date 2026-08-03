@@ -7,7 +7,7 @@ import { getSettings, s, sBool } from "@/lib/settings";
 import { SiteHeader } from "@/components/site/header";
 import { SiteFooter } from "@/components/site/footer";
 import { ScrollProgress } from "@/components/site/scroll-progress";
-import { FloatingDonate } from "@/components/site/floating-donate";
+import { FloatingWhatsapp } from "@/components/site/floating-whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -84,8 +84,11 @@ export default async function LocaleLayout({
       <main className="flex-1">{children}</main>
       <SiteFooter locale={locale} dict={dict} settings={settings} />
       {/* Fixed CTA — kept outside <main> and any transformed/animated parent */}
-      {sBool(settings, "show_floating_donate", true) && (
-        <FloatingDonate locale={locale} label={dict.donate.donateNow} />
+      {sBool(settings, "show_floating_whatsapp", true) && s(settings, "whatsapp") && (
+        <FloatingWhatsapp
+          phone={s(settings, "whatsapp").replace(/\D/g, "")}
+          label="Chat on WhatsApp"
+        />
       )}
     </div>
   );
