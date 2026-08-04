@@ -187,21 +187,23 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       {showHero && (
         <section
           id="sec-hero"
-          className="relative flex min-h-[100svh] flex-col overflow-hidden bg-gradient-to-br from-teal-600 via-teal-700 to-teal-900 text-white md:h-[100svh] md:min-h-[720px]"
+          className="relative flex min-h-[100svh] flex-col overflow-hidden bg-secondary text-white md:h-[100svh] md:min-h-[720px]"
         >
-          {/* Photo, subtly blended into the gradient */}
+          {/* Photo, layered with the brand duotone instead of a flat color wash */}
           {heroImage && (
             <div className="absolute inset-0 overflow-hidden">
               <Parallax travel={26} className="h-full w-full scale-110">
                 <div
-                  className="h-full w-full bg-cover bg-center opacity-20"
+                  className="h-full w-full bg-cover bg-center opacity-40"
                   style={{ backgroundImage: `url(${heroImage})` }}
                 />
               </Parallax>
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-secondary via-secondary/85 to-primary/50 mix-blend-multiply" />
+              <div className="pointer-events-none absolute inset-0 bg-secondary/25" />
             </div>
           )}
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.16),transparent_60%)]" />
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(0,0,0,0.18),transparent_55%)]" />
+          <div className="pointer-events-none absolute -right-32 -top-32 h-[32rem] w-[32rem] rounded-full bg-accent/25 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-40 -left-32 h-[26rem] w-[26rem] rounded-full bg-primary/25 blur-3xl" />
 
           <div className="relative z-10 mx-auto flex w-full max-w-[1680px] min-h-0 flex-1 flex-col justify-center gap-8 overflow-y-auto px-5 pb-10 pt-24 sm:px-8 md:gap-14 md:px-12 md:pt-32 lg:px-16">
             <div className="max-w-4xl">
@@ -213,7 +215,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                         {heroAvatars.map((initial, i) => (
                           <span
                             key={i}
-                            className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white ring-2 ring-teal-700 ${
+                            className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white ring-2 ring-secondary ${
                               avatarColors[i % avatarColors.length]
                             }`}
                           >
@@ -244,7 +246,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                       className="group inline-flex items-center rounded-full bg-white p-1.5 pl-6 text-secondary shadow-pop transition-transform duration-200 ease-premium hover:scale-[1.02]"
                     >
                       <span className="text-sm font-bold md:text-base">{heroCta1}</span>
-                      <span className="ml-5 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-teal-600 text-white transition-transform duration-200 group-hover:translate-x-0.5">
+                      <span className="ml-5 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent text-white transition-transform duration-200 group-hover:translate-x-0.5">
                         <ArrowRight className="h-5 w-5" />
                       </span>
                     </Link>
@@ -265,7 +267,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
             <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
               {(heroBlurbTitle || heroSubtitle) && (
                 <FadeIn immediate delay={0.28} className="max-w-lg">
-                  {heroBlurbTitle && <h2 className="mb-2 text-lg font-bold">{heroBlurbTitle}</h2>}
+                  {heroBlurbTitle && <h2 className="mb-2 text-lg font-bold text-white">{heroBlurbTitle}</h2>}
                   {heroSubtitle && (
                     <p className="whitespace-pre-line text-sm leading-relaxed text-white/70">
                       {heroSubtitle}
