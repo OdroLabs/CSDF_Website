@@ -205,8 +205,8 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
           <div className="pointer-events-none absolute -right-32 -top-32 h-[32rem] w-[32rem] rounded-full bg-accent/25 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-40 -left-32 h-[26rem] w-[26rem] rounded-full bg-primary/25 blur-3xl" />
 
-          <div className="relative z-10 mx-auto flex w-full max-w-[1680px] min-h-0 flex-1 flex-col justify-center gap-8 overflow-y-auto px-5 pb-10 pt-24 sm:px-8 md:gap-14 md:px-12 md:pt-32 lg:px-16">
-            <div className="max-w-4xl">
+          <div className="no-scrollbar relative z-10 mx-auto flex w-full max-w-[1680px] min-h-0 flex-1 flex-col justify-center gap-8 overflow-y-auto px-5 pb-10 pt-24 sm:px-8 md:gap-14 md:px-12 md:pt-32 lg:px-16">
+            <div className="max-w-5xl">
               {heroBadge && (
                 <FadeIn immediate>
                   <div className="inline-flex max-w-full flex-wrap items-center gap-3 rounded-full border border-white/15 bg-white/10 py-1.5 pl-1.5 pr-5 backdrop-blur">
@@ -235,7 +235,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                   as="h1"
                   text={heroTitle}
                   delay={0.08}
-                  className="mb-8 mt-6 block text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl md:text-6xl lg:text-7xl"
+                  className="hero-title mb-8 mt-6 block text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl md:text-6xl lg:text-7xl"
                 />
               )}
               {(heroCta1 || heroCta2) && (
@@ -283,11 +283,11 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                   className="flex flex-wrap items-end justify-start gap-5 lg:justify-end"
                 >
                   {heroChips.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-2.5 lg:w-[170px] lg:flex-col lg:items-stretch">
+                    <div className="flex flex-wrap items-center gap-2.5 lg:w-[200px] lg:flex-col lg:items-stretch">
                       {heroChips.map((chip, i) => (
                         <span
                           key={i}
-                          className={`rounded-full px-4 py-2 text-center text-xs font-semibold shadow-soft ${
+                          className={`break-words rounded-2xl px-4 py-2 text-center text-xs font-semibold leading-snug shadow-soft [overflow-wrap:anywhere] ${
                             i % 2 === 0
                               ? "bg-white text-secondary"
                               : "border border-white/25 bg-white/10 text-white backdrop-blur"
@@ -300,7 +300,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                   )}
                   {heroStat && (
                     <div className="w-[220px] max-w-full rounded-3xl bg-white p-6 text-secondary shadow-pop">
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                      <p className="break-words text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                         {loc(heroStat, "label", locale)}
                       </p>
                       <p className="mt-2 font-number text-4xl font-bold text-primary">

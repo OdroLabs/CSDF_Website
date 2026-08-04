@@ -99,8 +99,8 @@ export function AdminSidebar({ role, email }: { role: string; email?: string }) 
   return (
     <aside className="sticky top-0 flex h-screen w-64 shrink-0 flex-col bg-secondary text-white">
       <div className="flex shrink-0 items-center gap-2.5 px-5 py-5">
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/10 ring-1 ring-white/10">
-          <Image src="/brand/icon-mark.svg" alt="" width={20} height={20} />
+        <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg ring-1 ring-white/10">
+          <Image src="/brand/logo-mark.png" alt="" width={36} height={36} className="h-full w-full object-cover" />
         </span>
         <div className="min-w-0">
           <p className="truncate text-sm font-bold leading-tight">CSDF Admin</p>

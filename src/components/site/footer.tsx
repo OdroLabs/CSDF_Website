@@ -61,11 +61,11 @@ export function SiteFooter({
           <div className="mb-4 flex items-center gap-2.5">
             {logoImage ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={logoImage} alt={shortName} className="h-9 w-auto max-w-[160px] object-contain" />
+              <img src={logoImage} alt={shortName} className="h-16 w-auto max-w-[160px] object-contain" />
             ) : (
               <>
                 {logoLetter && (
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-base font-bold">
+                  <span className="flex h-16 w-16 items-center justify-center rounded-xl bg-primary text-base font-bold">
                     {logoLetter}
                   </span>
                 )}

@@ -18,7 +18,7 @@ export function PageHero({
   return (
     <section
       id="sec-page-header"
-      className="relative overflow-hidden bg-gradient-to-br from-teal-700 via-secondary to-secondary text-white [clip-path:polygon(0_0,100%_0,100%_100%,0_calc(100%-32px))]"
+      className="relative overflow-hidden bg-gradient-to-br from-primary via-secondary to-secondary text-white [clip-path:polygon(0_0,100%_0,100%_100%,0_calc(100%-32px))]"
     >
       {/* Optional photo, blended into the gradient */}
       {image && (
@@ -29,13 +29,13 @@ export function PageHero({
               style={{ backgroundImage: `url(${image})` }}
             />
           </Parallax>
-          <div className="absolute inset-0 bg-gradient-to-br from-teal-700/80 via-secondary/85 to-secondary" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-secondary/85 to-secondary" />
         </div>
       )}
 
       {/* Decorative soft glows */}
       <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-accent/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-teal-500/15 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-primary/20 blur-3xl" />
 
       <div className="container relative pb-24 pt-20 md:pb-32 md:pt-28">
         {eyebrow && (
@@ -51,7 +51,7 @@ export function PageHero({
             as="h1"
             text={title}
             delay={0.08}
-            className="mt-5 block max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight md:text-6xl"
+            className="hero-title mt-5 block max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight md:text-6xl"
           />
         )}
         {intro && (

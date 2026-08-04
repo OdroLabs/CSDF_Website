@@ -6,11 +6,64 @@
 
 /*
   Design system, v2 — minimal / premium (Stripe · Vercel · Linear · Notion inspired).
-  One typeface (Inter), a restrained neutral palette, a single confident brand
-  accent, soft low-contrast shadows, and generous whitespace. Legacy helper
-  classes (.font-heading, .glass-dark, .text-gradient, etc.) are kept so every
-  component that already references them updates automatically.
+  Body copy stays on Inter for readability across all three languages. Headings
+  switch to CSDF's brand display faces for English (Yaldevi) and Tamil
+  (Vanavil-Avvaiyar) — the real font files supplied by the org (see @font-face
+  block below). Sinhala headings were reverted back to the default Inter
+  heading style per request; the FM Samantha @font-face is still declared
+  below if it's wanted again later. Legacy
+  helper classes (.font-heading, .glass-dark, .text-gradient, etc.) are kept so
+  every component that already references them updates automatically.
 */
+
+@font-face {
+  font-family: "Yaldevi Colombo";
+  src: url("/fonts/YaldeviColombo-ExtraLight.ttf") format("truetype");
+  font-weight: 200;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Yaldevi Colombo";
+  src: url("/fonts/YaldeviColombo-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Yaldevi Colombo";
+  src: url("/fonts/YaldeviColombo-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Yaldevi Colombo";
+  src: url("/fonts/YaldeviColombo-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Yaldevi Colombo";
+  src: url("/fonts/YaldeviColombo-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Yaldevi Colombo";
+  src: url("/fonts/YaldeviColombo-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "FM Samantha";
+  src: url("/fonts/FMSamantha.ttf") format("truetype");
+  font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Vanavil Avvaiyar";
+  src: url("/fonts/VanavilAvvaiyar.otf") format("opentype");
+  font-weight: 400 700;
+  font-display: swap;
+}
 
 @layer base {
   :root {
@@ -18,19 +71,21 @@
     --foreground: 222 39% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 39% 11%;
-    --primary: 201 100% 36%;
+    /* Official CSDF brand palette: Anchor Plum blue #0073BA, Vivid Neon Pink
+       #D400FF, Black, White (see CSDF Brand Guideline). */
+    --primary: 203 100% 36%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 222 39% 11%;
+    --secondary: 0 0% 6%;
     --secondary-foreground: 0 0% 100%;
     --muted: 210 25% 97.5%;
     --muted-foreground: 215 16% 44%;
-    --accent: 190 85% 40%;
+    --accent: 290 100% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
     --border: 216 20% 91%;
     --input: 216 20% 88%;
-    --ring: 201 100% 36%;
+    --ring: 203 100% 36%;
     --radius: 1rem;
   }
 }
@@ -69,6 +124,54 @@
 .font-heading {
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -0.02em;
+}
+
+/* Public-site headings follow the CSDF Brand Guideline's display face per
+   language. Body copy is left on Inter/system fonts for readability. Scoped
+   to [data-locale] (set on the locale layout wrapper) so the admin panel,
+   which has no data-locale, keeps the neutral Inter heading style. */
+[data-locale="en"] h1,
+[data-locale="en"] h2,
+[data-locale="en"] h3,
+[data-locale="en"] h4,
+[data-locale="en"] .font-heading {
+  font-family: "Yaldevi Colombo", "Inter", ui-sans-serif, sans-serif;
+  letter-spacing: -0.01em;
+}
+[data-locale="ta"] h1,
+[data-locale="ta"] h2,
+[data-locale="ta"] h3,
+[data-locale="ta"] h4,
+[data-locale="ta"] .font-heading {
+  font-family: "Vanavil Avvaiyar", "Noto Sans Tamil", sans-serif;
+  letter-spacing: normal;
+}
+
+/* Sinhala and Tamil headlines run noticeably longer than their English
+   source text, which pushed the hero/page-header title past 3 lines. Scale
+   the display size down a step per breakpoint for those locales only, so it
+   keeps wrapping to about the same number of lines as English. */
+[data-locale="si"] .hero-title,
+[data-locale="ta"] .hero-title {
+  font-size: 1.625rem;
+}
+@media (min-width: 640px) {
+  [data-locale="si"] .hero-title,
+  [data-locale="ta"] .hero-title {
+    font-size: 2rem;
+  }
+}
+@media (min-width: 768px) {
+  [data-locale="si"] .hero-title,
+  [data-locale="ta"] .hero-title {
+    font-size: 2.75rem;
+  }
+}
+@media (min-width: 1024px) {
+  [data-locale="si"] .hero-title,
+  [data-locale="ta"] .hero-title {
+    font-size: 3.25rem;
+  }
 }
 
 .font-number {
@@ -308,6 +411,19 @@
 }
 .scroll-dark::-webkit-scrollbar-thumb:hover {
   background-color: rgba(255, 255, 255, 0.32);
+}
+
+/* Keeps overflow scrollable (a safety net for tall translated text on short
+   viewports, e.g. the homepage hero in Tamil) without ever painting a visible
+   scrollbar/track over the content. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 /* Subtle frosted panel on dark backgrounds — used sparingly for emphasis */

@@ -73,8 +73,8 @@ export default function AdminLoginPage() {
 
       <div className="relative w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center text-center text-white">
-          <span className="mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/15">
-            <Image src="/brand/icon-mark.svg" alt="CSDF" width={30} height={30} />
+          <span className="mb-4 grid h-16 w-16 place-items-center overflow-hidden rounded-2xl ring-1 ring-white/15">
+            <Image src="/brand/logo-mark.png" alt="CSDF" width={64} height={64} className="h-full w-full object-cover" />
           </span>
           <h1 className="text-xl font-bold tracking-tight">CSDF Admin</h1>
           <p className="mt-1 text-sm text-white/50">Sign in to manage your site</p>

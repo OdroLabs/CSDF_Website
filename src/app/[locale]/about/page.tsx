@@ -151,7 +151,7 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
       {showVisionMission && (
         <section className="relative overflow-hidden bg-secondary py-16 text-white md:py-24">
           <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-teal-500/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
           <div className="container relative grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
             <FadeIn>
               <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-accent">

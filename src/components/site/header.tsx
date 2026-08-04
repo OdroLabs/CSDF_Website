@@ -183,11 +183,11 @@ export function SiteHeader({
               <img
                 src={logoImage}
                 alt={siteName || shortName}
-                className="h-9 w-auto max-w-[160px] object-contain transition-transform duration-300 group-hover:scale-105"
+                className="h-16 w-auto max-w-[160px] object-contain transition-transform duration-300 group-hover:scale-105"
               />
             ) : (
               logoLetter && (
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-base font-bold text-white transition-transform duration-300 group-hover:scale-105">
+                <span className="flex h-16 w-16 items-center justify-center rounded-xl bg-primary text-base font-bold text-white transition-transform duration-300 group-hover:scale-105">
                   {logoLetter}
                 </span>
               )

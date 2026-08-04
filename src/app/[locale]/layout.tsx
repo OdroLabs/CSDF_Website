@@ -32,12 +32,12 @@ export async function generateMetadata({
     title: title || undefined,
     description: description || undefined,
     keywords: keywords ? keywords.split(",").map((k) => k.trim()).filter(Boolean) : undefined,
-    icons: favicon ? { icon: favicon } : undefined,
+    icons: { icon: favicon || "/brand/icon-512.png", apple: "/brand/icon-180.png" },
     openGraph: {
       title: title || undefined,
       description: description || undefined,
       siteName: siteName || undefined,
-      images: ogImage ? [ogImage] : undefined,
+      images: [ogImage || "/brand/icon-512.png"],
     },
   };
 }
@@ -62,7 +62,7 @@ export default async function LocaleLayout({
   const donateLabel = s(settings, "header_donate_label", locale);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col" data-locale={locale}>
       <ScrollProgress />
       <SiteHeader
         locale={locale}
