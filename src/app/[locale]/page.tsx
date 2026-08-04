@@ -117,8 +117,8 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
   const heroCta1 = s(settings, "hero_cta1_label", locale);
   const heroCta2 = s(settings, "hero_cta2_label", locale);
 
-  const aboutTitle = s(settings, "home_about_title", locale);
-  const aboutText = s(settings, "home_about_text", locale);
+  const aboutTitle = s(settings, "home_about_title", locale) || siteName;
+  const aboutText = s(settings, "home_about_text", locale) || s(settings, "about_overview", locale);
   const aboutImage = s(settings, "home_about_image");
   const aboutCaption = s(settings, "home_about_caption", locale);
   const aboutLinkLabel = s(settings, "home_about_link_label", locale);
@@ -175,9 +175,8 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
   const heroBlurbTitle = heroPoints[0];
   const heroChips = heroPoints.slice(1, 4);
   const heroStat = stats[0];
-  const tickerItems = [aboutTitle, servicesTitle, projectsTitle, testimonialsTitle, donateTitle].filter(
-    Boolean
-  ) as string[];
+  const tickerItems = sList(settings, "home_marquee_items", locale);
+  const showTicker = show(settings, "show_home_marquee", tickerItems);
 
   return (
     <>
@@ -317,8 +316,8 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
           </div>
 
           {/* Bottom ticker */}
-          {tickerItems.length > 0 && (
-            <div className="relative z-10 border-t border-white/10 bg-black/10 py-3">
+          {showTicker && (
+            <div id="sec-hero-marquee" className="relative z-10 border-t border-white/10 bg-black/10 py-3">
               <Marquee items={tickerItems} className="text-white/70" />
             </div>
           )}

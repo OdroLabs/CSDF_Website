@@ -31,6 +31,8 @@ function PlainInput({ item, name, value }: { item: SettingDef; name: string; val
   if (item.type === "textarea") return <Textarea name={name} rows={4} defaultValue={value} />;
   if (item.type === "number")
     return <Input name={name} type="number" step="1" min="0" defaultValue={value} />;
+  if (item.type === "password")
+    return <Input name={name} type="password" autoComplete="new-password" defaultValue={value} />;
   return <Input name={name} defaultValue={value} />;
 }
 

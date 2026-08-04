@@ -79,6 +79,7 @@ const en = {
     subscribe: "Subscribe",
     emailPlaceholder: "Email address",
     subscribed: "Thank you for subscribing!",
+    subscribeError: "Something went wrong — please try again.",
   },
   donate: {
     amount: "Amount (LKR)",
@@ -181,6 +182,7 @@ const si: typeof en = {
     subscribe: "දායක වන්න",
     emailPlaceholder: "විද්‍යුත් තැපැල් ලිපිනය",
     subscribed: "දායක වීම සඳහා ස්තූතියි!",
+    subscribeError: "යමක් වැරදුණි — කරුණාකර නැවත උත්සාහ කරන්න.",
   },
   donate: {
     amount: "මුදල (රු.)",
@@ -283,6 +285,7 @@ const ta: typeof en = {
     subscribe: "பதிவு செய்ய",
     emailPlaceholder: "மின்னஞ்சல் முகவரி",
     subscribed: "பதிவு செய்ததற்கு நன்றி!",
+    subscribeError: "ஏதோ தவறு நடந்தது — மீண்டும் முயற்சிக்கவும்.",
   },
   donate: {
     amount: "தொகை (ரூ.)",

@@ -45,10 +45,10 @@ export function SiteFooter({
   const showInvolved = show(settings, "show_footer_involved", nav.involved);
   const showSocial = show(settings, "show_footer_social", socials);
   const showNewsletter = show(settings, "show_footer_newsletter", newsletterTitle);
+  const showContact = Boolean(address || phones.length > 0 || emails.length > 0);
 
   // Columns actually rendered — used to keep the grid balanced.
-  const columnCount =
-    1 + Number(showExplore) + Number(showInvolved) + Number(showNewsletter);
+  const columnCount = 1 + Number(showExplore) + Number(showInvolved) + Number(showContact);
 
   return (
     <footer id="sec-footer" className="relative bg-secondary text-white/85">
@@ -82,59 +82,35 @@ export function SiteFooter({
             </p>
           )}
 
-          {(address || phones.length > 0 || emails.length > 0) && (
-            <ul className="space-y-3 text-sm text-white/75">
-              {address && (
-                <li className="flex items-start gap-2.5">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-                  <span className="whitespace-pre-line">{address}</span>
-                </li>
+          {showNewsletter && (
+            <div className="mb-5">
+              {newsletterTitle && (
+                <p className="mb-2.5 text-sm font-bold text-white">{newsletterTitle}</p>
               )}
-              {phones.map((phone) => (
-                <li key={phone}>
-                  <a
-                    href={`tel:${phone.replace(/\s/g, "")}`}
-                    className="flex items-center gap-2.5 transition-colors hover:text-white"
-                  >
-                    <Phone className="h-4 w-4 shrink-0 text-accent" /> {phone}
-                  </a>
-                </li>
-              ))}
-              {emails.map((email) => (
-                <li key={email}>
-                  <a
-                    href={`mailto:${email}`}
-                    className="flex items-center gap-2.5 transition-colors hover:text-white"
-                  >
-                    <Mail className="h-4 w-4 shrink-0 text-accent" /> {email}
-                  </a>
-                </li>
-              ))}
-            </ul>
+              {newsletterText && (
+                <p className="mb-2.5 text-sm leading-relaxed text-white/60">{newsletterText}</p>
+              )}
+              <NewsletterForm dict={dict} />
+            </div>
           )}
 
           {showSocial && (
-            <div className="mt-5">
-              <p className="mb-2.5 text-xs font-bold uppercase tracking-[0.14em] text-white/50">
-                {dict.contact.followUs}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {socials.map((social) => {
-                  const Icon = SOCIAL_ICONS[social.key] ?? Heart;
-                  return (
-                    <a
-                      key={social.key}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={social.label}
-                      className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white/80 transition-colors hover:bg-accent hover:text-secondary"
-                    >
-                      <Icon className="h-4 w-4" />
-                    </a>
-                  );
-                })}
-              </div>
+            <div className="flex flex-wrap gap-2">
+              {socials.map((social) => {
+                const Icon = SOCIAL_ICONS[social.key] ?? Heart;
+                return (
+                  <a
+                    key={social.key}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white/80 transition-colors hover:bg-accent hover:text-secondary"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </a>
+                );
+              })}
             </div>
           )}
         </div>
@@ -181,15 +157,39 @@ export function SiteFooter({
           </div>
         )}
 
-        {showNewsletter && (
+        {showContact && (
           <div>
             <h4 className="mb-4 text-sm font-bold uppercase tracking-[0.14em] text-white">
-              {newsletterTitle}
+              {dict.nav.contact}
             </h4>
-            {newsletterText && (
-              <p className="mb-3 text-sm leading-relaxed text-white/60">{newsletterText}</p>
-            )}
-            <NewsletterForm dict={dict} />
+            <ul className="space-y-3 text-sm text-white/75">
+              {address && (
+                <li className="flex items-start gap-2.5">
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                  <span className="whitespace-pre-line">{address}</span>
+                </li>
+              )}
+              {phones.map((phone) => (
+                <li key={phone}>
+                  <a
+                    href={`tel:${phone.replace(/\s/g, "")}`}
+                    className="flex items-center gap-2.5 transition-colors hover:text-white"
+                  >
+                    <Phone className="h-4 w-4 shrink-0 text-accent" /> {phone}
+                  </a>
+                </li>
+              ))}
+              {emails.map((email) => (
+                <li key={email}>
+                  <a
+                    href={`mailto:${email}`}
+                    className="flex items-center gap-2.5 transition-colors hover:text-white"
+                  >
+                    <Mail className="h-4 w-4 shrink-0 text-accent" /> {email}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </div>

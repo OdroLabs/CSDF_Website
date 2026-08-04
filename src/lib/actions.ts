@@ -6,10 +6,11 @@ import { prisma } from "./prisma";
 import { requireAdmin, requireOwner } from "./session";
 import { toRole, type Role } from "./roles";
 import { getEntity, type FieldDef } from "./admin-config";
-import { getSettingPage, type SettingDef } from "./settings";
+import { getSettingPage, getSettings, s, type SettingDef } from "./settings";
 import { allLabelDefs } from "./labels";
 import { sanitizeRichText } from "./sanitize";
 import { slugify, uniqueSlug } from "./slug";
+import { sendMail } from "./mail";
 
 const SLUGGED_MODELS = ["project", "service", "news", "event"] as const;
 
@@ -382,15 +383,42 @@ export async function submitContact(formData: FormData) {
   const email = (formData.get("email") as string)?.trim();
   const message = (formData.get("message") as string)?.trim();
   if (!name || !email || !message) return { ok: false };
+  const phone = ((formData.get("phone") as string) || "").trim() || null;
+  const subject = ((formData.get("subject") as string) || "").trim() || null;
   await prisma.contactMessage.create({
-    data: {
-      name,
-      email,
-      phone: ((formData.get("phone") as string) || "").trim() || null,
-      subject: ((formData.get("subject") as string) || "").trim() || null,
-      message,
-    },
+    data: { name, email, phone, subject, message },
   });
+
+  // Best-effort notification email — a failure here must never block the
+  // form submission itself, since the message is already saved above.
+  try {
+    const settings = await getSettings();
+    const notifyTo =
+      s(settings, "contact_notify_to") || s(settings, "email") || s(settings, "email2");
+    const notifyCc = s(settings, "contact_notify_cc");
+    if (notifyTo) {
+      const lines = [
+        `New message from ${name} <${email}>`,
+        phone ? `Phone: ${phone}` : null,
+        subject ? `Subject: ${subject}` : null,
+        "",
+        message,
+      ].filter((l) => l !== null);
+      await sendMail(
+        {
+          to: notifyTo,
+          cc: notifyCc || undefined,
+          subject: subject ? `Contact form: ${subject}` : "New contact form message",
+          text: lines.join("\n"),
+          replyTo: email,
+        },
+        settings
+      );
+    }
+  } catch (error) {
+    console.error("[mail] Failed to send contact notification:", error);
+  }
+
   return { ok: true };
 }
 

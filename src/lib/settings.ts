@@ -96,6 +96,7 @@ export function show(map: SettingsMap, toggleKey: string, ...content: unknown[])
 export type SettingType =
   | "text"
   | "textarea"
+  | "password"
   | "image"
   | "file"
   | "boolean"
@@ -178,6 +179,13 @@ const PA = (key: string, label: string, help?: string): SettingDef => ({
   key,
   label,
   type: "textarea",
+  help,
+});
+/** Plain (untranslated) single-line text, masked in the admin form. */
+const PW = (key: string, label: string, help?: string): SettingDef => ({
+  key,
+  label,
+  type: "password",
   help,
 });
 const IMG = (key: string, label: string, help?: string): SettingDef => ({
@@ -283,6 +291,34 @@ export const settingPages: SettingPage[] = [
           TA("seo_description", "Default meta description"),
           P("seo_keywords", "Meta keywords", "Comma separated. Optional."),
           IMG("og_image", "Social share image", "Shown when a page is shared on social media."),
+        ],
+      },
+      {
+        section: "Email (SMTP)",
+        hideNote:
+          "Turn off, or leave the host blank, to stop sending email — form messages are still saved and visible under Content either way.",
+        items: [
+          SW("smtp_enabled", "Send an email notification for new contact form messages"),
+          P("smtp_host", "SMTP host", "e.g. smtp.gmail.com"),
+          NUM("smtp_port", "SMTP port", "587 for STARTTLS (most common), or 465 for SSL."),
+          SW("smtp_secure", "Use SSL", "Only turn this on if your SMTP port is 465."),
+          P("smtp_user", "SMTP username", "Usually the full mailbox address, e.g. you@csdf.lk."),
+          PW(
+            "smtp_pass",
+            "SMTP password",
+            "For Gmail, generate an App Password — do not use your normal account password."
+          ),
+          P("smtp_from", "From name", "Optional display name on outgoing mail. Defaults to the username."),
+          P(
+            "contact_notify_to",
+            "Send new contact messages to",
+            "One or more addresses, separated by commas. Leave blank to use the Email address under Contact details instead."
+          ),
+          P(
+            "contact_notify_cc",
+            "CC additional emails",
+            "Optional. One or more addresses, separated by commas."
+          ),
         ],
       },
     ],
@@ -417,6 +453,19 @@ export const settingPages: SettingPage[] = [
             help: "Shown in the glass card beside the hero. Remove them all to hide the card.",
           }),
           T("hero_footnote", "Highlight card footnote"),
+        ],
+      },
+      {
+        section: "Marquee Trust Bar",
+        preview: { path: "", anchor: "sec-hero-marquee" },
+        hideNote: "Remove all items to hide the scrolling bar.",
+        items: [
+          SW("show_home_marquee", "Show the scrolling trust bar below the hero"),
+          LINES("home_marquee_items", "Scrolling items", {
+            itemLabel: "Item",
+            addLabel: "Add item",
+            help: "Text or emoji labels that scroll across the trust bar strip.",
+          }),
         ],
       },
       {

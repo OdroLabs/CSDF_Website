@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Plus, Pencil, CheckCircle2, XCircle } from "lucide-react";
+import { Plus, Pencil, CheckCircle2, XCircle, Download } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getEntity, type EntityDef } from "@/lib/admin-config";
 import { formatDate, formatMoney } from "@/lib/utils";
@@ -47,13 +47,22 @@ export default async function EntityListPage({ params }: { params: { entity: str
           <h1 className="text-2xl font-bold tracking-tight text-foreground">{entity.title}</h1>
           <p className="mt-0.5 text-sm text-muted-foreground">{entity.description}</p>
         </div>
-        {!entity.readOnly && (
-          <Button asChild>
-            <Link href={`/admin/content/${entity.slug}/new`}>
-              <Plus className="h-4 w-4" /> Add {entity.titleSingular}
-            </Link>
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {rows.length > 0 && (
+            <Button asChild variant="outline">
+              <a href={`/api/admin/export/${entity.slug}`} download>
+                <Download className="h-4 w-4" /> Export CSV
+              </a>
+            </Button>
+          )}
+          {!entity.readOnly && (
+            <Button asChild>
+              <Link href={`/admin/content/${entity.slug}/new`}>
+                <Plus className="h-4 w-4" /> Add {entity.titleSingular}
+              </Link>
+            </Button>
+          )}
+        </div>
       </div>
       <Card className="overflow-hidden">
         <CardContent className="p-2">

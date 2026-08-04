@@ -91,6 +91,17 @@ const content: Record<string, Val> = {
   },
   og_image: BLANK,
 
+  // Off by default — an admin opts in once real SMTP credentials are on hand.
+  smtp_enabled: { en: "0" },
+  smtp_host: BLANK,
+  smtp_port: { en: "587" },
+  smtp_secure: { en: "0" },
+  smtp_user: BLANK,
+  smtp_pass: BLANK,
+  smtp_from: BLANK,
+  contact_notify_to: BLANK,
+  contact_notify_cc: BLANK,
+
   /* ============================================ Header & navigation ======= */
   announce_text: BLANK,
   announce_link: BLANK,
@@ -162,6 +173,13 @@ const content: Record<string, Val> = {
     en: "08+ partner organizations · 10 districts across Sri Lanka",
     si: "හවුල්කාර ආයතන 08+ · ශ්‍රී ලංකාව පුරා දිස්ත්‍රික්ක 10ක්",
     ta: "08+ பங்காளர் அமைப்புகள் · இலங்கை முழுவதும் 10 மாவட்டங்கள்",
+  },
+
+  show_home_marquee: ON,
+  home_marquee_items: {
+    en: "Community Voices\nHelp Create Someone's Turning Point\nProgress Begins When Communities Lead\nSupport Shaped Around Real Life\nProjects Built With Communities",
+    si: "ප්‍රජා හඬ\nකෙනෙකුගේ හැරවුම් ලක්ෂ්‍යයක් නිර්මාණය කිරීමට උදව් කරන්න\nප්‍රජාවන් මෙහෙයවන විට ප්‍රගතිය ආරම්භ වේ\nඇත්ත ජීවිතය වටා හැඩගැසුණු සහාය\nප්‍රජාවන් සමඟ ගොඩනගන ලද ව්‍යාපෘති",
+    ta: "சமூகக் குரல்கள்\nஒருவரின் திருப்புமுனையை உருவாக்க உதவுங்கள்\nசமூகங்கள் வழிநடத்தும்போது முன்னேற்றம் தொடங்குகிறது\nஉண்மையான வாழ்க்கையைச் சுற்றி வடிவமைக்கப்பட்ட ஆதரவு\nசமூகங்களுடன் கட்டமைக்கப்பட்ட திட்டங்கள்",
   },
 
   show_home_about: ON,
