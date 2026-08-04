@@ -32,7 +32,7 @@ import {
   Underline as UnderlineIcon,
   Undo2,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, withMinDelay } from "@/lib/utils";
 import { useToast } from "./toast";
 
 /** The editor emits "<p></p>" for an empty document — store nothing instead. */
@@ -309,7 +309,7 @@ export function RichTextField({
     const fd = new FormData();
     fd.append("file", file);
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const res = await withMinDelay(fetch("/api/upload", { method: "POST", body: fd }));
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Upload failed");
       const alt = window.prompt("Describe this image for screen readers (optional)", "") ?? "";

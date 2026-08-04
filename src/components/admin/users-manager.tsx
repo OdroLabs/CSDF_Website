@@ -26,7 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { cn, withMinDelay } from "@/lib/utils";
 import { useToast } from "./toast";
 
 export interface AdminUserRow {
@@ -88,7 +88,7 @@ export function UsersManager({
   ) {
     const id = toast({ title: labels.loading, variant: "loading" });
     try {
-      const result = await fn();
+      const result = await withMinDelay(fn());
       if (result.ok) {
         update(id, { title: labels.success, variant: "success" });
         onSuccess?.();
@@ -134,7 +134,9 @@ export function UsersManager({
         {adding && (
           <CardContent>
             <form
-              action={async (fd) => {
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const fd = new FormData(e.currentTarget);
                 setSaving(true);
                 await run(
                   {
@@ -333,7 +335,10 @@ export function UsersManager({
                 {/* Edit details */}
                 {editingId === user.id && (
                   <form
-                    action={async (fd) => {
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      const fd = new FormData(e.currentTarget);
+                      setBusyId(user.id);
                       await run(
                         {
                           loading: "Saving…",
@@ -343,6 +348,7 @@ export function UsersManager({
                         () => updateUser(user.id, fd),
                         () => setEditingId(null)
                       );
+                      setBusyId(null);
                     }}
                     className="mt-4 grid gap-4 rounded-xl border bg-muted/20 p-4 sm:grid-cols-3"
                   >
@@ -365,7 +371,8 @@ export function UsersManager({
                       <RoleSelect name="role" defaultValue={user.role} />
                     </div>
                     <div className="sm:col-span-3">
-                      <Button type="submit" size="sm">
+                      <Button type="submit" size="sm" disabled={busyId === user.id}>
+                        {busyId === user.id && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                         Save changes
                       </Button>
                     </div>
@@ -375,7 +382,10 @@ export function UsersManager({
                 {/* Reset password */}
                 {resettingId === user.id && (
                   <form
-                    action={async (fd) => {
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      const fd = new FormData(e.currentTarget);
+                      setBusyId(user.id);
                       await run(
                         {
                           loading: "Updating password…",
@@ -385,6 +395,7 @@ export function UsersManager({
                         () => resetUserPassword(user.id, fd),
                         () => setResettingId(null)
                       );
+                      setBusyId(null);
                     }}
                     className="mt-4 grid gap-4 rounded-xl border bg-muted/20 p-4 sm:grid-cols-2"
                   >
@@ -409,7 +420,8 @@ export function UsersManager({
                       />
                     </div>
                     <div className="sm:col-span-2">
-                      <Button type="submit" size="sm">
+                      <Button type="submit" size="sm" disabled={busyId === user.id}>
+                        {busyId === user.id && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                         Set password
                       </Button>
                       <p className="mt-2 text-xs text-muted-foreground">

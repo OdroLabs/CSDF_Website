@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { saveEntity } from "@/lib/actions";
 import { useToast } from "./toast";
+import { withMinDelay } from "@/lib/utils";
 import type { EntityDef, FieldDef } from "@/lib/admin-config";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -107,7 +108,7 @@ export function EntityForm({
       variant: "loading",
     });
     try {
-      const result = await saveEntity(entity.slug, record?.id ?? null, fd);
+      const result = await withMinDelay(saveEntity(entity.slug, record?.id ?? null, fd));
       if (result.ok) {
         update(id, {
           title: record ? "Changes saved" : `${entity.titleSingular} created`,
@@ -135,7 +136,13 @@ export function EntityForm({
   }
 
   return (
-    <form action={handleSave} className="space-y-5">
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSave(new FormData(e.currentTarget));
+      }}
+      className="space-y-5"
+    >
       {entity.fields.map((field) => (
         <Card key={field.name}>
           <CardContent className="pt-5">

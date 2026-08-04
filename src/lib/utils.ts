@@ -22,6 +22,16 @@ export function formatMoney(amount: number | string, currency = "LKR") {
 }
 
 /**
+ * Local saves often resolve in well under a second, which makes loading
+ * spinners flash too briefly to register. Pad the promise out to a minimum
+ * visible duration so the "Saving…" state always reads as real feedback.
+ */
+export async function withMinDelay<T>(promise: Promise<T>, ms = 500): Promise<T> {
+  const [result] = await Promise.all([promise, new Promise((resolve) => setTimeout(resolve, ms))]);
+  return result;
+}
+
+/**
  * Admins often paste the whole `<iframe src="..." ...></iframe>` snippet
  * Google Maps gives them, rather than just the src URL the field actually
  * wants. Accept either: if it looks like markup, pull the src attribute out;

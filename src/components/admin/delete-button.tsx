@@ -6,6 +6,7 @@ import { Trash2, Loader2 } from "lucide-react";
 import { deleteEntity } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
 import { useToast } from "./toast";
+import { withMinDelay } from "@/lib/utils";
 
 export function DeleteButton({ slug, id }: { slug: string; id: number }) {
   const [deleting, setDeleting] = useState(false);
@@ -23,7 +24,7 @@ export function DeleteButton({ slug, id }: { slug: string; id: number }) {
         setDeleting(true);
         const toastId = toast({ title: "Deleting…", variant: "loading" });
         try {
-          const result = await deleteEntity(slug, id);
+          const result = await withMinDelay(deleteEntity(slug, id));
           if (result.ok) {
             update(toastId, { title: "Deleted", variant: "success" });
             router.refresh();

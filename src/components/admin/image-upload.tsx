@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Upload, X, FileText, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "./toast";
+import { withMinDelay } from "@/lib/utils";
 
 export function FileUploadField({
   name,
@@ -30,7 +31,7 @@ export function FileUploadField({
     const fd = new FormData();
     fd.append("file", file);
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const res = await withMinDelay(fetch("/api/upload", { method: "POST", body: fd }));
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Upload failed");
       setUrl(data.url);

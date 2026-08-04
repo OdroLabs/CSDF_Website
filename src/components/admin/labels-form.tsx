@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Save } from "lucide-react";
 import { saveLabels } from "@/lib/actions";
 import { useToast } from "./toast";
+import { withMinDelay } from "@/lib/utils";
 import { labelGroups } from "@/lib/labels";
 import type { SettingsMap } from "@/lib/settings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,7 +30,7 @@ export function LabelsForm({ settings }: { settings: SettingsMap }) {
     setSaving(true);
     const id = toast({ title: "Saving labels…", variant: "loading" });
     try {
-      const result = await saveLabels(fd);
+      const result = await withMinDelay(saveLabels(fd));
       if (result.ok) {
         update(id, {
           title: "Saved",
@@ -52,7 +53,13 @@ export function LabelsForm({ settings }: { settings: SettingsMap }) {
   }
 
   return (
-    <form action={handleSave} className="space-y-5">
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSave(new FormData(e.currentTarget));
+      }}
+      className="space-y-5"
+    >
       <div className="flex flex-wrap gap-1.5">
         {labelGroups.map((g) => (
           <button

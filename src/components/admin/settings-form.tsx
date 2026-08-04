@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight, EyeOff, Loader2, Save } from "lucide-react";
 import { saveSettingsPage } from "@/lib/actions";
 import { useToast } from "./toast";
 import type { SettingDef, SettingPage, SettingsMap } from "@/lib/settings";
-import { cn } from "@/lib/utils";
+import { cn, withMinDelay } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -147,7 +147,7 @@ export function SettingsForm({
       variant: "loading",
     });
     try {
-      const result = await saveSettingsPage(page.slug, fd);
+      const result = await withMinDelay(saveSettingsPage(page.slug, fd));
       if (result.ok) {
         update(id, {
           title: "Saved",
@@ -195,7 +195,13 @@ export function SettingsForm({
 
   return (
     <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,520px)]">
-      <form action={handleSave} className="min-w-0 space-y-4">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSave(new FormData(e.currentTarget));
+        }}
+        className="min-w-0 space-y-4"
+      >
         {/* Child tabs — one per section of this page */}
         <nav
           aria-label={`${page.title} sections`}
