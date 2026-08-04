@@ -32,12 +32,12 @@ export async function generateMetadata({
     title: title || undefined,
     description: description || undefined,
     keywords: keywords ? keywords.split(",").map((k) => k.trim()).filter(Boolean) : undefined,
-    icons: { icon: favicon || "/brand/icon-512.png", apple: "/brand/icon-180.png" },
+    icons: favicon ? { icon: favicon } : undefined,
     openGraph: {
       title: title || undefined,
       description: description || undefined,
       siteName: siteName || undefined,
-      images: [ogImage || "/brand/icon-512.png"],
+      images: ogImage ? [ogImage] : undefined,
     },
   };
 }

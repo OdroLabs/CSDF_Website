@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight, Lock, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -73,8 +72,8 @@ export default function AdminLoginPage() {
 
       <div className="relative w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center text-center text-white">
-          <span className="mb-4 grid h-16 w-16 place-items-center overflow-hidden rounded-2xl ring-1 ring-white/15">
-            <Image src="/brand/logo-mark.png" alt="CSDF" width={64} height={64} className="h-full w-full object-cover" />
+          <span className="mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/15">
+            <Lock className="h-6 w-6" />
           </span>
           <h1 className="text-xl font-bold tracking-tight">CSDF Admin</h1>
           <p className="mt-1 text-sm text-white/50">Sign in to manage your site</p>
