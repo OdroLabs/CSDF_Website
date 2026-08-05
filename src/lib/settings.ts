@@ -291,6 +291,11 @@ export const settingPages: SettingPage[] = [
           TA("seo_description", "Default meta description"),
           P("seo_keywords", "Meta keywords", "Comma separated. Optional."),
           IMG("og_image", "Social share image", "Shown when a page is shared on social media."),
+          SW(
+            "seo_noindex",
+            "Hide the site from search engines (noindex, nofollow)",
+            "Turn this on while the site is still in progress. Google, Bing, etc. will be asked not to index or follow links on any page. Turn off when ready to go live."
+          ),
         ],
       },
       {
