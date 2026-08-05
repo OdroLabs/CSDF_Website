@@ -27,12 +27,16 @@ export async function generateMetadata({
   const keywords = s(settings, "seo_keywords");
   const favicon = s(settings, "favicon");
   const ogImage = s(settings, "og_image");
+  const noindex = sBool(settings, "seo_noindex", true);
 
   return {
     title: title || undefined,
     description: description || undefined,
     keywords: keywords ? keywords.split(",").map((k) => k.trim()).filter(Boolean) : undefined,
     icons: favicon ? { icon: favicon } : undefined,
+    robots: noindex
+      ? { index: false, follow: false, googleBot: { index: false, follow: false } }
+      : undefined,
     openGraph: {
       title: title || undefined,
       description: description || undefined,

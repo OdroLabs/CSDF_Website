@@ -90,6 +90,9 @@ const content: Record<string, Val> = {
     en: "CSDF, Sri Lanka, women's health, HIV support, community development, human rights, Colombo",
   },
   og_image: BLANK,
+  // On by default while the site is being built — turn off in Admin →
+  // Site Settings → General once ready to be indexed by search engines.
+  seo_noindex: { en: "1" },
 
   // Off by default — an admin opts in once real SMTP credentials are on hand.
   smtp_enabled: { en: "0" },
