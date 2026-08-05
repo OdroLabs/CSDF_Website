@@ -12,7 +12,7 @@ const SOCIAL_ICONS: Record<string, typeof Facebook> = {
   twitter: Twitter,
   linkedin: Linkedin,
   tiktok: Music2,
-};
+}; 
 
 export function SiteFooter({
   locale,
