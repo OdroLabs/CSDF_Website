@@ -121,6 +121,8 @@ export interface SettingDef {
   itemLabel?: string;
   /** Text on the add button. */
   addLabel?: string;
+  /** For "boolean": what a blank/unset stored value should mean. Default true (on unless turned off). */
+  defaultOn?: boolean;
 }
 
 /** Which part of the live site the admin preview panel should isolate. */
@@ -200,11 +202,12 @@ const NUM = (key: string, label: string, help?: string): SettingDef => ({
   type: "number",
   help,
 });
-const SW = (key: string, label: string, help?: string): SettingDef => ({
+const SW = (key: string, label: string, help?: string, defaultOn = true): SettingDef => ({
   key,
   label,
   type: "boolean",
   help,
+  defaultOn,
 });
 /** Repeatable "heading + text" rows. */
 const PAIRS = (
@@ -250,6 +253,22 @@ export const settingPages: SettingPage[] = [
           IMG("logo_image", "Logo image", "Optional. Replaces the letter mark in header and footer."),
           P("logo_letter", "Logo letter", "Used when no logo image is uploaded. Default: C"),
           IMG("favicon", "Favicon", "Small icon shown in the browser tab."),
+        ],
+      },
+      {
+        section: "Coming Soon",
+        hideNote:
+          "While on, every public page shows this Coming Soon screen instead of the live site. The Admin panel stays fully accessible so you can keep editing content behind the scenes.",
+        items: [
+          SW(
+            "coming_soon_enabled",
+            "Show a Coming Soon page instead of the live site",
+            undefined,
+            false
+          ),
+          T("coming_soon_title", "Heading", "Defaults to the organisation name if left blank."),
+          TA("coming_soon_message", "Message", "Shown under the heading."),
+          IMG("coming_soon_background", "Background image", "Optional. Full-bleed background behind the message."),
         ],
       },
       {

@@ -450,6 +450,62 @@
   color: transparent;
 }
 
+/* ---------------------------------------------------------------------------
+   Coming Soon page — eclipse glow and sparkle
+--------------------------------------------------------------------------- */
+
+@keyframes cs-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cs-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes cs-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.6) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15) rotate(20deg);
+  }
+}
+
+/* Blurred conic corona rotating slowly behind the dark eclipse disc. */
+.cs-ring-glow {
+  position: absolute;
+  inset: -12%;
+  border-radius: 9999px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 45, 106, 0.9),
+    rgba(255, 45, 106, 0) 25%,
+    rgba(255, 45, 106, 0) 55%,
+    rgba(34, 229, 229, 0.9) 78%,
+    rgba(255, 45, 106, 0.9) 100%
+  );
+  filter: blur(28px);
+  animation: cs-spin 16s linear infinite, cs-pulse 6s ease-in-out infinite;
+}
+
+/* Sparkle glint on the rim of the eclipse. */
+.cs-sparkle {
+  animation: cs-twinkle 2.6s ease-in-out infinite;
+}
+
 /* Framer Motion drives all scroll/entrance animation now (see
    components/site/reveal.tsx, motion.tsx). These CSS-only fallbacks keep
    content fully visible without JS or with reduced motion. */

@@ -56,6 +56,12 @@ const content: Record<string, Val> = {
   logo_letter: { en: "C" },
   favicon: BLANK,
 
+  // Off by default — an admin switches it on when the site needs to go dark for a while.
+  coming_soon_enabled: { en: "0" },
+  coming_soon_title: BLANK,
+  coming_soon_message: BLANK,
+  coming_soon_background: BLANK,
+
   address: { en: "No. 68, Kolonnawa Road,\nKolonnawa, Colombo,\nSri Lanka" },
   phone: { en: "0112 534 838" },
   phone2: BLANK,

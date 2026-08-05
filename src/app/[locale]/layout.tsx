@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/site/header";
 import { SiteFooter } from "@/components/site/footer";
 import { ScrollProgress } from "@/components/site/scroll-progress";
 import { FloatingWhatsapp } from "@/components/site/floating-whatsapp";
+import { ComingSoonPage } from "@/components/site/coming-soon";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +28,7 @@ export async function generateMetadata({
   const keywords = s(settings, "seo_keywords");
   const favicon = s(settings, "favicon");
   const ogImage = s(settings, "og_image");
-  const noindex = sBool(settings, "seo_noindex", true);
+  const noindex = sBool(settings, "seo_noindex", true) || sBool(settings, "coming_soon_enabled", false);
 
   return {
     title: title || undefined,
@@ -64,6 +65,14 @@ export default async function LocaleLayout({
   const logoImage = s(settings, "logo_image");
   const logoLetter = s(settings, "logo_letter");
   const donateLabel = s(settings, "header_donate_label", locale);
+
+  if (sBool(settings, "coming_soon_enabled", false)) {
+    return (
+      <div data-locale={locale}>
+        <ComingSoonPage locale={locale} settings={settings} />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col" data-locale={locale}>

@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
  * robots.txt level too, not just the meta tag. */
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const settings = await getSettings();
-  const noindex = sBool(settings, "seo_noindex", true);
+  const noindex = sBool(settings, "seo_noindex", true) || sBool(settings, "coming_soon_enabled", false);
 
   if (noindex) {
     return {
