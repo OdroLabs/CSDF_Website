@@ -195,6 +195,7 @@ export const entities: EntityDef[] = [
     orderBy: { publishedAt: "desc" },
     fields: [
       { name: "title", label: "Title", type: "text", i18n: true, required: true },
+      { name: "slug", label: "URL slug", type: "text", help: "Used in the page URL. Leave empty to auto-generate from the English title." },
       { name: "description", label: "Description", type: "textarea", i18n: true },
       {
         name: "category",

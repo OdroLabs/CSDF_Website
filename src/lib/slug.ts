@@ -16,7 +16,7 @@ export function slugify(text: string): string {
  * ignoring the record with `excludeId` (when updating).
  */
 export async function uniqueSlug(
-  model: "project" | "service" | "news" | "event",
+  model: "project" | "service" | "news" | "event" | "publication",
   base: string,
   excludeId?: number | null
 ): Promise<string> {

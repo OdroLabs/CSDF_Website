@@ -12,7 +12,7 @@ import { sanitizeRichText } from "./sanitize";
 import { slugify, uniqueSlug } from "./slug";
 import { sendMail } from "./mail";
 
-const SLUGGED_MODELS = ["project", "service", "news", "event"] as const;
+const SLUGGED_MODELS = ["project", "service", "news", "event", "publication"] as const;
 
 /**
  * Every admin action resolves to one of these instead of throwing or

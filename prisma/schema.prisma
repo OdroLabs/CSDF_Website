@@ -97,6 +97,7 @@ model Service {
 
 model Publication {
   id            Int      @id @default(autoincrement())
+  slug          String?  @unique
   titleEn       String
   titleSi       String?
   titleTa       String?

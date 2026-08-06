@@ -1,6 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Eye, Target, Users, BookOpen, History, HeartHandshake, CheckCircle2, ArrowRight } from "lucide-react";
+import {
+  Eye,
+  Target,
+  Users,
+  History,
+  HeartHandshake,
+  ArrowRight,
+  TrendingUp,
+  Globe2,
+  Quote,
+} from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
 import { getLabels } from "@/lib/labels";
@@ -9,7 +19,9 @@ import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/page-hero";
 import { FadeIn, Stagger, StaggerItem } from "@/components/site/motion";
 import { StatCounter } from "@/components/site/stat-counter";
-import { ValuesMarquee } from "@/components/site/values-marquee";
+import { DarkTestimonialCarousel } from "@/components/site/dark-testimonial-carousel";
+import { Timeline } from "@/components/site/timeline";
+import { LogoMarquee } from "@/components/site/logo-marquee";
 
 export async function generateMetadata({
   params,
@@ -28,28 +40,36 @@ export async function generateMetadata({
   };
 }
 
-function Eyebrow({ icon: Icon, children }: { icon: typeof Eye; children: React.ReactNode }) {
+/** Bold numbered section label, e.g. "01 — Overview" — an editorial touch used throughout. */
+function SectionLabel({ n, children }: { n: string; children: React.ReactNode }) {
   return (
-    <div className="mb-3 flex items-center gap-2 text-primary">
-      <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand-50">
-        <Icon className="h-4 w-4" />
+    <div className="mb-4 flex items-center gap-3">
+      <span className="font-number text-sm font-bold text-primary/40">{n}</span>
+      <span className="h-px w-8 bg-primary/30" />
+      <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+        {children}
       </span>
-      <h2 className="text-xl font-bold tracking-tight text-foreground">{children}</h2>
     </div>
   );
 }
 
+const STAT_ICONS = [HeartHandshake, Users, TrendingUp, Globe2];
+
 export default async function AboutPage({ params }: { params: { locale: Locale } }) {
   const { locale } = params;
-  const [settings, stats] = await Promise.all([
+  const [settings, stats, testimonials, partners, galleryImages] = await Promise.all([
     getSettings(),
     prisma.stat.findMany({ orderBy: { order: "asc" } }),
+    prisma.testimonial.findMany({ where: { published: true }, orderBy: { order: "asc" } }),
+    prisma.partner.findMany({ orderBy: { order: "asc" } }),
+    prisma.galleryImage.findMany({ orderBy: { order: "asc" }, take: 6 }),
   ]);
   const dict = getLabels(locale, settings);
 
   const overviewTitle = s(settings, "about_overview_title", locale);
   const overview = s(settings, "about_overview", locale);
   const overviewImage = s(settings, "about_overview_image");
+  const overviewImage2 = s(settings, "about_overview_image2");
 
   const visionTitle = s(settings, "about_vision_title", locale);
   const vision = s(settings, "about_vision", locale);
@@ -64,7 +84,10 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
 
   const historyTitle = s(settings, "about_history_title", locale);
   const history = s(settings, "about_history", locale);
-  const historyImage = s(settings, "about_history_image");
+
+  const galleryTitle = s(settings, "about_gallery_title", locale) || dict.common.gallery;
+  const testimonialsTitle = s(settings, "about_testimonials_title", locale);
+  const partnersTitle = s(settings, "about_partners_title", locale);
 
   const extraTitle = s(settings, "about_extra_title", locale);
   const extraText = s(settings, "about_extra_text", locale);
@@ -74,12 +97,20 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
     { icon: Target, title: missionTitle, text: mission },
   ].filter((b) => b.text);
 
+  const timelineItems = [
+    { icon: Users, title: communityTitle, text: community },
+    { icon: History, title: historyTitle, text: history },
+  ].filter((b) => b.text);
+
   const showOverview = Boolean(overview);
   const showStats = stats.length > 0;
   const showVisionMission = checklist.length > 0;
-  const showValues = values.length > 0;
-  const showCommunity = Boolean(community);
-  const showHistory = Boolean(history);
+  const showFeatures = values.length > 0;
+  const showTimeline = timelineItems.length > 0;
+  const showGallery = galleryImages.length > 0;
+  const showTestimonials = testimonials.length > 0;
+  const showPartners = partners.length > 0;
+  const featureCards = values.slice(0, 3);
 
   return (
     <>
@@ -89,23 +120,44 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
         image={s(settings, "about_hero_image") || undefined}
       />
 
-      {/* Overview — photo with a decorative offset panel behind it, text alongside */}
+      {/* Overview — overlapping image collage + text/CTA */}
       {showOverview && (
         <section id="sec-overview" className="container py-16 md:py-24">
-          <div className={`grid items-center gap-12 ${overviewImage ? "lg:grid-cols-[1fr_1.05fr]" : ""}`}>
+          <div className={`grid items-center gap-16 ${overviewImage ? "lg:grid-cols-[1fr_1fr]" : ""}`}>
             {overviewImage && (
-              <FadeIn className="relative">
-                <div className="absolute -bottom-5 -left-5 -z-10 h-full w-full rounded-3xl bg-brand-50" />
-                <div className="overflow-hidden rounded-3xl border border-border shadow-card">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={overviewImage} alt={overviewTitle} className="aspect-[4/3] w-full object-cover" />
+              <FadeIn className="relative mx-auto w-full max-w-md lg:mx-0">
+                <div className="relative aspect-[4/5] w-[78%]">
+                  <div className="overflow-hidden rounded-3xl border border-border shadow-card">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={overviewImage}
+                      alt={overviewTitle}
+                      className="aspect-[4/5] w-full object-cover"
+                    />
+                  </div>
                 </div>
+                <div className="absolute bottom-0 right-0 aspect-square w-[46%] overflow-hidden rounded-3xl border-4 border-white shadow-pop">
+                  {overviewImage2 ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={overviewImage2} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-primary text-white">
+                      <HeartHandshake className="h-10 w-10" />
+                    </div>
+                  )}
+                </div>
+                <span className="absolute -bottom-6 -right-6 h-24 w-24 rounded-full bg-accent/20 blur-2xl" />
               </FadeIn>
             )}
             <FadeIn delay={overviewImage ? 0.1 : 0}>
-              {overviewTitle && <Eyebrow icon={BookOpen}>{overviewTitle}</Eyebrow>}
+              <SectionLabel n="01">{dict.nav.about}</SectionLabel>
+              {overviewTitle && (
+                <h2 className="mb-4 text-3xl font-bold leading-tight tracking-tight text-foreground md:text-5xl">
+                  {overviewTitle}
+                </h2>
+              )}
               <p className="max-w-2xl whitespace-pre-line leading-relaxed text-muted-foreground">{overview}</p>
-              <Button asChild variant="link" className="mt-2 px-0 font-semibold">
+              <Button asChild className="mt-6">
                 <Link href={`/${locale}/services`}>
                   {dict.nav.services} <ArrowRight className="h-4 w-4" />
                 </Link>
@@ -115,59 +167,113 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
         </section>
       )}
 
-      {/* Stats bar */}
-      {showStats && (
-        <section className="border-y border-border bg-muted/50 py-10">
-          <div className="container">
-            <Stagger className="grid grid-cols-2 gap-6 md:grid-cols-4">
-              {stats.map((stat) => (
-                <StaggerItem key={stat.id} className="text-center">
-                  <p className="font-number text-3xl font-bold text-primary md:text-4xl">
-                    <StatCounter value={stat.value} />
-                  </p>
-                  <p className="mt-1.5 text-sm text-muted-foreground">{loc(stat, "label", locale)}</p>
-                </StaggerItem>
-              ))}
-            </Stagger>
+      {/* Bento block — Vision/Mission, photo, stats and feature cards woven into one mosaic */}
+      {(showVisionMission || showStats || showFeatures) && (
+        <section id="sec-visionmission" className="relative overflow-hidden bg-muted/40 py-16 md:py-24">
+          <div className="container relative">
+            <FadeIn className="mx-auto mb-12 max-w-2xl text-center">
+              <SectionLabel n="02">{dict.nav.about}</SectionLabel>
+              <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-4xl">
+                {visionTitle || missionTitle || valuesTitle}
+              </h2>
+            </FadeIn>
+
+            {showVisionMission && (
+              <div className="mb-6 grid gap-6 lg:grid-cols-4">
+                {checklist.map((item, i) => (
+                  <FadeIn
+                    key={i}
+                    delay={i * 0.08}
+                    className={`rounded-3xl p-8 shadow-pop lg:col-span-2 ${
+                      i === 0 ? "bg-primary text-white" : "bg-secondary text-white"
+                    }`}
+                  >
+                    <item.icon className="mb-4 h-8 w-8 text-white/70" />
+                    <h3 className="mb-3 text-xl font-bold">{item.title}</h3>
+                    <p className="text-sm leading-relaxed text-white/80">{item.text}</p>
+                  </FadeIn>
+                ))}
+              </div>
+            )}
+
+            {showStats && (
+              <Stagger className="mb-6 grid grid-cols-2 gap-6 lg:grid-cols-4">
+                {stats.map((stat, i) => {
+                  const Icon = STAT_ICONS[i % STAT_ICONS.length];
+                  return (
+                    <StaggerItem key={stat.id}>
+                      <div className="rounded-3xl border border-border bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
+                        <span className="mb-4 grid h-11 w-11 place-items-center rounded-xl bg-brand-50 text-primary">
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        <p className="font-number text-2xl font-bold text-foreground md:text-3xl">
+                          <StatCounter value={stat.value} />
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground">{loc(stat, "label", locale)}</p>
+                      </div>
+                    </StaggerItem>
+                  );
+                })}
+              </Stagger>
+            )}
+
+            {showFeatures && (
+              <Stagger className="grid gap-6 md:grid-cols-3">
+                {featureCards.map((value, i) => (
+                  <StaggerItem key={i}>
+                    <div className="h-full rounded-3xl border border-border bg-white p-8 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-card-hover">
+                      <span className="mb-5 grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-primary to-accent text-white">
+                        <span className="font-number text-sm font-bold">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                      </span>
+                      <h3 className="mb-2 font-bold text-foreground">{value.left}</h3>
+                      <p className="text-sm leading-relaxed text-muted-foreground">{value.right}</p>
+                    </div>
+                  </StaggerItem>
+                ))}
+              </Stagger>
+            )}
           </div>
         </section>
       )}
 
-      {/* Values — infinite scrolling row, same looping technique as the homepage ticker */}
-      {showValues && (
-        <section id="sec-values" className="py-16 md:py-24">
-          {valuesTitle && (
-            <FadeIn className="container mb-10 text-center">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">{valuesTitle}</h2>
-            </FadeIn>
-          )}
-          <FadeIn delay={0.1}>
-            <ValuesMarquee values={values} />
+      {/* Communities we serve + Our story — alternating timeline */}
+      {showTimeline && (
+        <section id="sec-community" className="container py-16 md:py-24">
+          <FadeIn className="mx-auto mb-14 max-w-2xl text-center">
+            <SectionLabel n="03">{dict.nav.about}</SectionLabel>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-4xl">
+              {communityTitle || historyTitle}
+            </h2>
           </FadeIn>
+          <Timeline items={timelineItems} />
         </section>
       )}
 
-      {/* Vision & Mission — dark checklist band */}
-      {showVisionMission && (
-        <section className="relative overflow-hidden bg-secondary py-16 text-white md:py-24">
-          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
-          <div className="container relative grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-            <FadeIn>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
-                {dict.nav.about}
-              </p>
-              <h2 className="text-2xl font-bold tracking-tight md:text-4xl">
-                {visionTitle || missionTitle}
+      {/* Our Gallery — mixed-size bento grid */}
+      {showGallery && (
+        <section id="sec-gallery" className="relative overflow-hidden bg-muted/40 py-16 md:py-24">
+          <div className="container relative">
+            <FadeIn className="mx-auto mb-10 max-w-2xl text-center">
+              <SectionLabel n="04">{dict.common.gallery}</SectionLabel>
+              <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-4xl">
+                {galleryTitle}
               </h2>
             </FadeIn>
-            <Stagger className="space-y-5">
-              {checklist.map((item, i) => (
-                <StaggerItem key={i} className="flex items-start gap-3 rounded-2xl bg-white/5 p-5 ring-1 ring-white/10">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
-                  <div>
-                    {item.title && <h3 className="font-bold">{item.title}</h3>}
-                    <p className="mt-1 text-sm leading-relaxed text-white/70">{item.text}</p>
+            <Stagger className="grid grid-cols-2 gap-4 md:grid-cols-4 md:[grid-template-rows:repeat(2,minmax(0,1fr))] md:[grid-auto-flow:dense]">
+              {galleryImages.map((img, i) => (
+                <StaggerItem
+                  key={img.id}
+                  className={i === 0 ? "col-span-2 row-span-2" : ""}
+                >
+                  <div className="h-full overflow-hidden rounded-2xl border border-border shadow-card">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={img.image}
+                      alt={loc(img, "caption", locale)}
+                      className="aspect-square h-full w-full object-cover transition-transform duration-500 hover:scale-105 md:aspect-auto"
+                    />
                   </div>
                 </StaggerItem>
               ))}
@@ -176,33 +282,42 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
         </section>
       )}
 
-      {/* Communities we serve */}
-      {showCommunity && (
-        <section id="sec-community" className="relative overflow-hidden bg-muted/60 py-16 md:py-24">
-          <HeartHandshake className="pointer-events-none absolute -right-10 -top-10 h-56 w-56 text-primary/[0.06]" />
+      {/* What People Say — dark testimonial carousel with giant background quote */}
+      {showTestimonials && (
+        <section id="sec-testimonials" className="relative overflow-hidden bg-secondary py-16 text-white md:py-24">
+          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
+          <Quote className="pointer-events-none absolute left-1/2 top-8 h-64 w-64 -translate-x-1/2 text-white/[0.04]" />
           <div className="container relative">
-            <FadeIn className="max-w-2xl">
-              <Eyebrow icon={Users}>{communityTitle}</Eyebrow>
-              <p className="whitespace-pre-line leading-relaxed text-muted-foreground">{community}</p>
+            <FadeIn className="mx-auto mb-10 max-w-2xl text-center">
+              <SectionLabel n="05">{dict.nav.about}</SectionLabel>
+              {testimonialsTitle && (
+                <h2 className="text-2xl font-bold tracking-tight md:text-4xl">{testimonialsTitle}</h2>
+              )}
             </FadeIn>
+            <DarkTestimonialCarousel
+              items={testimonials.map((t) => ({
+                quote: loc(t, "quote", locale),
+                author: loc(t, "author", locale),
+              }))}
+            />
           </div>
         </section>
       )}
 
-      {/* Our story */}
-      {showHistory && (
-        <section id="sec-history" className="container py-16 md:py-24">
-          <div className={`grid items-center gap-12 ${historyImage ? "lg:grid-cols-[0.95fr_1.05fr]" : "max-w-3xl"}`}>
-            {historyImage && (
-              <FadeIn className="order-last overflow-hidden rounded-3xl border border-border shadow-card lg:order-first">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={historyImage} alt={historyTitle} className="aspect-[4/3] w-full object-cover" />
-              </FadeIn>
-            )}
-            <FadeIn delay={historyImage ? 0.12 : 0}>
-              <Eyebrow icon={History}>{historyTitle}</Eyebrow>
-              <p className="whitespace-pre-line leading-relaxed text-muted-foreground">{history}</p>
+      {/* Partners — infinite logo marquee */}
+      {showPartners && (
+        <section id="sec-partners" className="py-16 md:py-24">
+          {partnersTitle && (
+            <FadeIn className="container mx-auto mb-10 max-w-2xl text-center">
+              <SectionLabel n="06">{dict.nav.about}</SectionLabel>
+              <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-4xl">
+                {partnersTitle}
+              </h2>
             </FadeIn>
+          )}
+          <div className="container">
+            <LogoMarquee items={partners} />
           </div>
         </section>
       )}

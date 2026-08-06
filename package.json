@@ -11,6 +11,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:settings": "tsx prisma/seed-settings.ts",
     "fix:service-translations": "tsx prisma/fix-service-translations.ts",
+    "backfill:publication-slugs": "tsx prisma/backfill-publication-slugs.ts",
     "db:studio": "prisma studio",
     "postinstall": "prisma generate"
   },

@@ -10,6 +10,19 @@ import { useRef, type ReactNode } from "react";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+/**
+ * True inside the admin's section-preview iframe (`?adminPreview=1`). That
+ * iframe forces layout changes (siblings hidden, ancestors collapsed to
+ * `min-height: 0`, the whole frame CSS-scaled) so scroll-driven and
+ * viewport-triggered animations can fight their own measurements and end up
+ * visibly jittering. Every animation primitive below falls back to its
+ * static render in this mode, the same way they do for `prefers-reduced-motion`.
+ */
+function useIsAdminPreview(): boolean {
+  if (typeof window === "undefined") return false;
+  return new URLSearchParams(window.location.search).get("adminPreview") === "1";
+}
+
 /** Fades + slides content in once, either immediately (hero) or on scroll. */
 export function FadeIn({
   children,
@@ -19,6 +32,7 @@ export function FadeIn({
   immediate = false,
   className,
   as = "div",
+  id,
 }: {
   children: ReactNode;
   delay?: number;
@@ -28,17 +42,23 @@ export function FadeIn({
   immediate?: boolean;
   className?: string;
   as?: "div" | "span";
+  id?: string;
 }) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotion() || useIsAdminPreview();
   const Comp = (as === "span" ? motion.span : motion.div) as typeof motion.div;
 
   if (reduce) {
     const Static = as === "span" ? "span" : "div";
-    return <Static className={className}>{children}</Static>;
+    return (
+      <Static id={id} className={className}>
+        {children}
+      </Static>
+    );
   }
 
   return (
     <Comp
+      id={id}
       className={className}
       initial={{ opacity: 0, y }}
       {...(immediate
@@ -73,7 +93,7 @@ export function TextReveal({
   delay?: number;
   as?: "span" | "h1" | "h2";
 }) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotion() || useIsAdminPreview();
   const Comp = motion[as];
 
   if (reduce) {
@@ -107,7 +127,7 @@ const staggerItem: Variants = {
 
 /** Container that staggers the entrance of its direct `<StaggerItem>` children on scroll. */
 export function Stagger({ children, className }: { children: ReactNode; className?: string }) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotion() || useIsAdminPreview();
   if (reduce) return <div className={className}>{children}</div>;
   return (
     <motion.div
@@ -123,7 +143,7 @@ export function Stagger({ children, className }: { children: ReactNode; classNam
 }
 
 export function StaggerItem({ children, className }: { children: ReactNode; className?: string }) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotion() || useIsAdminPreview();
   if (reduce) return <div className={className}>{children}</div>;
   return (
     <motion.div className={className} variants={staggerItem}>
@@ -142,7 +162,7 @@ export function Parallax({
   travel?: number;
   className?: string;
 }) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotion() || useIsAdminPreview();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [-travel, travel]);

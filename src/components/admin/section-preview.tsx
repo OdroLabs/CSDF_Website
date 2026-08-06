@@ -247,8 +247,15 @@ export function SectionPreview({
         ref={wrapRef}
         // Very tall sections scroll this container, not the iframe — the iframe
         // has pointer-events disabled so the wheel always reaches here.
-        className="relative overflow-y-auto overflow-x-hidden rounded-xl border bg-white shadow-sm transition-[height] duration-200"
-        style={{ height: panelHeight }}
+        //
+        // `overflow-y-scroll` (not `-auto`) always reserves the scrollbar's
+        // width, even when the content is short enough not to need it. With
+        // `-auto`, the scrollbar would appear and disappear as `panelHeight`
+        // is recomputed from the live measurement below, each toggle nudging
+        // the observed panel width and therefore the scale — a feedback loop
+        // that visibly "blinks" the percentage shown under the frame.
+        className="relative overflow-y-scroll overflow-x-hidden rounded-xl border bg-white shadow-sm transition-[height] duration-200"
+        style={{ height: panelHeight, scrollbarGutter: "stable" }}
       >
         {loading && (
           <div className="absolute inset-0 z-10 grid place-items-center bg-white text-xs text-muted-foreground">

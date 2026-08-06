@@ -19,7 +19,8 @@ import { getSettings, s } from "@/lib/settings";
 import { RichText } from "@/components/site/rich-text";
 import { toPlainText } from "@/lib/sanitize";
 import { formatDate } from "@/lib/utils";
-import { FadeIn } from "@/components/site/motion";
+import { FadeIn, TextReveal } from "@/components/site/motion";
+import { HeroBackdrop } from "@/components/site/hero-backdrop";
 
 export async function generateMetadata({
   params,
@@ -95,17 +96,13 @@ export default async function NewsDetailPage({
   return (
     <>
       {/* Banner with breadcrumb */}
-      <section className="relative overflow-hidden bg-secondary py-16 text-white md:py-20">
-        {item.image && (
-          <>
-            <Image src={item.image} alt="" fill className="object-cover opacity-30" />
-            <div className="absolute inset-0 bg-secondary/70" />
-          </>
-        )}
-        <div className="container relative">
+      <section className="relative overflow-hidden text-white">
+        <HeroBackdrop image={item.image || undefined} />
+
+        <div className="container relative pb-20 pt-20 md:pb-28 md:pt-28">
           <FadeIn immediate>
-            <nav className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm backdrop-blur">
-              <Link href={`/${locale}`} className="flex items-center gap-1.5 text-accent hover:text-white">
+            <nav className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm backdrop-blur">
+              <Link href={`/${locale}`} className="flex items-center gap-1.5 text-white hover:text-white/80">
                 <Home className="h-4 w-4" /> {dict.nav.home}
               </Link>
               <ChevronRight className="h-4 w-4 text-white/50" />
@@ -115,14 +112,18 @@ export default async function NewsDetailPage({
             </nav>
           </FadeIn>
           <FadeIn immediate delay={0.06}>
-            <p className="mb-4 flex items-center gap-1.5 text-sm text-white/80">
+            <p className="flex items-center gap-1.5 text-sm text-white/80">
               <CalendarDays className="h-4 w-4" /> {formatDate(item.publishedAt, locale)}
             </p>
           </FadeIn>
-          <FadeIn immediate delay={0.12}>
-            <h1 className="max-w-3xl text-3xl font-bold leading-tight tracking-tight md:text-5xl">
-              {loc(item, "title", locale)}
-            </h1>
+          <TextReveal
+            as="h1"
+            text={loc(item, "title", locale)}
+            delay={0.12}
+            className="hero-title mt-5 block max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight md:text-6xl"
+          />
+          <FadeIn immediate delay={0.2}>
+            <span className="mt-6 block h-1 w-16 rounded-full bg-gradient-to-r from-white to-white/30" />
           </FadeIn>
         </div>
       </section>

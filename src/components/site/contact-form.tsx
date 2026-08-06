@@ -29,6 +29,14 @@ export function ContactForm({
   return (
     <form
       action={async (fd) => {
+        // The visible form splits the name into two fields for a nicer
+        // layout, but the ContactMessage record (and the notification email)
+        // only has a single `name` column — combine them here rather than
+        // touching the schema.
+        const firstName = ((fd.get("firstName") as string) || "").trim();
+        const lastName = ((fd.get("lastName") as string) || "").trim();
+        fd.set("name", [firstName, lastName].filter(Boolean).join(" "));
+
         const res = await submitContact(fd);
         if (res.ok) setDone(true);
       }}
@@ -36,33 +44,37 @@ export function ContactForm({
     >
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <Label htmlFor="c-name">{dict.common.name} *</Label>
-          <Input id="c-name" name="name" required />
+          <Label htmlFor="c-first-name">{dict.common.firstName} *</Label>
+          <Input id="c-first-name" name="firstName" required />
         </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="c-last-name">{dict.common.lastName} *</Label>
+          <Input id="c-last-name" name="lastName" required />
+        </div>
+      </div>
+      <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="c-email">{dict.common.email} *</Label>
           <Input id="c-email" name="email" type="email" required />
         </div>
-      </div>
-      <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="c-phone">
             {dict.common.phone} <span className="text-muted-foreground">({dict.common.optional})</span>
           </Label>
           <Input id="c-phone" name="phone" />
         </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="c-subject">
-            {dict.common.subject} <span className="text-muted-foreground">({dict.common.optional})</span>
-          </Label>
-          <Input id="c-subject" name="subject" />
-        </div>
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="c-subject">
+          {dict.common.subject} <span className="text-muted-foreground">({dict.common.optional})</span>
+        </Label>
+        <Input id="c-subject" name="subject" />
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="c-message">{dict.common.message} *</Label>
         <Textarea id="c-message" name="message" required rows={6} />
       </div>
-      <Button type="submit" size="lg" className="px-8">
+      <Button type="submit" size="lg" className="rounded-full px-8">
         {dict.common.send}
       </Button>
     </form>

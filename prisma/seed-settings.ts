@@ -358,6 +358,9 @@ const content: Record<string, Val> = {
   },
   about_history_image: BLANK,
 
+  about_gallery_title: { en: "Gallery", si: "ගැලරිය", ta: "படத்தொகுப்பு" },
+  about_testimonials_title: { en: "What People Say", si: "අය පවසන දේ", ta: "மக்கள் கூறுவது" },
+
   about_extra_title: BLANK,
   about_extra_text: BLANK,
 
