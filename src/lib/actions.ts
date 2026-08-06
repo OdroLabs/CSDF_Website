@@ -75,17 +75,17 @@ function parseFieldValue(field: FieldDef, raw: FormDataEntryValue | null) {
  * validates, so this is the only place emptiness is caught for those.
  */
 function validateRequired(fields: FieldDef[], formData: FormData) {
+  const missing: string[] = [];
   for (const field of fields) {
     if (!field.required) continue;
     const key = field.i18n ? `${field.name}En` : field.name;
     const raw = formData.get(key);
     const value = typeof raw === "string" ? raw.trim() : "";
     const empty = field.type === "richtext" ? sanitizeRichText(value) === "" : value === "";
-    if (empty) {
-      throw new Error(
-        `Validation: ${field.label} is required${field.i18n ? " (English)" : ""}.`
-      );
-    }
+    if (empty) missing.push(`${field.label}${field.i18n ? " (English)" : ""}`);
+  }
+  if (missing.length > 0) {
+    throw new Error(`Validation: Required: ${missing.join(", ")}.`);
   }
 }
 
@@ -101,6 +101,12 @@ function buildData(fields: FieldDef[], formData: FormData) {
       }
     } else {
       const parsed = parseFieldValue(field, formData.get(field.name));
+      // A blank, non-required date leaves the field untouched rather than
+      // writing an explicit `null` — some date columns (e.g. Publication and
+      // News `publishedAt`) are non-nullable with a DB default, so sending
+      // `null` throws instead of falling back to that default.
+      if ((field.type === "date" || field.type === "datetime") && parsed === null && !field.required)
+        continue;
       if (field.type === "boolean") data[field.name] = parsed;
       else if (field.required) data[field.name] = parsed ?? "";
       else data[field.name] = parsed;
