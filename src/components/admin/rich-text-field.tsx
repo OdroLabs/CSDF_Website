@@ -33,6 +33,7 @@ import {
   Undo2,
 } from "lucide-react";
 import { cn, withMinDelay } from "@/lib/utils";
+import { uploadDirectToSpaces } from "@/lib/upload-client";
 import { useToast } from "./toast";
 
 /** The editor emits "<p></p>" for an empty document — store nothing instead. */
@@ -306,14 +307,10 @@ export function RichTextField({
     if (!editor) return;
     setUploading(true);
     const toastId = toast({ title: `Uploading ${file.name}…`, variant: "loading" });
-    const fd = new FormData();
-    fd.append("file", file);
     try {
-      const res = await withMinDelay(fetch("/api/upload", { method: "POST", body: fd }));
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Upload failed");
+      const publicUrl = await withMinDelay(uploadDirectToSpaces(file));
       const alt = window.prompt("Describe this image for screen readers (optional)", "") ?? "";
-      editor.chain().focus().setImage({ src: data.url, alt }).run();
+      editor.chain().focus().setImage({ src: publicUrl, alt }).run();
       setHtml(normalise(editor.getHTML()));
       update(toastId, { title: "Image inserted", variant: "success" });
     } catch (e: any) {
