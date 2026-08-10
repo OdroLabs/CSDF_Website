@@ -123,7 +123,13 @@ model News {
   contentEn   String   @db.Text
   contentSi   String?  @db.Text
   contentTa   String?  @db.Text
+  authorEn    String?
+  authorSi    String?
+  authorTa    String?
   image       String?
+  imageAltEn  String?
+  imageAltSi  String?
+  imageAltTa  String?
   // Rich detail-page content
   highlightsEn String? @db.Text // key points checklist, one per line
   highlightsSi String? @db.Text
@@ -146,7 +152,9 @@ model Event {
   descriptionEn String    @db.Text
   descriptionSi String?   @db.Text
   descriptionTa String?   @db.Text
-  location      String?
+  locationEn    String?   @map("location")
+  locationSi    String?
+  locationTa    String?
   image         String?
   // Rich detail-page content
   contentEn     String?   @db.Text // long description shown on the detail page
@@ -158,6 +166,9 @@ model Event {
   agendaEn      String?   @db.Text // schedule, one per line: "Time :: Item"
   agendaSi      String?   @db.Text
   agendaTa      String?   @db.Text
+  registrationEn String?  @db.Text
+  registrationSi String?  @db.Text
+  registrationTa String?  @db.Text
   image2        String?
   image3        String?
   startDate     DateTime
@@ -183,8 +194,20 @@ model Product {
   descriptionEn String   @db.Text
   descriptionSi String?  @db.Text
   descriptionTa String?  @db.Text
+  categoryEn    String?
+  categorySi    String?
+  categoryTa    String?
+  contentEn     String?  @db.Text
+  contentSi     String?  @db.Text
+  contentTa     String?  @db.Text
+  availabilityEn String?
+  availabilitySi String?
+  availabilityTa String?
   price         Decimal? @db.Decimal(10, 2)
   image         String?
+  imageAltEn    String?
+  imageAltSi    String?
+  imageAltTa    String?
   inStock       Boolean  @default(true)
   order         Int      @default(0)
   published     Boolean  @default(true)

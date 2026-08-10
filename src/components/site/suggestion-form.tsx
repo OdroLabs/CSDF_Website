@@ -36,20 +36,16 @@ export function SuggestionForm({
     >
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <Label htmlFor="s-name">
-            {dict.common.name} <span className="text-muted-foreground">({dict.common.optional})</span>
-          </Label>
+          <Label htmlFor="s-name">{dict.suggestions.name}</Label>
           <Input id="s-name" name="name" />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="s-email">
-            {dict.common.email} <span className="text-muted-foreground">({dict.common.optional})</span>
-          </Label>
+          <Label htmlFor="s-email">{dict.suggestions.email}</Label>
           <Input id="s-email" name="email" type="email" />
         </div>
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="s-message">{dict.common.message} *</Label>
+        <Label htmlFor="s-message">{dict.suggestions.message} *</Label>
         <Textarea id="s-message" name="message" required rows={6} />
       </div>
       <Button type="submit" size="lg" className="px-8">

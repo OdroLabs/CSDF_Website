@@ -98,13 +98,13 @@ export function TextReveal({
 
   if (reduce) {
     const Static = as;
-    return <Static className={className}>{text}</Static>;
+    return <Static className={`text-reveal ${className ?? ""}`}>{text}</Static>;
   }
 
   return (
-    <Comp className={className} variants={wordContainer} initial="hidden" animate="show" custom={delay}>
+    <Comp className={`text-reveal ${className ?? ""}`} variants={wordContainer} initial="hidden" animate="show" custom={delay}>
       {text.split(" ").map((word, i) => (
-        <span key={i} className="inline-block overflow-hidden pb-[0.08em] align-top">
+        <span key={i} className="text-reveal-word inline-block overflow-hidden pb-[0.08em] align-top">
           <motion.span variants={wordItem} className="inline-block">
             {word}
             {i < text.split(" ").length - 1 ? " " : ""}

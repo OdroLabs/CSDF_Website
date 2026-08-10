@@ -89,6 +89,7 @@ export default async function NewsDetailPage({
 
   const highlights = loc(item, "highlights", locale).split("\n").map((h) => h.trim()).filter(Boolean);
   const rawQuote = loc(item, "quote", locale);
+  const author = loc(item, "author", locale);
   const [quoteText, quoteAuthor] = rawQuote
     ? rawQuote.split("::").map((p) => p.trim())
     : ["", ""];
@@ -114,6 +115,7 @@ export default async function NewsDetailPage({
           <FadeIn immediate delay={0.06}>
             <p className="flex items-center gap-1.5 text-sm text-white/80">
               <CalendarDays className="h-4 w-4" /> {formatDate(item.publishedAt, locale)}
+              {author && <span> · {author}</span>}
             </p>
           </FadeIn>
           <TextReveal
@@ -133,7 +135,7 @@ export default async function NewsDetailPage({
           {item.image && (
             <FadeIn>
               <div className="relative mb-8 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-border">
-                <Image src={item.image} alt="" fill className="object-cover" />
+                <Image src={item.image} alt={loc(item, "imageAlt", locale)} fill className="object-cover" />
               </div>
             </FadeIn>
           )}
@@ -238,10 +240,10 @@ export default async function NewsDetailPage({
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className="line-clamp-2">{loc(event, "title", locale)}</span>
-                          {event.location && (
+                          {loc(event, "location", locale) && (
                             <span className="mt-0.5 flex items-center gap-1 text-xs font-normal text-muted-foreground">
                               <MapPin className="h-3 w-3 text-primary" />
-                              <span className="truncate">{event.location}</span>
+                              <span className="truncate">{loc(event, "location", locale)}</span>
                             </span>
                           )}
                         </span>

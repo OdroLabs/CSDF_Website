@@ -36,8 +36,11 @@ export default async function DonatePage({
   const dict = getLabels(locale, settings);
 
   const bankTitle = s(settings, "donate_bank_title", locale);
+  const bankIntro = s(settings, "donate_bank_intro", locale);
   const bankDetails = s(settings, "bank_details");
   const note = s(settings, "donate_note", locale);
+  const receiptNote = s(settings, "donate_receipt_note", locale);
+  const privacyNote = s(settings, "donate_privacy_note", locale);
 
   const impactTitle = s(settings, "donate_impact_title", locale);
   const impactItems = sPairs(settings, "donate_impact_items", locale);
@@ -47,7 +50,7 @@ export default async function DonatePage({
     .filter((n) => Number.isFinite(n) && n > 0);
 
   const showOnline = show(settings, "show_donate_online");
-  const showBank = Boolean(bankDetails);
+  const showBank = Boolean(bankIntro || bankDetails);
   const showImpact = impactItems.length > 0;
   const hasSidebar = showBank || showImpact;
 
@@ -138,15 +141,32 @@ export default async function DonatePage({
                     </span>
                     {bankTitle && <h3 className="font-bold tracking-tight text-foreground">{bankTitle}</h3>}
                   </div>
+                  {bankIntro && (
+                    <p className="mb-4 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+                      {bankIntro}
+                    </p>
+                  )}
+                  {bankDetails && (
                   <pre className="whitespace-pre-wrap rounded-2xl bg-muted p-5 font-sans text-sm leading-relaxed text-foreground">
                     {bankDetails}
                   </pre>
+                  )}
                 </FadeIn>
               </div>
             )}
           </div>
         )}
       </div>
+
+      {(receiptNote || privacyNote) && (
+        <section id="sec-donation-notes" className="container grid gap-6 pb-16 md:grid-cols-2 md:pb-24">
+          {[receiptNote, privacyNote].filter(Boolean).map((text, index) => (
+            <FadeIn key={index} delay={index * 0.08} className="border-l-2 border-primary pl-5">
+              <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">{text}</p>
+            </FadeIn>
+          ))}
+        </section>
+      )}
     </>
   );
 }

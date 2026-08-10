@@ -23,7 +23,7 @@ export function DonationForm({
 }) {
   const d = dict.donate;
   const PRESETS = presets && presets.length > 0 ? presets : DEFAULT_PRESETS;
-  const [frequency, setFrequency] = useState<"one_time" | "monthly">("one_time");
+  const [frequency, setFrequency] = useState<"one_time" | "monthly" | "annual">("one_time");
   const [amount, setAmount] = useState<string>(String(PRESETS[Math.min(1, PRESETS.length - 1)]));
 
   const purposes = [
@@ -39,11 +39,12 @@ export function DonationForm({
       <input type="hidden" name="frequency" value={frequency} />
 
       {/* Frequency toggle */}
-      <div className="grid grid-cols-2 gap-1.5 rounded-2xl bg-muted p-1.5" role="group" aria-label={d.purpose}>
+      <div className="grid grid-cols-3 gap-1.5 rounded-2xl bg-muted p-1.5" role="group" aria-label={d.purpose}>
         {(
           [
             { key: "one_time", label: d.oneTime, Icon: Heart },
             { key: "monthly", label: d.monthly, Icon: RefreshCw },
+            { key: "annual", label: d.annual, Icon: RefreshCw },
           ] as const
         ).map(({ key, label, Icon }) => (
           <button

@@ -673,9 +673,9 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                         <h3 className="font-bold leading-snug text-foreground transition-colors group-hover:text-primary">
                           {loc(event, "title", locale)}
                         </h3>
-                        {event.location && (
+                        {loc(event, "location", locale) && (
                           <p className="mt-1.5 flex items-center gap-1 text-xs text-muted-foreground">
-                            <MapPin className="h-3 w-3 text-primary" /> {event.location}
+                            <MapPin className="h-3 w-3 text-primary" /> {loc(event, "location", locale)}
                           </p>
                         )}
                       </div>

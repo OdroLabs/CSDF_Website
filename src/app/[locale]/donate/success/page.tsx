@@ -28,6 +28,7 @@ export async function generateMetadata({
 export default async function DonateSuccessPage({ params }: { params: { locale: Locale } }) {
   const settings = await getSettings();
   const dict = getLabels(params.locale, settings);
+  const receiptNote = s(settings, "donate_receipt_note", params.locale);
   return (
     <div className="container flex flex-col items-center py-24 text-center md:py-32">
       <FadeIn immediate className="flex flex-col items-center">
@@ -35,7 +36,9 @@ export default async function DonateSuccessPage({ params }: { params: { locale: 
           <CheckCircle2 className="h-10 w-10 text-teal-600" />
         </span>
         <h1 className="mb-3 text-3xl font-bold tracking-tight">{dict.donate.successTitle}</h1>
-        <p className="mb-8 max-w-md leading-relaxed text-muted-foreground">{dict.donate.successText}</p>
+        <p className="mb-8 max-w-md leading-relaxed text-muted-foreground">
+          {receiptNote || dict.donate.successText}
+        </p>
         <Button asChild size="lg" className="px-8">
           <Link href={`/${params.locale}`}>{dict.common.backHome}</Link>
         </Button>

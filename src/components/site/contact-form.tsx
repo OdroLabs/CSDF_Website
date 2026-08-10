@@ -29,28 +29,14 @@ export function ContactForm({
   return (
     <form
       action={async (fd) => {
-        // The visible form splits the name into two fields for a nicer
-        // layout, but the ContactMessage record (and the notification email)
-        // only has a single `name` column — combine them here rather than
-        // touching the schema.
-        const firstName = ((fd.get("firstName") as string) || "").trim();
-        const lastName = ((fd.get("lastName") as string) || "").trim();
-        fd.set("name", [firstName, lastName].filter(Boolean).join(" "));
-
         const res = await submitContact(fd);
         if (res.ok) setDone(true);
       }}
       className="space-y-5"
     >
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div className="space-y-1.5">
-          <Label htmlFor="c-first-name">{dict.common.firstName} *</Label>
-          <Input id="c-first-name" name="firstName" required />
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="c-last-name">{dict.common.lastName} *</Label>
-          <Input id="c-last-name" name="lastName" required />
-        </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="c-name">{dict.common.name} *</Label>
+        <Input id="c-name" name="name" required />
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-1.5">

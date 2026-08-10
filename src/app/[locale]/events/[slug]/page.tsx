@@ -87,7 +87,9 @@ export default async function EventDetailPage({
   });
 
   const title = loc(event, "title", locale);
+  const location = loc(event, "location", locale);
   const content = loc(event, "content", locale) || loc(event, "description", locale);
+  const registration = loc(event, "registration", locale);
   const highlights = loc(event, "highlights", locale).split("\n").map((h) => h.trim()).filter(Boolean);
   const agenda = parsePairs(loc(event, "agenda", locale));
   const dateText = `${formatDate(event.startDate, locale)}${
@@ -124,9 +126,9 @@ export default async function EventDetailPage({
               <span className="flex items-center gap-1.5 text-sm text-white/80">
                 <CalendarDays className="h-4 w-4" /> {dateText}
               </span>
-              {event.location && (
+              {location && (
                 <span className="flex items-center gap-1.5 text-sm text-white/80">
-                  <MapPin className="h-4 w-4" /> {event.location}
+                  <MapPin className="h-4 w-4" /> {location}
                 </span>
               )}
             </div>
@@ -195,6 +197,15 @@ export default async function EventDetailPage({
             </div>
           )}
 
+          {registration && (
+            <div className="mt-10 rounded-2xl border border-primary/20 bg-primary/[0.04] p-6">
+              <h3 className="mb-2 text-lg font-bold">{dict.common.registration}</h3>
+              <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+                {registration}
+              </p>
+            </div>
+          )}
+
           {/* Gallery images */}
           {(event.image2 || event.image3) && (
             <div className="mt-10 grid gap-6 sm:grid-cols-2">
@@ -221,14 +232,14 @@ export default async function EventDetailPage({
                   <span className="block text-xs text-muted-foreground">{timeText}</span>
                 </span>
               </li>
-              {event.location && (
+              {location && (
                 <li className="flex items-start gap-3">
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                   <span>
                     <span className="block text-xs text-muted-foreground">
                       {dict.common.location}
                     </span>
-                    <span className="font-medium">{event.location}</span>
+                    <span className="font-medium">{location}</span>
                   </span>
                 </li>
               )}

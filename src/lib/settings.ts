@@ -709,7 +709,7 @@ export const settingPages: SettingPage[] = [
         items: [
           SW("show_contact_form", "Show the contact form"),
           T("contact_form_title", "Form heading"),
-          TA("contact_form_note", "Note above the form", "Optional."),
+          TA("contact_form_note", "Privacy note above the form", "Optional."),
           T("contact_success_message", "Message shown after sending"),
         ],
       },
@@ -726,7 +726,16 @@ export const settingPages: SettingPage[] = [
         section: "Map",
         preview: { path: "/contact", anchor: "sec-map" },
         hideNote: "Hidden automatically when no Google Maps embed URL is set under General.",
-        items: [SW("show_contact_map", "Show the map")],
+        items: [
+          SW("show_contact_map", "Show the map"),
+          TA("contact_map_directions", "Directions / landmark text", "Optional."),
+        ],
+      },
+      {
+        section: "Urgent support",
+        preview: { path: "/contact", anchor: "sec-urgent" },
+        hideNote: AUTO_HIDE,
+        items: [TA("contact_urgent_notice", "Urgent-support notice")],
       },
       {
         section: "Bottom banner",
@@ -770,7 +779,11 @@ export const settingPages: SettingPage[] = [
         section: "Bank transfer",
         preview: { path: "/donate", anchor: "sec-bank" },
         hideNote: AUTO_HIDE,
-        items: [T("donate_bank_title", "Heading"), PA("bank_details", "Bank transfer details")],
+        items: [
+          T("donate_bank_title", "Donation method heading"),
+          TA("donate_bank_intro", "Bank / gateway instructions"),
+          PA("bank_details", "Bank transfer details"),
+        ],
       },
       {
         section: "Why donate",
@@ -784,6 +797,15 @@ export const settingPages: SettingPage[] = [
             itemLabel: "Point",
             addLabel: "Add a point",
           }),
+        ],
+      },
+      {
+        section: "Receipt and privacy",
+        preview: { path: "/donate", anchor: "sec-donation-notes" },
+        hideNote: AUTO_HIDE,
+        items: [
+          TA("donate_receipt_note", "Receipt / acknowledgement note"),
+          TA("donate_privacy_note", "Donor privacy and refund note"),
         ],
       },
     ],
@@ -845,7 +867,9 @@ export const settingPages: SettingPage[] = [
           IMG("events_hero_image", "Header background image"),
           T("events_empty_text", "Message when the list is empty"),
           SW("show_gallery", "Show the photo gallery"),
-          T("gallery_title", "Gallery heading"),
+          T("gallery_title", "Gallery album title"),
+          TA("gallery_description", "Gallery album description"),
+          T("gallery_empty_text", "Message when the gallery is empty"),
         ],
       },
       {
@@ -856,6 +880,26 @@ export const settingPages: SettingPage[] = [
           TA("business_hero_intro", "Intro text"),
           IMG("business_hero_image", "Header background image"),
           T("business_empty_text", "Message when the list is empty"),
+        ],
+      },
+      {
+        section: "Community Business ordering",
+        preview: { path: "/business", anchor: "sec-business-info" },
+        hideNote: AUTO_HIDE,
+        items: [
+          T("business_ordering_title", "Ordering / booking heading"),
+          LINES("business_ordering_steps", "Ordering / booking instructions", {
+            itemLabel: "Step",
+            addLabel: "Add a step",
+          }),
+          T("business_payment_title", "Payment heading"),
+          TA("business_payment_text", "Payment instructions"),
+          T("business_delivery_title", "Delivery heading"),
+          TA("business_delivery_text", "Delivery / collection information"),
+          T("business_policy_title", "Return / cancellation heading"),
+          TA("business_policy_text", "Return / cancellation policy"),
+          T("business_impact_title", "Community impact heading"),
+          TA("business_impact_text", "Community impact message"),
         ],
       },
       {

@@ -120,7 +120,7 @@ const content: Record<string, Val> = {
   nav_show_suggestions: ON,
   nav_show_contact: ON,
   show_header_donate: ON,
-  show_floating_donate: ON,
+  show_floating_whatsapp: ON,
   header_donate_label: { en: "Donation", si: "පරිත්‍යාග", ta: "நன்கொடை" },
 
   /* ======================================================== Footer ======== */
@@ -167,16 +167,6 @@ const content: Record<string, Val> = {
   hero_cta1_link: { en: "/contact" },
   hero_cta2_label: { en: "Learn More", si: "තව දැනගන්න", ta: "மேலும் அறிய" },
   hero_cta2_link: { en: "/about" },
-  hero_points: {
-    en: "All information kept strictly confidential\nNon-judgmental support for every person\nCommunity-led by people who understand\nFree services — no cost, no barriers",
-    si: "සියලුම තොරතුරු දැඩි රහස්‍යභාවයෙන් තබා ගැනේ\nසෑම කෙනෙකුටම විනිශ්චයෙන් තොර සහාය\nතේරුම් ගන්නා අය විසින් මෙහෙයවන ප්‍රජා නායකත්වය\nනොමිලේ සේවා — වියදමක් නැත, බාධක නැත",
-    ta: "அனைத்து தகவல்களும் முற்றிலும் இரகசியமாக பாதுகாக்கப்படும்\nஒவ்வொருவருக்கும் தீர்ப்பற்ற ஆதரவு\nபுரிந்துகொள்பவர்களால் வழிநடத்தப்படும் சமூகம்\nஇலவச சேவைகள் — செலவு இல்லை, தடைகள் இல்லை",
-  },
-  hero_footnote: {
-    en: "08+ partner organizations · 10 districts across Sri Lanka",
-    si: "හවුල්කාර ආයතන 08+ · ශ්‍රී ලංකාව පුරා දිස්ත්‍රික්ක 10ක්",
-    ta: "08+ பங்காளர் அமைப்புகள் · இலங்கை முழுவதும் 10 மாவட்டங்கள்",
-  },
 
   show_home_marquee: ON,
   home_marquee_items: {
@@ -198,6 +188,8 @@ const content: Record<string, Val> = {
     ta: "சமூக வலிமை மேம்பாட்டு மன்றம் (CSDF) சமூக சேவைகள் திணைக்களத்தில் பதிவுசெய்யப்பட்ட, 2002 இல் ஆரம்பிக்கப்பட்ட இலாப நோக்கற்ற தன்னார்வ அமைப்பாகும். இனம், மதம், சாதி மற்றும் கட்சி அரசியலுக்கு அப்பால் சுயாதீனமாக செயல்படும் CSDF, இலங்கையில் ஓரங்கட்டப்பட்ட பெண்களில் கவனம் செலுத்தி, கண்ணியம், மரியாதை மற்றும் சம வாய்ப்புடன் அவர்களின் வாழ்க்கையை மேம்படுத்த தேவையான ஆதரவு சேவைகளை வழங்குகிறது.",
   },
   home_about_image: { en: COMMUNITY_IMAGE },
+  home_about_badge: BLANK,
+  home_about_points: BLANK,
   home_about_caption: {
     en: "Community Strength Development Foundation",
     si: "ප්‍රජා ශක්ති සංවර්ධන පදනම",
@@ -318,6 +310,7 @@ const content: Record<string, Val> = {
     ta: "சமூக வலிமை மேம்பாட்டு மன்றம் (CSDF) சமூக சேவைகள் திணைக்களத்தில் பதிவுசெய்யப்பட்ட, 2002 இல் ஆரம்பிக்கப்பட்ட இலாப நோக்கற்ற தன்னார்வ அமைப்பாகும். இனம், மதம், சாதி மற்றும் கட்சி அரசியலுக்கு அப்பால் சுயாதீனமாக செயல்படும் CSDF, இலங்கையில் ஓரங்கட்டப்பட்ட பெண்களில் கவனம் செலுத்தி, கண்ணியம், மரியாதை மற்றும் சம வாய்ப்புடன் அவர்களின் வாழ்க்கையை மேம்படுத்த தேவையான ஆதரவு சேவைகளை வழங்குகிறது.",
   },
   about_overview_image: BLANK,
+  about_overview_image2: BLANK,
 
   about_vision_title: { en: "Our Vision", si: "අපගේ දැක්ම", ta: "எங்கள் தொலைநோக்கு" },
   about_vision: {
@@ -356,10 +349,9 @@ const content: Record<string, Val> = {
     si: "CSDF 2002 දී ආරම්භ කරන ලද්දේ, සෞඛ්‍ය සේවා වඩාත් අවශ්‍ය කාන්තාවන්ට ඒවා ලැබීමේ ඉඩකඩ අවම බව දුටු කුඩා ප්‍රජා කණ්ඩායමක් විසිනි. කොළොන්නාවේ අවිධිමත් සම-සම්බන්ධතාවක් ලෙස ආරම්භ වූ දේ දිස්ත්‍රික්ක 10ක් පුරා කටයුතු කරන ලියාපදිංචි සංවිධානයක් බවට වර්ධනය වී ඇත.\n\nදශක දෙකකට වැඩි කාලයක් තුළ අපි ශ්‍රී ලංකාවේ HIV ප්‍රතිචාරයේ පෙරමුණේ හවුල්කරුවෙකු බවට පත් වී ඇත. ප්‍රවේශය වෙනස් වී නැත: රහස්‍යභාවය පළමුව, විනිශ්චයක් නැත, සහ සේවය කරන කාන්තාවන් විසින් හැඩගස්වන වැඩසටහන්.",
     ta: "சுகாதார சேவைகள் மிகவும் தேவைப்படும் பெண்களே அவற்றைப் பெறும் வாய்ப்பு குறைவாக இருப்பதைக் கண்ட ஒரு சிறு சமூகக் குழுவினால் CSDF 2002 இல் நிறுவப்பட்டது. கொலன்னாவையில் முறைசாரா சக அணுகுமுறையாகத் தொடங்கியது இன்று 10 மாவட்டங்களில் செயல்படும் பதிவுசெய்யப்பட்ட அமைப்பாக வளர்ந்துள்ளது.\n\nஇரு தசாப்தங்களுக்கும் மேலாக இலங்கையின் HIV பதிலிறுப்பில் நாங்கள் முன்னணி பங்காளியாக மாறியுள்ளோம். அணுகுமுறை மாறவில்லை: இரகசியம் முதலில், தீர்ப்பு இல்லை, சேவை பெறும் பெண்களால் வடிவமைக்கப்படும் திட்டங்கள்.",
   },
-  about_history_image: BLANK,
-
   about_gallery_title: { en: "Gallery", si: "ගැලරිය", ta: "படத்தொகுப்பு" },
   about_testimonials_title: { en: "What People Say", si: "අය පවසන දේ", ta: "மக்கள் கூறுவது" },
+  about_partners_title: BLANK,
 
   about_extra_title: BLANK,
   about_extra_text: BLANK,
@@ -372,6 +364,7 @@ const content: Record<string, Val> = {
     ta: "எங்களை அணுகவும் — அனைத்து விசாரணைகளும் இரகசியமாக கையாளப்படும்.",
   },
   contact_hero_image: BLANK,
+  contact_banner_image: BLANK,
 
   show_contact_form: ON,
   contact_form_title: {
@@ -385,6 +378,8 @@ const content: Record<string, Val> = {
     si: "ඔබගේ පණිවිඩය යවන ලදී. අපි ඉක්මනින් ඔබ හා සම්බන්ධ වන්නෙමු.",
     ta: "உங்கள் செய்தி அனுப்பப்பட்டது. விரைவில் உங்களைத் தொடர்பு கொள்வோம்.",
   },
+  contact_map_directions: BLANK,
+  contact_urgent_notice: BLANK,
 
   show_contact_details: ON,
   contact_details_title: {
@@ -392,6 +387,7 @@ const content: Record<string, Val> = {
     si: "අපගේ විස්තර",
     ta: "எங்கள் விவரங்கள்",
   },
+  contact_details_text: BLANK,
   show_contact_map: ON,
 
   /* =================================================== Donate page ======== */
@@ -416,6 +412,7 @@ const content: Record<string, Val> = {
     si: "බැංකු හුවමාරුව",
     ta: "நேரடி வங்கி பரிமாற்றம்",
   },
+  donate_bank_intro: BLANK,
   bank_details: {
     en: "Account Name: Community Strength Development Foundation\nBank: (your bank)\nBranch: (your branch)\nAccount No: (your account number)\nSWIFT: (for international transfers)",
   },
@@ -426,6 +423,8 @@ const content: Record<string, Val> = {
     si: "වඩාත්ම අවශ්‍ය තැනට :: නම්‍යශීලී අරමුදල් මගින් වඩාත් හදිසි අවශ්‍යතාවලට මුලින්ම ප්‍රතිචාර දැක්විය හැක.\nසෞඛ්‍ය සේවා :: සායන, පරීක්ෂණ, ප්‍රතිකාර සම්බන්ධ කිරීම සහ සම සහාය.\nඅධ්‍යාපනය සහ දැනුවත් කිරීම :: ප්‍රජාව තුළ සම-නායකත්ව සෞඛ්‍ය අධ්‍යාපනය සහ අයිතිවාසිකම් පුහුණුව.\nප්‍රජා වැඩසටහන් :: ආරක්ෂිත අවකාශ, සම නායකත්වය සහ ආර්ථික අවස්ථා.",
     ta: "மிகவும் தேவையான இடத்திற்கு :: நெகிழ்வான நிதி மிக அவசரமான தேவைகளுக்கு முதலில் பதிலளிக்க உதவுகிறது.\nசுகாதார சேவைகள் :: கிளினிக்குகள், பரிசோதனை, சிகிச்சை இணைப்பு மற்றும் சக ஆதரவு.\nகல்வி & விழிப்புணர்வு :: சமூகத்தில் சக தலைமையிலான சுகாதாரக் கல்வி மற்றும் உரிமைப் பயிற்சி.\nசமூக திட்டங்கள் :: பாதுகாப்பான இடங்கள், சக தலைமைத்துவம் மற்றும் பொருளாதார வாய்ப்பு.",
   },
+  donate_receipt_note: BLANK,
+  donate_privacy_note: BLANK,
 
   /* =================================================== Other pages ======== */
   projects_hero_title: { en: "Projects", si: "ව්‍යාපෘති", ta: "திட்டங்கள்" },
@@ -498,6 +497,12 @@ const content: Record<string, Val> = {
   },
   show_gallery: ON,
   gallery_title: { en: "Gallery", si: "ගැලරිය", ta: "படத்தொகுப்பு" },
+  gallery_description: BLANK,
+  gallery_empty_text: {
+    en: "No volunteer photos have been added yet. Please check back soon.",
+    si: "තවම ස්වේච්ඡා ඡායාරූප එක් කර නැත. කරුණාකර නැවත පරීක්ෂා කරන්න.",
+    ta: "தன்னார்வப் புகைப்படங்கள் இன்னும் சேர்க்கப்படவில்லை. விரைவில் மீண்டும் பார்க்கவும்.",
+  },
 
   business_hero_title: { en: "Community Business", si: "ප්‍රජා ව්‍යාපාර", ta: "சமூக வணிகம்" },
   business_hero_intro: {
@@ -511,6 +516,16 @@ const content: Record<string, Val> = {
     si: "තවම නිෂ්පාදන ලැයිස්තුගත කර නැත. කරුණාකර නැවත පරීක්ෂා කරන්න.",
     ta: "இன்னும் பொருட்கள் பட்டியலிடப்படவில்லை. விரைவில் மீண்டும் பார்க்கவும்.",
   },
+  business_ordering_title: { en: "How to Order" },
+  business_ordering_steps: BLANK,
+  business_payment_title: { en: "Payment" },
+  business_payment_text: BLANK,
+  business_delivery_title: { en: "Delivery & Collection" },
+  business_delivery_text: BLANK,
+  business_policy_title: { en: "Returns & Cancellations" },
+  business_policy_text: BLANK,
+  business_impact_title: { en: "Community Impact" },
+  business_impact_text: BLANK,
 
   suggestions_hero_title: { en: "Suggestions", si: "යෝජනා", ta: "ஆலோசனைகள்" },
   suggestions_hero_intro: {

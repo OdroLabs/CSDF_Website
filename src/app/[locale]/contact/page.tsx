@@ -9,6 +9,7 @@ import {
   Linkedin,
   Youtube,
   Share2,
+  TriangleAlert,
 } from "lucide-react";
 import type { Metadata } from "next";
 import type { Locale } from "@/lib/i18n";
@@ -73,6 +74,8 @@ export default async function ContactPage({ params }: { params: { locale: Locale
   const formTitle = s(settings, "contact_form_title", locale);
   const formNote = s(settings, "contact_form_note", locale);
   const successMessage = s(settings, "contact_success_message", locale);
+  const mapDirections = s(settings, "contact_map_directions", locale);
+  const urgentNotice = s(settings, "contact_urgent_notice", locale);
   const bannerImage = s(settings, "contact_banner_image");
 
   const showDetails = show(settings, "show_contact_details", items, socials);
@@ -158,8 +161,22 @@ export default async function ContactPage({ params }: { params: { locale: Locale
         </div>
       )}
 
+      {urgentNotice && (
+        <section id="sec-urgent" className="container pb-16 md:pb-24">
+          <FadeIn className="flex items-start gap-4 border-l-4 border-destructive bg-destructive/5 px-5 py-4 text-sm leading-relaxed text-foreground">
+            <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
+            <p className="whitespace-pre-line">{urgentNotice}</p>
+          </FadeIn>
+        </section>
+      )}
+
       {showMap && (
         <div id="sec-map" className="container pb-16 md:pb-24">
+          {mapDirections && (
+            <p className="mb-4 max-w-3xl whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+              {mapDirections}
+            </p>
+          )}
           <FadeIn className="overflow-hidden rounded-2xl border border-border shadow-card">
             <iframe
               src={mapEmbed}
