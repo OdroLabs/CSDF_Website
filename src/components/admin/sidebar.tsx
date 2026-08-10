@@ -12,6 +12,7 @@ import {
   CalendarDays,
   Images,
   ShoppingBag,
+  ClipboardList,
   Quote,
   Handshake,
   BarChart3,
@@ -57,6 +58,7 @@ const contentLinks = [
 ];
 
 const inboxLinks = [
+  { href: "/admin/content/business-orders", label: "Business Orders", icon: ClipboardList },
   { href: "/admin/content/donations", label: "Donations", icon: Heart },
   { href: "/admin/content/suggestions", label: "Suggestions", icon: Lightbulb },
   { href: "/admin/content/messages", label: "Messages", icon: Mail },

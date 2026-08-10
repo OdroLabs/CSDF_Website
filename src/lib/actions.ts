@@ -11,6 +11,7 @@ import { allLabelDefs } from "./labels";
 import { sanitizeRichText } from "./sanitize";
 import { slugify, uniqueSlug } from "./slug";
 import { sendMail } from "./mail";
+import { randomUUID } from "node:crypto";
 
 const SLUGGED_MODELS = ["project", "service", "news", "event", "publication"] as const;
 
@@ -156,6 +157,20 @@ export async function deleteEntity(slug: string, id: number): Promise<ActionResu
     return { ok: true };
   } catch (error) {
     return { ok: false, error: toMessage(error, "Could not delete. Please try again.") };
+  }
+}
+
+export async function updateBusinessOrderStatus(id: number, status: string): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    const allowed = ["new", "confirmed", "completed", "cancelled"];
+    if (!allowed.includes(status)) throw new Error("Validation: Select a valid order status.");
+    await prisma.businessOrder.update({ where: { id }, data: { status } });
+    revalidatePath("/admin/content/business-orders");
+    revalidatePath("/admin/dashboard");
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: toMessage(error, "Could not update the order status.") };
   }
 }
 
@@ -383,6 +398,84 @@ export async function deleteUser(id: number): Promise<ActionResult> {
 }
 
 // ---------- Public form actions ----------
+
+export async function submitBusinessOrder(formData: FormData): Promise<ActionResult<{ reference: string; whatsappUrl: string | null }>> {
+  try {
+    const productId = Number(formData.get("productId"));
+    const quantity = Number(formData.get("quantity"));
+    const customerName = formString(formData, "customerName");
+    const phone = formString(formData, "phone");
+    const email = formString(formData, "email").toLowerCase();
+    const fulfillment = formString(formData, "fulfillment") === "delivery" ? "delivery" : "pickup";
+    const address = formString(formData, "address");
+    const notes = formString(formData, "notes");
+    const requestedLocale = formString(formData, "locale");
+    const locale = ["en", "si", "ta"].includes(requestedLocale) ? requestedLocale : "en";
+
+    if (!Number.isInteger(productId) || productId < 1)
+      throw new Error("Validation: Select a valid product.");
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 99)
+      throw new Error("Validation: Quantity must be between 1 and 99.");
+    if (!customerName) throw new Error("Validation: Enter your name.");
+    if (!/^\+?[0-9 ()-]{7,20}$/.test(phone))
+      throw new Error("Validation: Enter a valid phone number.");
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      throw new Error("Validation: Enter a valid email address.");
+    if (fulfillment === "delivery" && !address)
+      throw new Error("Validation: Enter a delivery address.");
+
+    const product = await prisma.product.findFirst({
+      where: { id: productId, published: true, inStock: true },
+    });
+    if (!product) throw new Error("Validation: This product is no longer available.");
+
+    const reference = `CSDF-${Date.now().toString(36).toUpperCase()}-${randomUUID().slice(0, 4).toUpperCase()}`;
+    const total = product.price ? product.price.mul(quantity) : null;
+    await prisma.businessOrder.create({
+      data: {
+        reference,
+        productId: product.id,
+        productName: product.nameEn,
+        unitPrice: product.price,
+        quantity,
+        total,
+        customerName,
+        phone,
+        email: email || null,
+        fulfillment,
+        address: address || null,
+        notes: notes || null,
+        locale,
+      },
+    });
+
+    const settings = await getSettings();
+    const whatsapp = s(settings, "whatsapp").replace(/\D/g, "");
+    const summary = [
+      `Hello, I placed an order with CSDF.`,
+      `Order: ${reference}`,
+      `Product: ${product.nameEn}`,
+      `Quantity: ${quantity}`,
+      total ? `Total: LKR ${total.toFixed(2)}` : null,
+      `Customer: ${customerName}`,
+      `Phone: ${phone}`,
+      `Fulfillment: ${fulfillment === "delivery" ? "Delivery" : "Pickup"}`,
+      address ? `Address: ${address}` : null,
+      notes ? `Notes: ${notes}` : null,
+    ].filter(Boolean).join("\n");
+
+    revalidatePath("/admin/content/business-orders");
+    return {
+      ok: true,
+      data: {
+        reference,
+        whatsappUrl: whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(summary)}` : null,
+      },
+    };
+  } catch (error) {
+    return { ok: false, error: toMessage(error, "Could not place the order. Please try again.") };
+  }
+}
 
 export async function submitContact(formData: FormData) {
   const name = (formData.get("name") as string)?.trim();

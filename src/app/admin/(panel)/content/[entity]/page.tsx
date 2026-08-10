@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { OrderStatusSelect } from "@/components/admin/order-status-select";
 
 export default async function EntityListPage({ params }: { params: { entity: string } }) {
   const entity = getEntity(params.entity);
@@ -65,7 +66,7 @@ export default async function EntityListPage({ params }: { params: { entity: str
         </div>
       </div>
       <Card className="overflow-hidden">
-        <CardContent className="p-2">
+        <CardContent className="overflow-x-auto p-2">
           <Table>
             <TableHeader>
               <TableRow className="border-none hover:bg-transparent">
@@ -87,6 +88,9 @@ export default async function EntityListPage({ params }: { params: { entity: str
                   ))}
                   <TableCell className="px-4 text-right">
                     <div className="flex items-center justify-end gap-1">
+                      {entity.slug === "business-orders" && (
+                        <OrderStatusSelect id={row.id} status={row.status} />
+                      )}
                       {!entity.readOnly && (
                         <Button asChild variant="ghost" size="icon" aria-label="Edit">
                           <Link href={`/admin/content/${entity.slug}/${row.id}`}>

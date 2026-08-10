@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { Metadata } from "next";
-import { ShoppingBag, MessageCircle, CreditCard, Truck, RotateCcw, HeartHandshake } from "lucide-react";
+import { ShoppingBag, CreditCard, Truck, RotateCcw, HeartHandshake } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
 import { getLabels } from "@/lib/labels";
@@ -8,11 +8,11 @@ import { getSettings, s, sList } from "@/lib/settings";
 import { formatMoney } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/page-hero";
 import { EmptyState } from "@/components/site/empty-state";
 import { Stagger, StaggerItem } from "@/components/site/motion";
 import { RichText } from "@/components/site/rich-text";
+import { BusinessOrderDialog } from "@/components/site/business-order-dialog";
 
 export async function generateMetadata({
   params,
@@ -38,7 +38,6 @@ export default async function BusinessPage({ params }: { params: { locale: Local
     getSettings(),
   ]);
   const dict = getLabels(locale, settings);
-  const whatsapp = s(settings, "whatsapp").replace(/\D/g, "");
   const orderingTitle = s(settings, "business_ordering_title", locale);
   const orderingSteps = sList(settings, "business_ordering_steps", locale);
   const infoSections = [
@@ -61,7 +60,6 @@ export default async function BusinessPage({ params }: { params: { locale: Local
           const category = loc(product, "category", locale);
           const content = loc(product, "content", locale);
           const availability = loc(product, "availability", locale);
-          const waText = encodeURIComponent(`Hello, I would like to order: ${name}`);
           return (
             <StaggerItem key={product.id} className="h-full">
               <Card className="flex h-full flex-col overflow-hidden rounded-2xl border border-border shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-card-hover">
@@ -97,16 +95,13 @@ export default async function BusinessPage({ params }: { params: { locale: Local
                       <div className="mt-3"><RichText value={content} /></div>
                     </details>
                   )}
-                  {whatsapp && product.inStock && (
-                    <Button asChild variant="secondary" size="sm" className="mt-auto w-fit">
-                      <a
-                        href={`https://wa.me/${whatsapp}?text=${waText}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <MessageCircle className="h-4 w-4" /> {dict.common.orderNow}
-                      </a>
-                    </Button>
+                  {product.inStock && (
+                    <BusinessOrderDialog
+                      productId={product.id}
+                      productName={name}
+                      locale={locale}
+                      dict={dict}
+                    />
                   )}
                 </CardContent>
               </Card>
