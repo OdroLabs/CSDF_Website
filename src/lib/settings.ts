@@ -642,6 +642,7 @@ export const settingPages: SettingPage[] = [
         preview: { path: "/about", anchor: "sec-overview" },
         hideNote: AUTO_HIDE,
         items: [
+          SW("show_about_overview", "Show this section"),
           T("about_overview_title", "Heading"),
           TA("about_overview", "Text"),
           IMG("about_overview_image", "Main photo"),
@@ -653,6 +654,7 @@ export const settingPages: SettingPage[] = [
         preview: { path: "/about", anchor: "sec-visionmission" },
         hideNote: "Each card hides itself when its text is blank.",
         items: [
+          SW("show_about_visionmission", "Show this block"),
           T("about_vision_title", "Vision heading"),
           TA("about_vision", "Vision text"),
           T("about_mission_title", "Mission heading"),
@@ -664,6 +666,7 @@ export const settingPages: SettingPage[] = [
         preview: { path: "/about", anchor: "sec-visionmission" },
         hideNote: AUTO_HIDE,
         items: [
+          SW("show_about_values", "Show this section"),
           T("about_values_title", "Heading"),
           PAIRS("about_values", "Values", {
             leftLabel: "Name",
@@ -678,37 +681,58 @@ export const settingPages: SettingPage[] = [
         section: "Communities we serve",
         preview: { path: "/about", anchor: "sec-community" },
         hideNote: AUTO_HIDE,
-        items: [T("about_community_title", "Heading"), TA("about_community", "Text")],
+        items: [
+          SW("show_about_community", "Show this block"),
+          T("about_community_title", "Heading"),
+          TA("about_community", "Text"),
+        ],
       },
       {
         section: "Our story",
         preview: { path: "/about", anchor: "sec-community" },
         hideNote: AUTO_HIDE,
-        items: [T("about_history_title", "Heading"), TA("about_history", "Text")],
+        items: [
+          SW("show_about_history", "Show this block"),
+          T("about_history_title", "Heading"),
+          TA("about_history", "Text"),
+        ],
       },
       {
         section: "Gallery",
         preview: { path: "/about", anchor: "sec-gallery" },
         hideNote: "Hides itself when there are no Gallery Images under Content.",
-        items: [T("about_gallery_title", "Heading", "Photos come from Content → Gallery.")],
+        items: [
+          SW("show_about_gallery", "Show this section"),
+          T("about_gallery_title", "Heading", "Photos come from Content → Gallery."),
+        ],
       },
       {
         section: "Testimonials",
         preview: { path: "/about", anchor: "sec-testimonials" },
         hideNote: "Hides itself when there are no published Testimonials under Content.",
-        items: [T("about_testimonials_title", "Heading", "Testimonials come from Content → Testimonials.")],
+        items: [
+          SW("show_about_testimonials", "Show this section"),
+          T("about_testimonials_title", "Heading", "Testimonials come from Content → Testimonials."),
+        ],
       },
       {
         section: "Partners",
         preview: { path: "/about", anchor: "sec-partners" },
         hideNote: "Hides itself when there are no Partners under Content. The heading is optional — the logo strip still shows without one.",
-        items: [T("about_partners_title", "Heading", "Optional.")],
+        items: [
+          SW("show_about_partners", "Show this section"),
+          T("about_partners_title", "Heading", "Optional."),
+        ],
       },
       {
         section: "Extra closing section",
         preview: { path: "/about", anchor: "sec-extra" },
         hideNote: AUTO_HIDE,
-        items: [T("about_extra_title", "Heading"), TA("about_extra_text", "Text")],
+        items: [
+          SW("show_about_extra", "Show this section"),
+          T("about_extra_title", "Heading"),
+          TA("about_extra_text", "Text"),
+        ],
       },
     ],
   },
@@ -760,13 +784,19 @@ export const settingPages: SettingPage[] = [
         section: "Urgent support",
         preview: { path: "/contact", anchor: "sec-urgent" },
         hideNote: AUTO_HIDE,
-        items: [TA("contact_urgent_notice", "Urgent-support notice")],
+        items: [
+          SW("show_contact_urgent", "Show this section"),
+          TA("contact_urgent_notice", "Urgent-support notice"),
+        ],
       },
       {
         section: "Bottom banner",
         preview: { path: "/contact", anchor: "sec-banner" },
         hideNote: "Hidden automatically when no image is set.",
-        items: [IMG("contact_banner_image", "Full-width image")],
+        items: [
+          SW("show_contact_banner", "Show this section"),
+          IMG("contact_banner_image", "Full-width image"),
+        ],
       },
     ],
   },
@@ -805,6 +835,7 @@ export const settingPages: SettingPage[] = [
         preview: { path: "/donate", anchor: "sec-bank" },
         hideNote: AUTO_HIDE,
         items: [
+          SW("show_donate_bank", "Show this section"),
           T("donate_bank_title", "Donation method heading"),
           TA("donate_bank_intro", "Bank / gateway instructions"),
           PA("bank_details", "Bank transfer details"),
@@ -815,6 +846,7 @@ export const settingPages: SettingPage[] = [
         preview: { path: "/donate", anchor: "sec-impact" },
         hideNote: AUTO_HIDE,
         items: [
+          SW("show_donate_impact", "Show this section"),
           T("donate_impact_title", "Heading"),
           PAIRS("donate_impact_items", "Points", {
             leftLabel: "Heading",
@@ -829,6 +861,7 @@ export const settingPages: SettingPage[] = [
         preview: { path: "/donate", anchor: "sec-donation-notes" },
         hideNote: AUTO_HIDE,
         items: [
+          SW("show_donate_notes", "Show this section"),
           TA("donate_receipt_note", "Receipt / acknowledgement note"),
           TA("donate_privacy_note", "Donor privacy and refund note"),
         ],
@@ -912,6 +945,7 @@ export const settingPages: SettingPage[] = [
         preview: { path: "/business", anchor: "sec-business-info" },
         hideNote: AUTO_HIDE,
         items: [
+          SW("show_business_ordering", "Show this section"),
           T("business_ordering_title", "Ordering / booking heading"),
           LINES("business_ordering_steps", "Ordering / booking instructions", {
             itemLabel: "Step",

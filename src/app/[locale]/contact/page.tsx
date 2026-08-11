@@ -81,7 +81,8 @@ export default async function ContactPage({ params }: { params: { locale: Locale
   const showDetails = show(settings, "show_contact_details", items, socials);
   const showForm = show(settings, "show_contact_form");
   const showMap = show(settings, "show_contact_map", mapEmbed);
-  const showBanner = Boolean(bannerImage);
+  const showBanner = show(settings, "show_contact_banner", bannerImage);
+  const showUrgent = show(settings, "show_contact_urgent", urgentNotice);
 
   return (
     <>
@@ -161,7 +162,7 @@ export default async function ContactPage({ params }: { params: { locale: Locale
         </div>
       )}
 
-      {urgentNotice && (
+      {showUrgent && (
         <section id="sec-urgent" className="container pb-16 md:pb-24">
           <FadeIn className="flex items-start gap-4 border-l-4 border-destructive bg-destructive/5 px-5 py-4 text-sm leading-relaxed text-foreground">
             <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />

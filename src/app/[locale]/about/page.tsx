@@ -12,7 +12,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
 import { getLabels } from "@/lib/labels";
-import { getSettings, s, sPairs } from "@/lib/settings";
+import { getSettings, s, sPairs, show } from "@/lib/settings";
 import { PageHero } from "@/components/site/page-hero";
 import { FadeIn, Stagger, StaggerItem } from "@/components/site/motion";
 import { StatCounter } from "@/components/site/stat-counter";
@@ -90,25 +90,34 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
   const extraTitle = s(settings, "about_extra_title", locale);
   const extraText = s(settings, "about_extra_text", locale);
 
-  const checklist = [
-    { icon: Eye, title: visionTitle, text: vision },
-    { icon: Target, title: missionTitle, text: mission },
-  ].filter((b) => b.text);
+  const showOverview = show(settings, "show_about_overview", overview);
 
+  const visionMissionOn = show(settings, "show_about_visionmission", vision, mission);
+  const checklist = visionMissionOn
+    ? [
+        { icon: Eye, title: visionTitle, text: vision },
+        { icon: Target, title: missionTitle, text: mission },
+      ].filter((b) => b.text)
+    : [];
+
+  const valuesOn = show(settings, "show_about_values", values);
+  const featureCards = valuesOn ? values.slice(0, 3) : [];
+
+  const communityOn = show(settings, "show_about_community", community);
+  const historyOn = show(settings, "show_about_history", history);
   const timelineItems = [
-    { icon: Users, title: communityTitle, text: community },
-    { icon: History, title: historyTitle, text: history },
-  ].filter((b) => b.text);
+    communityOn && { icon: Users, title: communityTitle, text: community },
+    historyOn && { icon: History, title: historyTitle, text: history },
+  ].filter((b): b is { icon: typeof Users; title: string; text: string } => Boolean(b && b.text !== ""));
 
-  const showOverview = Boolean(overview);
   const showStats = stats.length > 0;
   const showVisionMission = checklist.length > 0;
-  const showFeatures = values.length > 0;
+  const showFeatures = featureCards.length > 0;
   const showTimeline = timelineItems.length > 0;
-  const showGallery = galleryImages.length > 0;
-  const showTestimonials = testimonials.length > 0;
-  const showPartners = partners.length > 0;
-  const featureCards = values.slice(0, 3);
+  const showGallery = show(settings, "show_about_gallery", galleryImages);
+  const showTestimonials = show(settings, "show_about_testimonials", testimonials);
+  const showPartners = show(settings, "show_about_partners", partners);
+  const showExtra = show(settings, "show_about_extra", extraText);
 
   return (
     <>
@@ -307,7 +316,7 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
       )}
 
       {/* Closing CTA */}
-      {extraText && (
+      {showExtra && (
         <section className="container pb-16 md:pb-24">
           <FadeIn as="div" className="relative overflow-hidden rounded-3xl bg-secondary p-10 text-white shadow-pop md:p-14">
             <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-accent/15 blur-3xl" />
