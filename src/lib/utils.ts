@@ -16,6 +16,14 @@ export function formatDate(date: Date | string | null | undefined, locale = "en"
   });
 }
 
+/** Year-only display for fields stored as a full date (e.g. project start/end
+ *  year) where the admin only ever picks a year, so month/day are meaningless. */
+export function formatYear(date: Date | string | null | undefined): string {
+  if (!date) return "";
+  const d = typeof date === "string" ? new Date(date) : date;
+  return isNaN(d.getTime()) ? "" : String(d.getUTCFullYear());
+}
+
 export function formatMoney(amount: number | string, currency = "LKR") {
   const n = typeof amount === "string" ? parseFloat(amount) : amount;
   return `${currency} ${n.toLocaleString("en-LK", { minimumFractionDigits: 2 })}`;

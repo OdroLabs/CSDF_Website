@@ -50,39 +50,37 @@ export default async function NewsPage({ params }: { params: { locale: Locale } 
             <StaggerItem key={item.id} className="h-full">
               <Link
                 href={`/${locale}/news/${item.slug ?? item.id}`}
-                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-card-hover"
+                className="group relative flex aspect-[3/4] flex-col justify-end overflow-hidden rounded-3xl shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
               >
-                <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
-                  {item.image ? (
-                    <>
-                      <Image
-                        src={item.image}
-                        alt=""
-                        fill
-                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent" />
-                    </>
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center">
-                      <Newspaper className="h-9 w-9 text-muted-foreground/30" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex flex-1 flex-col gap-2 p-6">
-                  <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-primary">
+                {item.image ? (
+                  <Image
+                    src={item.image}
+                    alt=""
+                    fill
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-secondary to-primary">
+                    <Newspaper className="h-10 w-10 text-white/30" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+                <div className="relative flex flex-col gap-2 p-6 text-white">
+                  <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/70">
                     <CalendarDays className="h-3.5 w-3.5" /> {formatDate(item.publishedAt, locale)}
                   </p>
-                  <h2 className="font-bold leading-snug text-foreground transition-colors group-hover:text-primary">
+                  <h2 className="text-lg font-bold leading-snug md:text-xl">
                     {loc(item, "title", locale)}
                   </h2>
-                  <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                  <p className="line-clamp-2 text-sm leading-relaxed text-white/70">
                     {/* The body is HTML now, so flatten it for the card preview. */}
-                    {loc(item, "excerpt", locale) || toPlainText(loc(item, "content", locale), 220)}
+                    {loc(item, "excerpt", locale) || toPlainText(loc(item, "content", locale), 160)}
                   </p>
-                  <span className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-semibold text-primary">
-                    {dict.common.readMore}
-                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
+                  <span className="mt-3 flex items-center justify-between">
+                    <span className="text-sm font-semibold text-white">{dict.common.readMore}</span>
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-secondary transition-transform duration-300 group-hover:translate-x-1">
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
                   </span>
                 </div>
               </Link>
