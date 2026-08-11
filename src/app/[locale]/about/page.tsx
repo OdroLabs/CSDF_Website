@@ -108,7 +108,7 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
   const timelineItems = [
     communityOn && { icon: Users, title: communityTitle, text: community },
     historyOn && { icon: History, title: historyTitle, text: history },
-  ].filter((b): b is { icon: typeof Users; title: string; text: string } => Boolean(b) && b.text !== "");
+  ].filter((b): b is { icon: typeof Users; title: string; text: string } => Boolean(b && b.text !== ""));
 
   const showStats = stats.length > 0;
   const showVisionMission = checklist.length > 0;
