@@ -27,6 +27,10 @@ function toInputValue(field: FieldDef, value: any): string {
   if (value == null) return "";
   if (field.type === "date") return String(value).slice(0, 10);
   if (field.type === "datetime") return String(value).slice(0, 16);
+  if (field.type === "year") {
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? "" : String(d.getUTCFullYear());
+  }
   return String(value);
 }
 
@@ -79,6 +83,21 @@ function SingleField({
         <Input
           name={name}
           type="date"
+          defaultValue={toInputValue(field, defaultValue)}
+          required={required}
+          className={errorClass}
+        />
+      );
+    case "year":
+      return (
+        <Input
+          name={name}
+          type="number"
+          inputMode="numeric"
+          min={1900}
+          max={2100}
+          step={1}
+          placeholder="e.g. 2024"
           defaultValue={toInputValue(field, defaultValue)}
           required={required}
           className={errorClass}

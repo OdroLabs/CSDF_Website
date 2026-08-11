@@ -57,6 +57,11 @@ function parseFieldValue(field: FieldDef, raw: FormDataEntryValue | null) {
     case "date":
     case "datetime":
       return value === "" ? null : new Date(value);
+    case "year": {
+      if (value === "") return null;
+      const year = parseInt(value, 10);
+      return isNaN(year) ? null : new Date(Date.UTC(year, 0, 1));
+    }
     case "boolean":
       return raw === "on" || raw === "true";
     case "richtext": {
@@ -106,7 +111,11 @@ function buildData(fields: FieldDef[], formData: FormData) {
       // writing an explicit `null` — some date columns (e.g. Publication and
       // News `publishedAt`) are non-nullable with a DB default, so sending
       // `null` throws instead of falling back to that default.
-      if ((field.type === "date" || field.type === "datetime") && parsed === null && !field.required)
+      if (
+        (field.type === "date" || field.type === "datetime" || field.type === "year") &&
+        parsed === null &&
+        !field.required
+      )
         continue;
       if (field.type === "boolean") data[field.name] = parsed;
       else if (field.required) data[field.name] = parsed ?? "";

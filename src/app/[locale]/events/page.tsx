@@ -1,13 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, CalendarDays, MapPin } from "lucide-react";
+import { CalendarDays, MapPin } from "lucide-react";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
 import { getLabels } from "@/lib/labels";
 import { getSettings, s, sBool } from "@/lib/settings";
 import { formatDate } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { PageHero } from "@/components/site/page-hero";
 import { Section } from "@/components/site/section";
 import { EmptyState } from "@/components/site/empty-state";
@@ -56,47 +55,68 @@ export default async function EventsPage({ params }: { params: { locale: Locale 
   const galleryEmptyText = s(settings, "gallery_empty_text", locale);
   const showGallery = sBool(settings, "show_gallery", true) && (gallery.length > 0 || !!galleryEmptyText);
 
-  const EventCard = ({ event, isPast }: { event: (typeof upcoming)[number]; isPast?: boolean }) => (
-    <Link
-      href={`/${locale}/events/${event.slug ?? event.id}`}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-card-hover"
-    >
-      {event.image && (
-        <div className="relative aspect-[5/4] w-full overflow-hidden">
-          <Image
-            src={event.image}
-            alt=""
-            fill
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent" />
-          <Badge variant={isPast ? "outline" : "secondary"} className="absolute left-4 top-4 border-0">
-            {isPast ? dict.common.past : dict.common.upcoming}
-          </Badge>
+  const EventCard = ({ event, isPast }: { event: (typeof upcoming)[number]; isPast?: boolean }) => {
+    const daysLeft = isPast ? null : Math.ceil((event.startDate.getTime() - Date.now()) / 86400000);
+    return (
+      <Link
+        href={`/${locale}/events/${event.slug ?? event.id}`}
+        className="group flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-card-hover"
+      >
+        <div className="relative m-3 mb-0 aspect-[5/4] overflow-hidden rounded-2xl bg-muted">
+          {event.image ? (
+            <Image
+              src={event.image}
+              alt=""
+              fill
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center">
+              <CalendarDays className="h-9 w-9 text-muted-foreground/30" />
+            </div>
+          )}
         </div>
-      )}
-      <div className="flex flex-1 flex-col gap-2 p-6">
-        <span className="flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.1em] text-primary">
-          <CalendarDays className="h-3 w-3" /> {formatDate(event.startDate, locale)}
-        </span>
-        <h3 className="font-bold leading-snug text-foreground transition-colors group-hover:text-primary">
-          {loc(event, "title", locale)}
-        </h3>
-        {loc(event, "location", locale) && (
-          <p className="flex items-center gap-1 text-xs text-muted-foreground">
-            <MapPin className="h-3 w-3 text-primary" /> {loc(event, "location", locale)}
+        <div className="flex flex-1 flex-col gap-3 p-6">
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide ${
+                isPast ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"
+              }`}
+            >
+              {isPast ? dict.common.past : dict.common.upcoming}
+            </span>
+            {daysLeft !== null && daysLeft > 0 && (
+              <span className="rounded-full bg-accent/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-accent">
+                {daysLeft} {daysLeft === 1 ? "day" : "days"} left
+              </span>
+            )}
+          </div>
+
+          <h3 className="text-lg font-bold leading-snug text-foreground transition-colors group-hover:text-primary">
+            {loc(event, "title", locale)}
+          </h3>
+
+          <div className="space-y-1.5">
+            <p className="flex items-center gap-2 text-sm text-muted-foreground">
+              <CalendarDays className="h-4 w-4 shrink-0 text-primary" />
+              {formatDate(event.startDate, locale)}
+              {event.endDate ? ` – ${formatDate(event.endDate, locale)}` : ""}
+            </p>
+            {loc(event, "location", locale) && (
+              <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                <MapPin className="h-4 w-4 shrink-0 text-primary" />
+                {loc(event, "location", locale)}
+              </p>
+            )}
+          </div>
+
+          <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+            {loc(event, "description", locale)}
           </p>
-        )}
-        <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-          {loc(event, "description", locale)}
-        </p>
-        <span className="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-semibold text-primary">
-          {dict.common.readMore}
-          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-        </span>
-      </div>
-    </Link>
-  );
+        </div>
+      </Link>
+    );
+  };
 
   return (
     <>

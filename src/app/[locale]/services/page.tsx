@@ -1,10 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
-import { getLabels } from "@/lib/labels";
 import { getSettings, s } from "@/lib/settings";
 import { PageHero } from "@/components/site/page-hero";
 import { EmptyState } from "@/components/site/empty-state";
@@ -33,7 +32,6 @@ export default async function ServicesPage({ params }: { params: { locale: Local
     getSettings(),
     prisma.service.findMany({ where: { published: true }, orderBy: { order: "asc" } }),
   ]);
-  const dict = getLabels(locale, settings);
 
   return (
     <>
@@ -42,39 +40,43 @@ export default async function ServicesPage({ params }: { params: { locale: Local
         intro={s(settings, "services_hero_intro", locale)}
         image={s(settings, "services_hero_image") || undefined}
       />
-      <Stagger className="container grid gap-6 py-16 sm:grid-cols-2 md:py-24 lg:grid-cols-3">
+      <Stagger className="container grid gap-6 py-16 sm:grid-cols-2 md:py-24 lg:grid-cols-4">
         {services.map((service) => (
           <StaggerItem key={service.id} className="h-full">
             <Link
               href={`/${locale}/services/${service.slug ?? service.id}`}
-              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-card-hover"
+              className="group relative flex aspect-[4/5] flex-col overflow-hidden rounded-3xl shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
             >
-              {service.image && (
-                <div className="relative aspect-[16/10] w-full overflow-hidden">
-                  <Image
-                    src={service.image}
-                    alt=""
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
+              {service.image ? (
+                <Image
+                  src={service.image}
+                  alt=""
+                  fill
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary" />
               )}
-              <div className="flex flex-1 flex-col p-6">
-                {service.icon && (
-                  <span className="mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-brand-50 text-2xl">
-                    {service.icon}
-                  </span>
-                )}
-                <h2 className="mb-2 text-lg font-bold leading-snug tracking-tight transition-colors group-hover:text-primary">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/5" />
+
+              {/* Top row — icon badge and a link-out affordance, like a floating app card */}
+              <div className="relative flex items-center justify-between p-4">
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-white/15 text-lg text-white ring-1 ring-white/20 backdrop-blur-md">
+                  {service.icon || <Sparkles className="h-5 w-5" />}
+                </span>
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-white text-secondary transition-transform duration-300 group-hover:rotate-45">
+                  <ArrowUpRight className="h-4 w-4" />
+                </span>
+              </div>
+
+              {/* Bottom text */}
+              <div className="relative mt-auto flex flex-col gap-1.5 p-6 text-white">
+                <h2 className="text-lg font-bold leading-snug md:text-xl">
                   {loc(service, "title", locale)}
                 </h2>
-                <p className="mb-4 line-clamp-4 text-sm leading-relaxed text-muted-foreground">
+                <p className="line-clamp-2 text-sm leading-relaxed text-white/75">
                   {loc(service, "description", locale)}
                 </p>
-                <span className="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
-                  {dict.common.readMore}
-                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-                </span>
               </div>
             </Link>
           </StaggerItem>

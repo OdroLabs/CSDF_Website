@@ -8,6 +8,8 @@ export type FieldType =
   | "number"
   | "date"
   | "datetime"
+  /** A 4-digit year only — stored as Jan 1 of that year in a DateTime column. */
+  | "year"
   | "boolean"
   | "select"
   /** Repeatable rows of "heading + text", stored as `Left :: Right` lines. */
@@ -106,8 +108,8 @@ export const entities: EntityDef[] = [
           { value: "upcoming", label: "Upcoming" },
         ],
       },
-      { name: "startDate", label: "Start date", type: "date" },
-      { name: "endDate", label: "End date", type: "date" },
+      { name: "startDate", label: "Start year", type: "year" },
+      { name: "endDate", label: "End year", type: "year", help: "Leave blank for ongoing projects." },
       { name: "order", label: "Sort order", type: "number" },
       { name: "published", label: "Published", type: "boolean" },
     ],

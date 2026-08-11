@@ -17,7 +17,7 @@ import { loc, type Locale } from "@/lib/i18n";
 import { getLabels } from "@/lib/labels";
 import { getSettings, s } from "@/lib/settings";
 import { RichText } from "@/components/site/rich-text";
-import { formatDate } from "@/lib/utils";
+import { formatYear } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FadeIn, Stagger, StaggerItem, TextReveal } from "@/components/site/motion";
@@ -98,8 +98,8 @@ export default async function ProjectDetailPage({
       icon: CalendarDays,
       label: dict.common.date,
       value: project.startDate
-        ? `${formatDate(project.startDate, locale)}${
-            project.endDate ? ` – ${formatDate(project.endDate, locale)}` : ""
+        ? `${formatYear(project.startDate)}${
+            project.endDate ? ` – ${formatYear(project.endDate)}` : ""
           }`
         : null,
     },
@@ -137,8 +137,8 @@ export default async function ProjectDetailPage({
               {project.startDate && (
                 <span className="flex items-center gap-1.5 text-sm text-white/80">
                   <CalendarDays className="h-4 w-4" />
-                  {formatDate(project.startDate, locale)}
-                  {project.endDate ? ` – ${formatDate(project.endDate, locale)}` : ""}
+                  {formatYear(project.startDate)}
+                  {project.endDate ? ` – ${formatYear(project.endDate)}` : ""}
                 </span>
               )}
               {project.location && (

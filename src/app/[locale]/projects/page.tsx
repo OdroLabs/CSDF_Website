@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
 import { getLabels } from "@/lib/labels";
 import { getSettings, s } from "@/lib/settings";
-import { formatDate } from "@/lib/utils";
+import { formatYear } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { PageHero } from "@/components/site/page-hero";
 import { EmptyState } from "@/components/site/empty-state";
@@ -81,7 +81,8 @@ export default async function ProjectsPage({ params }: { params: { locale: Local
                 <div className="flex flex-1 flex-col gap-2 p-6">
                   {project.startDate && (
                     <span className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">
-                      {formatDate(project.startDate, locale)}
+                      {formatYear(project.startDate)}
+                      {project.endDate ? ` – ${formatYear(project.endDate)}` : ""}
                     </span>
                   )}
                   <h2 className="font-bold leading-snug text-foreground transition-colors group-hover:text-primary">
