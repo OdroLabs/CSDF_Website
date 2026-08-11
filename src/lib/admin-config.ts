@@ -344,7 +344,13 @@ export const entities: EntityDef[] = [
     description: "Photos shown in the gallery.",
     orderBy: { order: "asc" },
     fields: [
-      { name: "image", label: "Image", type: "image", required: true },
+      { name: "image", label: "Image", type: "image", help: "Leave blank for a video-only entry." },
+      {
+        name: "videoUrl",
+        label: "Video link",
+        type: "text",
+        help: "A YouTube link (youtube.com/watch?v=... or youtu.be/...). Shows a play button over the video's own thumbnail instead of the photo above.",
+      },
       { name: "caption", label: "Caption", type: "text", i18n: true },
       { name: "order", label: "Sort order", type: "number" },
     ],

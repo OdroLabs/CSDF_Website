@@ -44,3 +44,13 @@ export function extractIframeSrc(value: string | null | undefined): string {
   const match = trimmed.match(/src=["']([^"']+)["']/i);
   return match ? match[1] : "";
 }
+
+/** Pulls the video ID out of any common YouTube URL shape — watch, short
+ *  link, embed, or Shorts — so we can build our own thumbnail/embed URLs. */
+export function extractYouTubeId(value: string | null | undefined): string {
+  if (!value) return "";
+  const match = value
+    .trim()
+    .match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+  return match ? match[1] : "";
+}

@@ -36,8 +36,13 @@ export function buildNav(settings: SettingsMap, dict: Dictionary): NavConfig {
 
   const primary: NavItem[] = [{ href: "", label: dict.nav.home }];
   if (on("nav_show_about")) primary.push({ href: "/about", label: dict.nav.about });
-  if (on("nav_show_projects")) primary.push({ href: "/projects", label: dict.nav.projects });
-  if (on("nav_show_services")) primary.push({ href: "/services", label: dict.nav.services });
+
+  // Services is a dropdown group so Projects can live under it, rather than
+  // sitting on its own in the main bar.
+  const servicesItems: NavItem[] = [];
+  if (on("nav_show_services"))
+    servicesItems.push({ href: "/services", label: dict.nav.servicesOverview });
+  if (on("nav_show_projects")) servicesItems.push({ href: "/projects", label: dict.nav.projects });
 
   const mediaItems: NavItem[] = [];
   if (on("nav_show_publications"))
@@ -52,6 +57,7 @@ export function buildNav(settings: SettingsMap, dict: Dictionary): NavConfig {
     involvedItems.push({ href: "/suggestions", label: dict.nav.suggestions });
 
   const groups: NavGroup[] = [];
+  if (servicesItems.length) groups.push({ label: dict.nav.services, items: servicesItems });
   if (mediaItems.length) groups.push({ label: dict.nav.media, items: mediaItems });
   if (involvedItems.length) groups.push({ label: dict.nav.getInvolved, items: involvedItems });
 
