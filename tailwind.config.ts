@@ -3,12 +3,11 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   darkMode: ["class"],
   content: ["./src/**/*.{ts,tsx}"],
+  // Tailwind's built-in `container` core plugin is replaced with a hand-rolled
+  // `.container` class in globals.css that exactly matches the header's own
+  // width (`mx-auto max-w-8xl px-4 md:px-6`) — see the comment there for why.
+  corePlugins: { container: false },
   theme: {
-    container: {
-      center: true,
-      padding: "1rem",
-      screens: { "2xl": "1200px" },
-    },
     extend: {
       colors: {
         border: "hsl(var(--border))",

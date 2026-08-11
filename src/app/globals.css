@@ -119,6 +119,15 @@
   }
 }
 
+/* Every page section uses `.container` to line up with the header/footer.
+   Tailwind's own `container` core plugin is disabled in tailwind.config.ts
+   (it stepped its max-width per breakpoint and topped out narrower than the
+   header), so this is a plain hand-rolled replacement that always matches
+   the header's own box exactly: `mx-auto max-w-8xl px-4 md:px-6`. */
+.container {
+  @apply mx-auto w-full max-w-8xl px-4 md:px-6;
+}
+
 .font-heading {
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -0.02em;

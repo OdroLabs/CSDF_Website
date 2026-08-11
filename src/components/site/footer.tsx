@@ -50,14 +50,23 @@ export function SiteFooter({
   // Columns actually rendered — used to keep the grid balanced.
   const columnCount = 1 + Number(showExplore) + Number(showInvolved) + Number(showContact);
 
+  const gridTemplate =
+    columnCount >= 4
+      ? "lg:grid-cols-[1.3fr_0.8fr_0.9fr_1fr]"
+      : columnCount === 3
+        ? "lg:grid-cols-[1.3fr_0.9fr_1fr]"
+        : "";
+
   return (
-    <footer id="sec-footer" className="relative bg-secondary text-white/85">
+    <footer id="sec-footer" className="relative overflow-hidden bg-secondary text-white/85">
+      <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
+      <div className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
+      <div className="pointer-events-none absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
+
       <div
-        className={`container relative grid gap-12 py-20 md:grid-cols-2 ${
-          columnCount >= 4 ? "lg:grid-cols-4" : columnCount === 3 ? "lg:grid-cols-3" : ""
-        }`}
+        className={`container relative grid gap-x-10 gap-y-12 py-20 md:grid-cols-2 lg:divide-x lg:divide-white/10 ${gridTemplate}`}
       >
-        <div>
+        <div className="lg:pr-10">
           <div className="mb-4 flex items-center gap-2.5">
             {logoImage ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -116,7 +125,7 @@ export function SiteFooter({
         </div>
 
         {showExplore && (
-          <div>
+          <div className="lg:px-10">
             <h4 className="mb-4 text-sm font-bold uppercase tracking-[0.14em] text-white">
               {dict.footer.explore}
             </h4>
@@ -137,7 +146,7 @@ export function SiteFooter({
         )}
 
         {showInvolved && (
-          <div>
+          <div className="lg:px-10">
             <h4 className="mb-4 text-sm font-bold uppercase tracking-[0.14em] text-white">
               {dict.footer.getInvolved}
             </h4>
@@ -158,7 +167,7 @@ export function SiteFooter({
         )}
 
         {showContact && (
-          <div>
+          <div className="lg:pl-10">
             <h4 className="mb-4 text-sm font-bold uppercase tracking-[0.14em] text-white">
               {dict.nav.contact}
             </h4>

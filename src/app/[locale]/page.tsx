@@ -111,6 +111,8 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
   const heroTitle = s(settings, "hero_title", locale);
   const heroBadge = s(settings, "hero_badge", locale);
   const heroSubtitle = s(settings, "hero_subtitle", locale);
+  const heroPoints = sList(settings, "hero_points", locale);
+  const heroFootnote = s(settings, "hero_footnote", locale);
   const heroCta1 = s(settings, "hero_cta1_label", locale);
   const heroCta2 = s(settings, "hero_cta2_label", locale);
 
@@ -181,6 +183,16 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
   const tickerItems = sList(settings, "home_marquee_items", locale);
   const showTicker = show(settings, "show_home_marquee", tickerItems);
 
+  const avatarColors = ["bg-teal-500", "bg-indigo-500", "bg-violet-500", "bg-pink-500"];
+  const heroAvatars = testimonials
+    .map((t) => loc(t, "author", locale))
+    .filter(Boolean)
+    .slice(0, 4)
+    .map((name) => name.trim().charAt(0).toUpperCase());
+  const heroBlurbTitle = heroPoints[0];
+  const heroChips = heroPoints.slice(1, 4);
+  const heroStat = stats[0];
+
   return (
     <>
       {/* ------------------------------------------------------------------ */}
@@ -189,29 +201,46 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       {showHero && (
         <section
           id="sec-hero"
-          className="relative flex min-h-[92vh] flex-col overflow-hidden bg-secondary text-white md:min-h-[86vh]"
+          className="relative flex min-h-[100svh] flex-col overflow-hidden bg-secondary text-white md:h-[100svh] md:min-h-[720px]"
         >
           {heroImage && (
             <div className="absolute inset-0 overflow-hidden">
               <Parallax travel={26} className="h-full w-full scale-110">
                 <div
-                  className="h-full w-full bg-cover bg-center opacity-45"
+                  className="h-full w-full bg-cover bg-center opacity-40"
                   style={{ backgroundImage: `url(${heroImage})` }}
                 />
               </Parallax>
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-secondary via-secondary/90 to-secondary/40" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-secondary via-secondary/85 to-primary/50 mix-blend-multiply" />
+              <div className="pointer-events-none absolute inset-0 bg-secondary/25" />
             </div>
           )}
-          <div className="pointer-events-none absolute -right-32 -top-32 h-[28rem] w-[28rem] rounded-full bg-accent/20 blur-3xl" />
+          <div className="pointer-events-none absolute -right-32 -top-32 h-[32rem] w-[32rem] rounded-full bg-accent/25 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-40 -left-32 h-[26rem] w-[26rem] rounded-full bg-primary/25 blur-3xl" />
 
-          <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-1 flex-col justify-center px-5 py-28 sm:px-8 md:px-12 lg:px-16">
-            <div className="max-w-2xl">
+          <div className="no-scrollbar relative z-10 mx-auto flex w-full max-w-[1680px] min-h-0 flex-1 flex-col justify-center gap-8 overflow-y-auto px-5 pb-10 pt-24 sm:px-8 md:gap-14 md:px-12 md:pt-32 lg:px-16">
+            <div className="max-w-5xl">
               {heroBadge && (
                 <FadeIn immediate>
-                  <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-white/90 backdrop-blur">
-                    {heroBadge}
-                  </span>
+                  <div className="inline-flex max-w-full flex-wrap items-center gap-3 rounded-full border border-white/15 bg-white/10 py-1.5 pl-1.5 pr-5 backdrop-blur">
+                    {heroAvatars.length > 0 && (
+                      <span className="flex -space-x-2">
+                        {heroAvatars.map((initial, i) => (
+                          <span
+                            key={i}
+                            className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white ring-2 ring-secondary ${
+                              avatarColors[i % avatarColors.length]
+                            }`}
+                          >
+                            {initial}
+                          </span>
+                        ))}
+                      </span>
+                    )}
+                    <span className="text-xs font-semibold tracking-tight text-white/90 md:text-sm">
+                      {heroBadge}
+                    </span>
+                  </div>
                 </FadeIn>
               )}
               {heroTitle && (
@@ -219,29 +248,26 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                   as="h1"
                   text={heroTitle}
                   delay={0.08}
-                  className="mb-6 mt-6 block text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl"
+                  className="hero-title mb-8 mt-6 block text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl md:text-6xl lg:text-7xl"
                 />
               )}
-              {heroSubtitle && (
-                <FadeIn immediate delay={0.2}>
-                  <p className="max-w-lg whitespace-pre-line leading-relaxed text-white/70">
-                    {heroSubtitle}
-                  </p>
-                </FadeIn>
-              )}
               {(heroCta1 || heroCta2) && (
-                <FadeIn immediate delay={0.3} className="mt-9 flex flex-wrap items-center gap-6">
+                <FadeIn immediate delay={0.18} className="flex flex-wrap items-center gap-5">
                   {heroCta1 && (
-                    <Button asChild size="lg" className="rounded-full bg-primary px-8 hover:bg-primary/90">
-                      <Link href={link(locale, s(settings, "hero_cta1_link"))}>
-                        {heroCta1} <ArrowRight className="h-4 w-4" />
-                      </Link>
-                    </Button>
+                    <Link
+                      href={link(locale, s(settings, "hero_cta1_link"))}
+                      className="group inline-flex items-center rounded-full bg-white p-1.5 pl-6 text-secondary shadow-pop transition-transform duration-200 ease-premium hover:scale-[1.02]"
+                    >
+                      <span className="text-sm font-bold md:text-base">{heroCta1}</span>
+                      <span className="ml-5 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent text-white transition-transform duration-200 group-hover:translate-x-0.5">
+                        <ArrowRight className="h-5 w-5" />
+                      </span>
+                    </Link>
                   )}
                   {heroCta2 && (
                     <Link
                       href={link(locale, s(settings, "hero_cta2_link"))}
-                      className="text-sm font-semibold text-white/90 underline-offset-4 hover:text-white hover:underline"
+                      className="text-sm font-semibold text-white/85 underline-offset-4 hover:text-white hover:underline"
                     >
                       {heroCta2}
                     </Link>
@@ -249,16 +275,66 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                 </FadeIn>
               )}
             </div>
-          </div>
-        </section>
-      )}
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Trust bar — scrolling marquee                                       */}
-      {/* ------------------------------------------------------------------ */}
-      {showTicker && (
-        <section id="sec-hero-marquee" className="overflow-hidden border-b border-border bg-secondary py-3 text-white">
-          <Marquee items={tickerItems} className="text-white/70" />
+            {/* Bottom row: blurb + floating tag/stat cards */}
+            <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+              {(heroBlurbTitle || heroSubtitle) && (
+                <FadeIn immediate delay={0.28} className="max-w-lg">
+                  {heroBlurbTitle && <h2 className="mb-2 text-lg font-bold text-white">{heroBlurbTitle}</h2>}
+                  {heroSubtitle && (
+                    <p className="whitespace-pre-line text-sm leading-relaxed text-white/70">
+                      {heroSubtitle}
+                    </p>
+                  )}
+                </FadeIn>
+              )}
+
+              {(heroStat || heroChips.length > 0) && (
+                <FadeIn
+                  immediate
+                  delay={0.36}
+                  className="flex flex-wrap items-end justify-start gap-5 lg:justify-end"
+                >
+                  {heroChips.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-2.5 lg:w-[200px] lg:flex-col lg:items-stretch">
+                      {heroChips.map((chip, i) => (
+                        <span
+                          key={i}
+                          className={`break-words rounded-2xl px-4 py-2 text-center text-xs font-semibold leading-snug shadow-soft [overflow-wrap:anywhere] ${
+                            i % 2 === 0
+                              ? "bg-white text-secondary"
+                              : "border border-white/25 bg-white/10 text-white backdrop-blur"
+                          } ${i === 1 ? "lg:ml-6" : ""}`}
+                        >
+                          {chip}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {heroStat && (
+                    <div className="w-[220px] max-w-full rounded-3xl bg-white p-6 text-secondary shadow-pop">
+                      <p className="break-words text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                        {loc(heroStat, "label", locale)}
+                      </p>
+                      <p className="mt-2 font-number text-4xl font-bold text-primary">
+                        <StatCounter value={heroStat.value} />
+                      </p>
+                      {heroFootnote && (
+                        <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{heroFootnote}</p>
+                      )}
+                    </div>
+                  )}
+                </FadeIn>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom ticker */}
+          {showTicker && (
+            <div id="sec-hero-marquee" className="relative z-10 border-t border-white/10 bg-black/10 py-3">
+              <Marquee items={tickerItems} className="text-white/70" />
+            </div>
+          )}
         </section>
       )}
 
@@ -391,10 +467,10 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                 <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{statsTitle}</h2>
               </FadeIn>
             )}
-            <Stagger className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-5">
+            <Stagger className="flex flex-wrap justify-center gap-4 md:gap-5">
               {stats.map((stat) => (
-                <StaggerItem key={stat.id}>
-                  <div className="glass-dark rounded-2xl p-7 text-center transition-colors duration-300 hover:bg-white/[0.08]">
+                <StaggerItem key={stat.id} className="w-[calc(50%-0.5rem)] md:w-[calc(20%-1rem)]">
+                  <div className="glass-dark h-full rounded-2xl p-7 text-center transition-colors duration-300 hover:bg-white/[0.08]">
                     <p className="font-number text-3xl font-bold md:text-4xl">
                       <StatCounter value={stat.value} />
                     </p>
@@ -716,9 +792,11 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       {/* Testimonials — dark, centered, no star ratings                      */}
       {/* ------------------------------------------------------------------ */}
       {showTestimonials && (
-        <section id="sec-testimonials" className="bg-secondary py-20 text-white md:py-28">
-          <div className="container">
-            <FadeIn className="mx-auto mb-14 max-w-2xl space-y-3 text-center">
+        <section id="sec-testimonials" className="relative overflow-hidden bg-secondary py-24 text-white md:py-32">
+          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
+          <div className="container relative">
+            <FadeIn className="mx-auto mb-16 max-w-2xl space-y-3 text-center">
               {testimonialsEyebrow && (
                 <p className="flex items-center justify-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-white/60">
                   <span className="h-px w-8 bg-white/25" />
@@ -730,9 +808,10 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                 <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{testimonialsTitle}</h2>
               )}
             </FadeIn>
-            <div className="relative mx-auto max-w-3xl">
+            <div className="relative mx-auto max-w-4xl">
               <DarkTestimonialCarousel
                 edgeArrows
+                spotlight
                 items={testimonials.map((t) => ({
                   quote: loc(t, "quote", locale),
                   author: loc(t, "author", locale),

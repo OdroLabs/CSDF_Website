@@ -452,6 +452,12 @@ export const settingPages: SettingPage[] = [
           P("hero_cta1_link", "Primary button link", "Relative path such as /contact, or a full URL."),
           T("hero_cta2_label", "Secondary button text", "Leave blank to hide the button."),
           P("hero_cta2_link", "Secondary button link"),
+          LINES("hero_points", "Highlight card items", {
+            itemLabel: "Point",
+            addLabel: "Add highlight",
+            help: "First item is the bold blurb title next to the hero photo; the rest show as floating tag chips.",
+          }),
+          T("hero_footnote", "Floating stat card footnote"),
         ],
       },
       {

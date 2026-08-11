@@ -197,12 +197,12 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
             )}
 
             {showStats && (
-              <Stagger className="mb-6 grid grid-cols-2 gap-6 lg:grid-cols-4">
+              <Stagger className="mb-6 flex flex-wrap gap-6">
                 {stats.map((stat, i) => {
                   const Icon = STAT_ICONS[i % STAT_ICONS.length];
                   return (
-                    <StaggerItem key={stat.id}>
-                      <div className="rounded-3xl border border-border bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
+                    <StaggerItem key={stat.id} className="w-[calc(50%-0.75rem)] lg:w-[calc(20%-1.2rem)]">
+                      <div className="h-full rounded-3xl border border-border bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover">
                         <span className="mb-4 grid h-11 w-11 place-items-center rounded-xl bg-brand-50 text-primary">
                           <Icon className="h-5 w-5" />
                         </span>
