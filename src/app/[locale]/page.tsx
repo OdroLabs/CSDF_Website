@@ -19,7 +19,7 @@ import { getSettings, s, sList, sNum, show } from "@/lib/settings";
 import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DarkTestimonialCarousel } from "@/components/site/dark-testimonial-carousel";
+import { TestimonialSlider } from "@/components/site/testimonial-slider";
 import { StatCounter } from "@/components/site/stat-counter";
 import { FadeIn, Stagger, StaggerItem, Parallax, TextReveal } from "@/components/site/motion";
 import { Marquee } from "@/components/site/marquee";
@@ -783,35 +783,25 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       )}
 
       {/* ------------------------------------------------------------------ */}
-      {/* Testimonials — dark, centered, no star ratings                      */}
+      {/* Testimonials — light multi-card slider, quote peeking off the edge  */}
       {/* ------------------------------------------------------------------ */}
       {showTestimonials && (
-        <section id="sec-testimonials" className="relative overflow-hidden bg-secondary py-24 text-white md:py-32">
-          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
-          <div className="container relative">
-            <FadeIn className="mx-auto mb-16 max-w-2xl space-y-3 text-center">
-              {testimonialsEyebrow && (
-                <p className="flex items-center justify-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-white/60">
-                  <span className="h-px w-8 bg-white/25" />
-                  {testimonialsEyebrow}
-                  <span className="h-px w-8 bg-white/25" />
-                </p>
-              )}
-              {testimonialsTitle && (
-                <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{testimonialsTitle}</h2>
-              )}
-            </FadeIn>
-            <div className="relative mx-auto max-w-4xl">
-              <DarkTestimonialCarousel
-                edgeArrows
-                spotlight
-                items={testimonials.map((t) => ({
-                  quote: loc(t, "quote", locale),
-                  author: loc(t, "author", locale),
-                }))}
-              />
-            </div>
+        <section id="sec-testimonials" className="border-t border-border py-24 md:py-32">
+          <div className="container">
+            {testimonialsEyebrow && (
+              <FadeIn className="mb-10">
+                <SectionTag>{testimonialsEyebrow}</SectionTag>
+              </FadeIn>
+            )}
+            <TestimonialSlider
+              title={testimonialsTitle}
+              items={testimonials.map((t) => ({
+                quote: loc(t, "quote", locale),
+                author: loc(t, "author", locale),
+                avatar: t.avatar,
+                rating: t.rating,
+              }))}
+            />
           </div>
         </section>
       )}

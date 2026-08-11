@@ -7,7 +7,6 @@ import {
   HeartHandshake,
   TrendingUp,
   Globe2,
-  Quote,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
@@ -16,7 +15,7 @@ import { getSettings, s, sPairs, show } from "@/lib/settings";
 import { PageHero } from "@/components/site/page-hero";
 import { FadeIn, Stagger, StaggerItem } from "@/components/site/motion";
 import { StatCounter } from "@/components/site/stat-counter";
-import { DarkTestimonialCarousel } from "@/components/site/dark-testimonial-carousel";
+import { TestimonialSlider } from "@/components/site/testimonial-slider";
 import { Timeline } from "@/components/site/timeline";
 import { LogoMarquee } from "@/components/site/logo-marquee";
 import { GalleryGrid } from "@/components/site/gallery-grid";
@@ -130,10 +129,19 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
       {/* Overview — overlapping image collage + text/CTA */}
       {showOverview && (
         <section id="sec-overview" className="container py-16 md:py-24">
-          <div className={`grid items-center gap-16 ${overviewImage ? "lg:grid-cols-[1fr_1fr]" : ""}`}>
+          <div className={`grid items-center gap-16 ${overviewImage ? "lg:grid-cols-[1fr_1.15fr]" : ""}`}>
+            <FadeIn className={overviewImage ? "lg:order-1" : ""}>
+              <SectionLabel n="01">{dict.nav.about}</SectionLabel>
+              {overviewTitle && (
+                <h2 className="mb-4 text-3xl font-bold leading-tight tracking-tight text-foreground md:text-5xl">
+                  {overviewTitle}
+                </h2>
+              )}
+              <p className="max-w-2xl whitespace-pre-line leading-relaxed text-muted-foreground">{overview}</p>
+            </FadeIn>
             {overviewImage && (
-              <FadeIn className="relative mx-auto w-full max-w-md lg:mx-0">
-                <div className="relative aspect-[4/5] w-[78%]">
+              <FadeIn delay={0.1} className="relative mx-auto w-full max-w-xl lg:order-2 lg:ml-0 lg:mr-auto">
+                <div className="relative aspect-[4/5] w-[88%] -rotate-2 lg:mr-auto">
                   <div className="overflow-hidden rounded-3xl border border-border shadow-card">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -143,7 +151,7 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
                     />
                   </div>
                 </div>
-                <div className="absolute bottom-0 right-0 aspect-square w-[46%] overflow-hidden rounded-3xl border-4 border-white shadow-pop">
+                <div className="absolute bottom-0 right-0 aspect-square w-[52%] rotate-3 overflow-hidden rounded-3xl border-4 border-white shadow-pop">
                   {overviewImage2 ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={overviewImage2} alt="" className="h-full w-full object-cover" />
@@ -156,15 +164,6 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
                 <span className="absolute -bottom-6 -right-6 h-24 w-24 rounded-full bg-accent/20 blur-2xl" />
               </FadeIn>
             )}
-            <FadeIn delay={overviewImage ? 0.1 : 0}>
-              <SectionLabel n="01">{dict.nav.about}</SectionLabel>
-              {overviewTitle && (
-                <h2 className="mb-4 text-3xl font-bold leading-tight tracking-tight text-foreground md:text-5xl">
-                  {overviewTitle}
-                </h2>
-              )}
-              <p className="max-w-2xl whitespace-pre-line leading-relaxed text-muted-foreground">{overview}</p>
-            </FadeIn>
           </div>
         </section>
       )}
@@ -275,23 +274,20 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
         </section>
       )}
 
-      {/* What People Say — dark testimonial carousel with giant background quote */}
+      {/* What People Say — light multi-card testimonial slider */}
       {showTestimonials && (
-        <section id="sec-testimonials" className="relative overflow-hidden bg-secondary py-16 text-white md:py-24">
-          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
-          <Quote className="pointer-events-none absolute left-1/2 top-8 h-64 w-64 -translate-x-1/2 text-white/[0.04]" />
-          <div className="container relative">
-            <FadeIn className="mx-auto mb-10 max-w-2xl text-center">
+        <section id="sec-testimonials" className="border-t border-border bg-muted/30 py-16 md:py-24">
+          <div className="container">
+            <FadeIn className="mb-10">
               <SectionLabel n="05">{dict.nav.about}</SectionLabel>
-              {testimonialsTitle && (
-                <h2 className="text-2xl font-bold tracking-tight md:text-4xl">{testimonialsTitle}</h2>
-              )}
             </FadeIn>
-            <DarkTestimonialCarousel
+            <TestimonialSlider
+              title={testimonialsTitle}
               items={testimonials.map((t) => ({
                 quote: loc(t, "quote", locale),
                 author: loc(t, "author", locale),
+                avatar: t.avatar,
+                rating: t.rating,
               }))}
             />
           </div>
