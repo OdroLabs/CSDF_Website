@@ -436,7 +436,7 @@ async function main() {
       descriptionEn: "Health screening, referrals, and wellness education in a welcoming environment.",
       descriptionSi: "සුහද පරිසරයක සෞඛ්‍ය පරීක්ෂාව, යොමු කිරීම් සහ සුවතා අධ්‍යාපනය.",
       descriptionTa: "வரவேற்கத்தக்க சூழலில் சுகாதார பரிசோதனை, பரிந்துரைகள் மற்றும் நலக் கல்வி.",
-      location: "Kolonnawa, Colombo",
+      locationEn: "Kolonnawa, Colombo",
       contentEn:
         "Join us for a full day of free health services in a welcoming, judgment-free environment. The Community Health Camp brings CSDF's mobile clinic team, partner medical staff, and peer educators together under one roof.\n\nAll services are free and confidential. No appointment, documents, or referral letters are needed — just come as you are. Sinhala- and Tamil-speaking staff will be available throughout the day.",
       highlightsEn:
@@ -452,7 +452,7 @@ async function main() {
       descriptionEn: "Practical legal literacy, response planning, and community protection strategies.",
       descriptionSi: "ප්‍රායෝගික නීති සාක්ෂරතාව, ප්‍රතිචාර සැලසුම් සහ ප්‍රජා ආරක්ෂණ උපාය මාර්ග.",
       descriptionTa: "நடைமுறை சட்ட எழுத்தறிவு, மறுமொழி திட்டமிடல் மற்றும் சமூக பாதுகாப்பு உத்திகள்.",
-      location: "Colombo",
+      locationEn: "Colombo",
       contentEn:
         "A practical, hands-on workshop that turns legal rights from abstract ideas into tools women can actually use. Led by CSDF peer educators alongside sympathetic legal professionals, the session covers protection from violence and harassment, safe engagement with police, and community response planning.\n\nParticipation is free and confidential. Every participant receives a plain-language rights handbook in Sinhala or Tamil and direct contacts for CSDF's legal assistance service.",
       highlightsEn:

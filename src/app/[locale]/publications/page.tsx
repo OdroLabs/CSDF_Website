@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Metadata } from "next";
 import { FileText, Download } from "lucide-react";
 import { prisma } from "@/lib/prisma";
@@ -56,15 +57,17 @@ export default async function PublicationsPage({ params }: { params: { locale: L
         {publications.map((pub) => (
           <StaggerItem key={pub.id} className="h-full">
             <Card className="flex h-full flex-col overflow-hidden rounded-2xl border border-border shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-card-hover">
-              {pub.coverImage ? (
-                <div className="relative h-44 w-full">
-                  <Image src={pub.coverImage} alt="" fill className="object-cover" />
-                </div>
-              ) : (
-                <div className="flex h-32 items-center justify-center bg-muted">
-                  <FileText className="h-10 w-10 text-muted-foreground/40" />
-                </div>
-              )}
+              <Link href={`/${locale}/publications/${pub.slug ?? pub.id}`}>
+                {pub.coverImage ? (
+                  <div className="relative h-44 w-full">
+                    <Image src={pub.coverImage} alt="" fill className="object-cover" />
+                  </div>
+                ) : (
+                  <div className="flex h-32 items-center justify-center bg-muted">
+                    <FileText className="h-10 w-10 text-muted-foreground/40" />
+                  </div>
+                )}
+              </Link>
               <CardContent className="flex flex-1 flex-col pt-5">
                 <div className="mb-2 flex items-center gap-2">
                   <Badge variant="secondary">{categoryLabels[pub.category] ?? pub.category}</Badge>
@@ -72,17 +75,26 @@ export default async function PublicationsPage({ params }: { params: { locale: L
                     {formatDate(pub.publishedAt, locale)}
                   </span>
                 </div>
-                <h2 className="mb-2 font-bold leading-snug tracking-tight">{loc(pub, "title", locale)}</h2>
+                <h2 className="mb-2 font-bold leading-snug tracking-tight">
+                  <Link href={`/${locale}/publications/${pub.slug ?? pub.id}`} className="hover:text-primary">
+                    {loc(pub, "title", locale)}
+                  </Link>
+                </h2>
                 <p className="mb-4 line-clamp-3 text-sm text-muted-foreground">
                   {loc(pub, "description", locale)}
                 </p>
-                {pub.fileUrl && (
-                  <Button asChild variant="outline" size="sm" className="mt-auto w-fit">
-                    <a href={pub.fileUrl} target="_blank" rel="noopener noreferrer">
-                      <Download className="h-4 w-4" /> {dict.common.download}
-                    </a>
+                <div className="mt-auto flex items-center gap-2">
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={`/${locale}/publications/${pub.slug ?? pub.id}`}>{dict.common.readMore}</Link>
                   </Button>
-                )}
+                  {pub.fileUrl && (
+                    <Button asChild variant="ghost" size="sm">
+                      <a href={pub.fileUrl} target="_blank" rel="noopener noreferrer" download>
+                        <Download className="h-4 w-4" /> {dict.common.download}
+                      </a>
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </StaggerItem>

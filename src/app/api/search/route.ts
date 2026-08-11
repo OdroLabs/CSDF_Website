@@ -47,7 +47,15 @@ export async function GET(request: NextRequest) {
     prisma.event.findMany({
       where: {
         published: true,
-        OR: [...textMatch, { descriptionEn: insensitive }, { descriptionSi: insensitive }, { descriptionTa: insensitive }, { location: insensitive }],
+        OR: [
+          ...textMatch,
+          { descriptionEn: insensitive },
+          { descriptionSi: insensitive },
+          { descriptionTa: insensitive },
+          { locationEn: insensitive },
+          { locationSi: insensitive },
+          { locationTa: insensitive },
+        ],
       },
       take: PER_TYPE_LIMIT,
       orderBy: { startDate: "desc" },

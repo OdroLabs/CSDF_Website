@@ -123,3 +123,76 @@ export async function uploadToSpaces(
 
   return `${cdnEndpoint}/${objectKey}`;
 }
+
+/**
+ * Builds a SigV4 presigned PUT URL so the browser can upload a file straight
+ * to Spaces, bypassing our own serverless function. Needed because Vercel
+ * caps the request body of a Node.js serverless function at ~4.5 MB — a
+ * limit larger PDFs/images blow past long before reaching our route, and the
+ * platform's rejection (a plain-text "Request Entity Too Large") isn't JSON,
+ * which is what broke the admin upload UI. Query-string ("presigned URL")
+ * signing is used instead of the header-based signing in `uploadToSpaces`
+ * because there's no request body available yet to hash at generation time.
+ */
+export async function getPresignedUploadUrl(
+  key: string,
+  contentType: string,
+  expiresSeconds = 120
+): Promise<{ uploadUrl: string; publicUrl: string }> {
+  const accessKeyId = env("DO_ACCESS_KEY_ID");
+  const secretAccessKey = env("DO_SECRET_ACCESS_KEY");
+  const endpoint = env("DO_ENDPOINT").replace(/\/+$/, "");
+  const cdnEndpoint = env("DO_CDN_ENDPOINT").replace(/\/+$/, "");
+  const region = resolveRegion(endpoint);
+
+  const objectKey = `${PROJECT_PREFIX}/${key}`.replace(/\/{2,}/g, "/");
+  const host = new URL(endpoint).host;
+  const canonicalUri = "/" + objectKey.split("/").map(uriEncode).join("/");
+
+  const now = new Date();
+  const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, "");
+  const dateStamp = amzDate.slice(0, 8);
+  const credentialScope = `${dateStamp}/${region}/${SERVICE}/aws4_request`;
+  const signedHeaders = "host;x-amz-acl";
+
+  const query: [string, string][] = [
+    ["X-Amz-Algorithm", "AWS4-HMAC-SHA256"],
+    ["X-Amz-Credential", `${accessKeyId}/${credentialScope}`],
+    ["X-Amz-Date", amzDate],
+    ["X-Amz-Expires", String(expiresSeconds)],
+    ["X-Amz-SignedHeaders", signedHeaders],
+  ];
+  const canonicalQuery = query
+    .slice()
+    .sort((a, b) => (a[0] < b[0] ? -1 : 1))
+    .map(([k, v]) => `${uriEncode(k)}=${uriEncode(v)}`)
+    .join("&");
+
+  const canonicalHeaders = `host:${host}\nx-amz-acl:public-read\n`;
+
+  const canonicalRequest = [
+    "PUT",
+    canonicalUri,
+    canonicalQuery,
+    canonicalHeaders,
+    signedHeaders,
+    "UNSIGNED-PAYLOAD",
+  ].join("\n");
+
+  const stringToSign = [
+    "AWS4-HMAC-SHA256",
+    amzDate,
+    credentialScope,
+    sha256Hex(canonicalRequest),
+  ].join("\n");
+
+  const kDate = hmac(`AWS4${secretAccessKey}`, dateStamp);
+  const kRegion = hmac(kDate, region);
+  const kService = hmac(kRegion, SERVICE);
+  const kSigning = hmac(kService, "aws4_request");
+  const signature = hmac(kSigning, stringToSign).toString("hex");
+
+  const uploadUrl = `${endpoint}${canonicalUri}?${canonicalQuery}&X-Amz-Signature=${signature}`;
+
+  return { uploadUrl, publicUrl: `${cdnEndpoint}/${objectKey}` };
+}

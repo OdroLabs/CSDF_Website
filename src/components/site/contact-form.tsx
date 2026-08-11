@@ -34,35 +34,33 @@ export function ContactForm({
       }}
       className="space-y-5"
     >
+      <div className="space-y-1.5">
+        <Label htmlFor="c-name">{dict.common.name} *</Label>
+        <Input id="c-name" name="name" required />
+      </div>
       <div className="grid gap-5 sm:grid-cols-2">
-        <div className="space-y-1.5">
-          <Label htmlFor="c-name">{dict.common.name} *</Label>
-          <Input id="c-name" name="name" required />
-        </div>
         <div className="space-y-1.5">
           <Label htmlFor="c-email">{dict.common.email} *</Label>
           <Input id="c-email" name="email" type="email" required />
         </div>
-      </div>
-      <div className="grid gap-5 sm:grid-cols-2">
         <div className="space-y-1.5">
           <Label htmlFor="c-phone">
             {dict.common.phone} <span className="text-muted-foreground">({dict.common.optional})</span>
           </Label>
           <Input id="c-phone" name="phone" />
         </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="c-subject">
-            {dict.common.subject} <span className="text-muted-foreground">({dict.common.optional})</span>
-          </Label>
-          <Input id="c-subject" name="subject" />
-        </div>
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="c-subject">
+          {dict.common.subject} <span className="text-muted-foreground">({dict.common.optional})</span>
+        </Label>
+        <Input id="c-subject" name="subject" />
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="c-message">{dict.common.message} *</Label>
         <Textarea id="c-message" name="message" required rows={6} />
       </div>
-      <Button type="submit" size="lg" className="px-8">
+      <Button type="submit" size="lg" className="rounded-full px-8">
         {dict.common.send}
       </Button>
     </form>

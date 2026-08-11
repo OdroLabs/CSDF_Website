@@ -11,8 +11,9 @@ import { allLabelDefs } from "./labels";
 import { sanitizeRichText } from "./sanitize";
 import { slugify, uniqueSlug } from "./slug";
 import { sendMail } from "./mail";
+import { randomUUID } from "node:crypto";
 
-const SLUGGED_MODELS = ["project", "service", "news", "event"] as const;
+const SLUGGED_MODELS = ["project", "service", "news", "event", "publication"] as const;
 
 /**
  * Every admin action resolves to one of these instead of throwing or
@@ -75,17 +76,17 @@ function parseFieldValue(field: FieldDef, raw: FormDataEntryValue | null) {
  * validates, so this is the only place emptiness is caught for those.
  */
 function validateRequired(fields: FieldDef[], formData: FormData) {
+  const missing: string[] = [];
   for (const field of fields) {
     if (!field.required) continue;
     const key = field.i18n ? `${field.name}En` : field.name;
     const raw = formData.get(key);
     const value = typeof raw === "string" ? raw.trim() : "";
     const empty = field.type === "richtext" ? sanitizeRichText(value) === "" : value === "";
-    if (empty) {
-      throw new Error(
-        `Validation: ${field.label} is required${field.i18n ? " (English)" : ""}.`
-      );
-    }
+    if (empty) missing.push(`${field.label}${field.i18n ? " (English)" : ""}`);
+  }
+  if (missing.length > 0) {
+    throw new Error(`Validation: Required: ${missing.join(", ")}.`);
   }
 }
 
@@ -101,6 +102,12 @@ function buildData(fields: FieldDef[], formData: FormData) {
       }
     } else {
       const parsed = parseFieldValue(field, formData.get(field.name));
+      // A blank, non-required date leaves the field untouched rather than
+      // writing an explicit `null` — some date columns (e.g. Publication and
+      // News `publishedAt`) are non-nullable with a DB default, so sending
+      // `null` throws instead of falling back to that default.
+      if ((field.type === "date" || field.type === "datetime") && parsed === null && !field.required)
+        continue;
       if (field.type === "boolean") data[field.name] = parsed;
       else if (field.required) data[field.name] = parsed ?? "";
       else data[field.name] = parsed;
@@ -150,6 +157,20 @@ export async function deleteEntity(slug: string, id: number): Promise<ActionResu
     return { ok: true };
   } catch (error) {
     return { ok: false, error: toMessage(error, "Could not delete. Please try again.") };
+  }
+}
+
+export async function updateBusinessOrderStatus(id: number, status: string): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    const allowed = ["new", "confirmed", "completed", "cancelled"];
+    if (!allowed.includes(status)) throw new Error("Validation: Select a valid order status.");
+    await prisma.businessOrder.update({ where: { id }, data: { status } });
+    revalidatePath("/admin/content/business-orders");
+    revalidatePath("/admin/dashboard");
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: toMessage(error, "Could not update the order status.") };
   }
 }
 
@@ -377,6 +398,84 @@ export async function deleteUser(id: number): Promise<ActionResult> {
 }
 
 // ---------- Public form actions ----------
+
+export async function submitBusinessOrder(formData: FormData): Promise<ActionResult<{ reference: string; whatsappUrl: string | null }>> {
+  try {
+    const productId = Number(formData.get("productId"));
+    const quantity = Number(formData.get("quantity"));
+    const customerName = formString(formData, "customerName");
+    const phone = formString(formData, "phone");
+    const email = formString(formData, "email").toLowerCase();
+    const fulfillment = formString(formData, "fulfillment") === "delivery" ? "delivery" : "pickup";
+    const address = formString(formData, "address");
+    const notes = formString(formData, "notes");
+    const requestedLocale = formString(formData, "locale");
+    const locale = ["en", "si", "ta"].includes(requestedLocale) ? requestedLocale : "en";
+
+    if (!Number.isInteger(productId) || productId < 1)
+      throw new Error("Validation: Select a valid product.");
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 99)
+      throw new Error("Validation: Quantity must be between 1 and 99.");
+    if (!customerName) throw new Error("Validation: Enter your name.");
+    if (!/^\+?[0-9 ()-]{7,20}$/.test(phone))
+      throw new Error("Validation: Enter a valid phone number.");
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      throw new Error("Validation: Enter a valid email address.");
+    if (fulfillment === "delivery" && !address)
+      throw new Error("Validation: Enter a delivery address.");
+
+    const product = await prisma.product.findFirst({
+      where: { id: productId, published: true, inStock: true },
+    });
+    if (!product) throw new Error("Validation: This product is no longer available.");
+
+    const reference = `CSDF-${Date.now().toString(36).toUpperCase()}-${randomUUID().slice(0, 4).toUpperCase()}`;
+    const total = product.price ? product.price.mul(quantity) : null;
+    await prisma.businessOrder.create({
+      data: {
+        reference,
+        productId: product.id,
+        productName: product.nameEn,
+        unitPrice: product.price,
+        quantity,
+        total,
+        customerName,
+        phone,
+        email: email || null,
+        fulfillment,
+        address: address || null,
+        notes: notes || null,
+        locale,
+      },
+    });
+
+    const settings = await getSettings();
+    const whatsapp = s(settings, "whatsapp").replace(/\D/g, "");
+    const summary = [
+      `Hello, I placed an order with CSDF.`,
+      `Order: ${reference}`,
+      `Product: ${product.nameEn}`,
+      `Quantity: ${quantity}`,
+      total ? `Total: LKR ${total.toFixed(2)}` : null,
+      `Customer: ${customerName}`,
+      `Phone: ${phone}`,
+      `Fulfillment: ${fulfillment === "delivery" ? "Delivery" : "Pickup"}`,
+      address ? `Address: ${address}` : null,
+      notes ? `Notes: ${notes}` : null,
+    ].filter(Boolean).join("\n");
+
+    revalidatePath("/admin/content/business-orders");
+    return {
+      ok: true,
+      data: {
+        reference,
+        whatsappUrl: whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(summary)}` : null,
+      },
+    };
+  } catch (error) {
+    return { ok: false, error: toMessage(error, "Could not place the order. Please try again.") };
+  }
+}
 
 export async function submitContact(formData: FormData) {
   const name = (formData.get("name") as string)?.trim();

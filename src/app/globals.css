@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Sinhala:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -7,13 +7,11 @@
 /*
   Design system, v2 — minimal / premium (Stripe · Vercel · Linear · Notion inspired).
   Body copy stays on Inter for readability across all three languages. Headings
-  switch to CSDF's brand display faces for English (Yaldevi) and Tamil
-  (Vanavil-Avvaiyar) — the real font files supplied by the org (see @font-face
-  block below). Sinhala headings were reverted back to the default Inter
-  heading style per request; the FM Samantha @font-face is still declared
-  below if it's wanted again later. Legacy
-  helper classes (.font-heading, .glass-dark, .text-gradient, etc.) are kept so
-  every component that already references them updates automatically.
+  use CSDF's required display faces per language: Yaldevi Colombo for English,
+  FM Samantha for Sinhala, Vanavil Avvaiyar for Tamil (see @font-face block
+  below — all three are locally-hosted font files supplied by the org).
+  Legacy helper classes (.font-heading, .glass-dark, .text-gradient, etc.) are
+  kept so every component that already references them updates automatically.
 */
 
 @font-face {
@@ -121,6 +119,15 @@
   }
 }
 
+/* Every page section uses `.container` to line up with the header/footer.
+   Tailwind's own `container` core plugin is disabled in tailwind.config.ts
+   (it stepped its max-width per breakpoint and topped out narrower than the
+   header), so this is a plain hand-rolled replacement that always matches
+   the header's own box exactly: `mx-auto max-w-8xl px-4 md:px-6`. */
+.container {
+  @apply mx-auto w-full max-w-8xl px-4 md:px-6;
+}
+
 .font-heading {
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -0.02em;
@@ -138,6 +145,14 @@
   font-family: "Yaldevi Colombo", "Inter", ui-sans-serif, sans-serif;
   letter-spacing: -0.01em;
 }
+[data-locale="si"] h1,
+[data-locale="si"] h2,
+[data-locale="si"] h3,
+[data-locale="si"] h4,
+[data-locale="si"] .font-heading {
+  font-family: "Noto Sans Sinhala", "Nirmala UI", sans-serif;
+  letter-spacing: normal;
+}
 [data-locale="ta"] h1,
 [data-locale="ta"] h2,
 [data-locale="ta"] h3,
@@ -154,6 +169,13 @@
 [data-locale="si"] .hero-title,
 [data-locale="ta"] .hero-title {
   font-size: 1.625rem;
+}
+[data-locale="si"] .text-reveal {
+  line-height: 1.2;
+}
+[data-locale="si"] .text-reveal-word {
+  overflow: visible;
+  padding-block: 0.06em;
 }
 @media (min-width: 640px) {
   [data-locale="si"] .hero-title,

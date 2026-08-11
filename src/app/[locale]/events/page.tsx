@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
 import { getLabels } from "@/lib/labels";
-import { getSettings, s, show } from "@/lib/settings";
+import { getSettings, s, sBool } from "@/lib/settings";
 import { formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { PageHero } from "@/components/site/page-hero";
@@ -50,8 +50,10 @@ export default async function EventsPage({ params }: { params: { locale: Locale 
 
   const upcomingTitle = s(settings, "home_events_title", locale);
   const galleryTitle = s(settings, "gallery_title", locale);
-  const showGallery = show(settings, "show_gallery", gallery);
+  const galleryDescription = s(settings, "gallery_description", locale);
   const emptyText = s(settings, "events_empty_text", locale);
+  const galleryEmptyText = s(settings, "gallery_empty_text", locale);
+  const showGallery = sBool(settings, "show_gallery", true) && (gallery.length > 0 || !!galleryEmptyText);
 
   const EventCard = ({ event, isPast }: { event: (typeof upcoming)[number]; isPast?: boolean }) => (
     <Link
@@ -79,9 +81,9 @@ export default async function EventsPage({ params }: { params: { locale: Locale 
         <h3 className="font-bold leading-snug text-foreground transition-colors group-hover:text-primary">
           {loc(event, "title", locale)}
         </h3>
-        {event.location && (
+        {loc(event, "location", locale) && (
           <p className="flex items-center gap-1 text-xs text-muted-foreground">
-            <MapPin className="h-3 w-3 text-primary" /> {event.location}
+            <MapPin className="h-3 w-3 text-primary" /> {loc(event, "location", locale)}
           </p>
         )}
         <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
@@ -106,7 +108,7 @@ export default async function EventsPage({ params }: { params: { locale: Locale 
       {/* Upcoming — hidden entirely when there is nothing scheduled and no
           empty-state message has been set in the admin. */}
       {(upcoming.length > 0 || emptyText) && (
-        <Section title={upcoming.length > 0 ? upcomingTitle : undefined}>
+        <Section title={upcomingTitle}>
           <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {upcoming.map((event) => (
               <StaggerItem key={event.id} className="h-full">
@@ -133,6 +135,11 @@ export default async function EventsPage({ params }: { params: { locale: Locale 
       {showGallery && (
         <section className="bg-muted/60">
           <Section title={galleryTitle}>
+            {galleryDescription && (
+              <p className="mb-8 max-w-3xl whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+                {galleryDescription}
+              </p>
+            )}
             <Stagger className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {gallery.map((img) => {
                 const caption = loc(img, "caption", locale);
@@ -154,6 +161,7 @@ export default async function EventsPage({ params }: { params: { locale: Locale 
                   </StaggerItem>
                 );
               })}
+              {gallery.length === 0 && <EmptyState message={galleryEmptyText} />}
             </Stagger>
           </Section>
         </section>

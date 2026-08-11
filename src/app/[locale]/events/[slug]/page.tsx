@@ -19,7 +19,8 @@ import { RichText } from "@/components/site/rich-text";
 import { formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FadeIn } from "@/components/site/motion";
+import { FadeIn, TextReveal } from "@/components/site/motion";
+import { HeroBackdrop } from "@/components/site/hero-backdrop";
 
 export async function generateMetadata({
   params,
@@ -86,7 +87,9 @@ export default async function EventDetailPage({
   });
 
   const title = loc(event, "title", locale);
+  const location = loc(event, "location", locale);
   const content = loc(event, "content", locale) || loc(event, "description", locale);
+  const registration = loc(event, "registration", locale);
   const highlights = loc(event, "highlights", locale).split("\n").map((h) => h.trim()).filter(Boolean);
   const agenda = parsePairs(loc(event, "agenda", locale));
   const dateText = `${formatDate(event.startDate, locale)}${
@@ -100,17 +103,13 @@ export default async function EventDetailPage({
   return (
     <>
       {/* Banner with breadcrumb */}
-      <section className="relative overflow-hidden bg-secondary py-16 text-white md:py-20">
-        {event.image && (
-          <>
-            <Image src={event.image} alt="" fill className="object-cover opacity-30" />
-            <div className="absolute inset-0 bg-secondary/70" />
-          </>
-        )}
-        <div className="container relative">
+      <section className="relative overflow-hidden text-white">
+        <HeroBackdrop image={event.image || undefined} />
+
+        <div className="container relative pb-20 pt-20 md:pb-28 md:pt-28">
           <FadeIn immediate>
-            <nav className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm backdrop-blur">
-              <Link href={`/${locale}`} className="flex items-center gap-1.5 text-accent hover:text-white">
+            <nav className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm backdrop-blur">
+              <Link href={`/${locale}`} className="flex items-center gap-1.5 text-white hover:text-white/80">
                 <Home className="h-4 w-4" /> {dict.nav.home}
               </Link>
               <ChevronRight className="h-4 w-4 text-white/50" />
@@ -121,23 +120,27 @@ export default async function EventDetailPage({
           </FadeIn>
           <FadeIn immediate delay={0.06}>
             <div className="mb-4 flex flex-wrap items-center gap-3">
-              <Badge className="bg-accent text-accent-foreground hover:bg-accent">
+              <Badge className="bg-white text-primary hover:bg-white">
                 {isPast ? dict.common.past : dict.common.upcoming}
               </Badge>
               <span className="flex items-center gap-1.5 text-sm text-white/80">
                 <CalendarDays className="h-4 w-4" /> {dateText}
               </span>
-              {event.location && (
+              {location && (
                 <span className="flex items-center gap-1.5 text-sm text-white/80">
-                  <MapPin className="h-4 w-4" /> {event.location}
+                  <MapPin className="h-4 w-4" /> {location}
                 </span>
               )}
             </div>
           </FadeIn>
-          <FadeIn immediate delay={0.12}>
-            <h1 className="max-w-3xl text-3xl font-bold leading-tight tracking-tight md:text-5xl">
-              {title}
-            </h1>
+          <TextReveal
+            as="h1"
+            text={title}
+            delay={0.12}
+            className="hero-title mt-1 block max-w-3xl text-4xl font-bold leading-[1.08] tracking-tight md:text-6xl"
+          />
+          <FadeIn immediate delay={0.2}>
+            <span className="mt-6 block h-1 w-16 rounded-full bg-gradient-to-r from-white to-white/30" />
           </FadeIn>
         </div>
       </section>
@@ -194,6 +197,15 @@ export default async function EventDetailPage({
             </div>
           )}
 
+          {registration && (
+            <div className="mt-10 rounded-2xl border border-primary/20 bg-primary/[0.04] p-6">
+              <h3 className="mb-2 text-lg font-bold">{dict.common.registration}</h3>
+              <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+                {registration}
+              </p>
+            </div>
+          )}
+
           {/* Gallery images */}
           {(event.image2 || event.image3) && (
             <div className="mt-10 grid gap-6 sm:grid-cols-2">
@@ -220,14 +232,14 @@ export default async function EventDetailPage({
                   <span className="block text-xs text-muted-foreground">{timeText}</span>
                 </span>
               </li>
-              {event.location && (
+              {location && (
                 <li className="flex items-start gap-3">
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                   <span>
                     <span className="block text-xs text-muted-foreground">
                       {dict.common.location}
                     </span>
-                    <span className="font-medium">{event.location}</span>
+                    <span className="font-medium">{location}</span>
                   </span>
                 </li>
               )}

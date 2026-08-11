@@ -474,9 +474,9 @@ export const settingPages: SettingPage[] = [
           LINES("hero_points", "Highlight card items", {
             itemLabel: "Point",
             addLabel: "Add highlight",
-            help: "Shown in the glass card beside the hero. Remove them all to hide the card.",
+            help: "First item is the bold blurb title next to the hero photo; the rest show as floating tag chips.",
           }),
-          T("hero_footnote", "Highlight card footnote"),
+          T("hero_footnote", "Floating stat card footnote"),
         ],
       },
       {
@@ -503,6 +503,12 @@ export const settingPages: SettingPage[] = [
           TA("home_about_text", "Body text", "Leave blank to use the About page overview."),
           IMG("home_about_image", "Photo"),
           T("home_about_caption", "Caption on the photo"),
+          T("home_about_badge", "Small pink badge on the photo", "Leave blank to hide the badge."),
+          LINES("home_about_points", "Checklist points", {
+            itemLabel: "Point",
+            addLabel: "Add point",
+            help: "Shown as checkmark bullets below the body text.",
+          }),
           T("home_about_link_label", "Link text", "Leave blank to hide the link."),
         ],
       },
@@ -544,6 +550,19 @@ export const settingPages: SettingPage[] = [
         ],
       },
       {
+        section: "Donate call to action",
+        preview: { path: "", anchor: "sec-donate" },
+        hideNote: AUTO_HIDE,
+        items: [
+          SW("show_home_donate", "Show this section"),
+          T("home_donate_eyebrow", "Small label above the heading"),
+          T("home_donate_title", "Heading"),
+          TA("home_donate_text", "Body text"),
+          T("home_donate_button", "Donate button text"),
+          T("home_donate_button2", "Second button text", "Blank hides it."),
+        ],
+      },
+      {
         section: "Get in touch band",
         preview: { path: "", anchor: "sec-contact" },
         hideNote: AUTO_HIDE,
@@ -555,6 +574,28 @@ export const settingPages: SettingPage[] = [
           T("home_contact_card_title", "Red card heading", "e.g. Call Us"),
           IMG("home_contact_image", "Background image"),
           T("home_contact_button", "Button text", "Blank hides the button."),
+        ],
+      },
+      {
+        section: "Partners",
+        preview: { path: "", anchor: "sec-partners" },
+        hideNote: AUTO_HIDE_LIST + " Manage them under Content → Partners.",
+        items: [
+          SW("show_home_partners", "Show this section"),
+          T("home_partners_eyebrow", "Small label above the heading"),
+          T("home_partners_title", "Heading"),
+        ],
+      },
+      {
+        section: "Upcoming events",
+        preview: { path: "", anchor: "sec-events" },
+        hideNote: AUTO_HIDE_LIST + " Manage events under Content → Events.",
+        items: [
+          SW("show_home_events", "Show this section"),
+          T("home_events_eyebrow", "Small label above the heading"),
+          T("home_events_title", "Heading"),
+          NUM("home_events_count", "How many to show", "Default 2."),
+          T("home_events_link_label", "View-all button text", "Blank hides the button."),
         ],
       },
       {
@@ -576,41 +617,6 @@ export const settingPages: SettingPage[] = [
           T("home_news_eyebrow", "Small label above the heading"),
           T("home_news_title", "Heading"),
           NUM("home_news_count", "How many to show", "Default 3."),
-        ],
-      },
-      {
-        section: "Upcoming events",
-        preview: { path: "", anchor: "sec-events" },
-        hideNote: AUTO_HIDE_LIST + " Manage events under Content → Events.",
-        items: [
-          SW("show_home_events", "Show this section"),
-          T("home_events_eyebrow", "Small label above the heading"),
-          T("home_events_title", "Heading"),
-          NUM("home_events_count", "How many to show", "Default 2."),
-          T("home_events_link_label", "View-all button text", "Blank hides the button."),
-        ],
-      },
-      {
-        section: "Partners",
-        preview: { path: "", anchor: "sec-partners" },
-        hideNote: AUTO_HIDE_LIST + " Manage them under Content → Partners.",
-        items: [
-          SW("show_home_partners", "Show this section"),
-          T("home_partners_eyebrow", "Small label above the heading"),
-          T("home_partners_title", "Heading"),
-        ],
-      },
-      {
-        section: "Donate call to action",
-        preview: { path: "", anchor: "sec-donate" },
-        hideNote: AUTO_HIDE,
-        items: [
-          SW("show_home_donate", "Show this section"),
-          T("home_donate_eyebrow", "Small label above the heading"),
-          T("home_donate_title", "Heading"),
-          TA("home_donate_text", "Body text"),
-          T("home_donate_button", "Donate button text"),
-          T("home_donate_button2", "Second button text", "Blank hides it."),
         ],
       },
     ],
@@ -638,7 +644,8 @@ export const settingPages: SettingPage[] = [
         items: [
           T("about_overview_title", "Heading"),
           TA("about_overview", "Text"),
-          IMG("about_overview_image", "Photo"),
+          IMG("about_overview_image", "Main photo"),
+          IMG("about_overview_image2", "Small overlapping photo", "Leave blank to show a plain icon tile instead."),
         ],
       },
       {
@@ -654,7 +661,7 @@ export const settingPages: SettingPage[] = [
       },
       {
         section: "Our values",
-        preview: { path: "/about", anchor: "sec-values" },
+        preview: { path: "/about", anchor: "sec-visionmission" },
         hideNote: AUTO_HIDE,
         items: [
           T("about_values_title", "Heading"),
@@ -675,13 +682,27 @@ export const settingPages: SettingPage[] = [
       },
       {
         section: "Our story",
-        preview: { path: "/about", anchor: "sec-history" },
+        preview: { path: "/about", anchor: "sec-community" },
         hideNote: AUTO_HIDE,
-        items: [
-          T("about_history_title", "Heading"),
-          TA("about_history", "Text"),
-          IMG("about_history_image", "Photo"),
-        ],
+        items: [T("about_history_title", "Heading"), TA("about_history", "Text")],
+      },
+      {
+        section: "Gallery",
+        preview: { path: "/about", anchor: "sec-gallery" },
+        hideNote: "Hides itself when there are no Gallery Images under Content.",
+        items: [T("about_gallery_title", "Heading", "Photos come from Content → Gallery.")],
+      },
+      {
+        section: "Testimonials",
+        preview: { path: "/about", anchor: "sec-testimonials" },
+        hideNote: "Hides itself when there are no published Testimonials under Content.",
+        items: [T("about_testimonials_title", "Heading", "Testimonials come from Content → Testimonials.")],
+      },
+      {
+        section: "Partners",
+        preview: { path: "/about", anchor: "sec-partners" },
+        hideNote: "Hides itself when there are no Partners under Content. The heading is optional — the logo strip still shows without one.",
+        items: [T("about_partners_title", "Heading", "Optional.")],
       },
       {
         section: "Extra closing section",
@@ -713,7 +734,7 @@ export const settingPages: SettingPage[] = [
         items: [
           SW("show_contact_form", "Show the contact form"),
           T("contact_form_title", "Form heading"),
-          TA("contact_form_note", "Note above the form", "Optional."),
+          TA("contact_form_note", "Privacy note above the form", "Optional."),
           T("contact_success_message", "Message shown after sending"),
         ],
       },
@@ -723,13 +744,29 @@ export const settingPages: SettingPage[] = [
         items: [
           SW("show_contact_details", "Show address, phone, email and office hours"),
           T("contact_details_title", "Panel heading"),
+          TA("contact_details_text", "Body text below the heading", "Optional."),
         ],
       },
       {
         section: "Map",
         preview: { path: "/contact", anchor: "sec-map" },
         hideNote: "Hidden automatically when no Google Maps embed URL is set under General.",
-        items: [SW("show_contact_map", "Show the map")],
+        items: [
+          SW("show_contact_map", "Show the map"),
+          TA("contact_map_directions", "Directions / landmark text", "Optional."),
+        ],
+      },
+      {
+        section: "Urgent support",
+        preview: { path: "/contact", anchor: "sec-urgent" },
+        hideNote: AUTO_HIDE,
+        items: [TA("contact_urgent_notice", "Urgent-support notice")],
+      },
+      {
+        section: "Bottom banner",
+        preview: { path: "/contact", anchor: "sec-banner" },
+        hideNote: "Hidden automatically when no image is set.",
+        items: [IMG("contact_banner_image", "Full-width image")],
       },
     ],
   },
@@ -767,7 +804,11 @@ export const settingPages: SettingPage[] = [
         section: "Bank transfer",
         preview: { path: "/donate", anchor: "sec-bank" },
         hideNote: AUTO_HIDE,
-        items: [T("donate_bank_title", "Heading"), PA("bank_details", "Bank transfer details")],
+        items: [
+          T("donate_bank_title", "Donation method heading"),
+          TA("donate_bank_intro", "Bank / gateway instructions"),
+          PA("bank_details", "Bank transfer details"),
+        ],
       },
       {
         section: "Why donate",
@@ -781,6 +822,15 @@ export const settingPages: SettingPage[] = [
             itemLabel: "Point",
             addLabel: "Add a point",
           }),
+        ],
+      },
+      {
+        section: "Receipt and privacy",
+        preview: { path: "/donate", anchor: "sec-donation-notes" },
+        hideNote: AUTO_HIDE,
+        items: [
+          TA("donate_receipt_note", "Receipt / acknowledgement note"),
+          TA("donate_privacy_note", "Donor privacy and refund note"),
         ],
       },
     ],
@@ -842,7 +892,9 @@ export const settingPages: SettingPage[] = [
           IMG("events_hero_image", "Header background image"),
           T("events_empty_text", "Message when the list is empty"),
           SW("show_gallery", "Show the photo gallery"),
-          T("gallery_title", "Gallery heading"),
+          T("gallery_title", "Gallery album title"),
+          TA("gallery_description", "Gallery album description"),
+          T("gallery_empty_text", "Message when the gallery is empty"),
         ],
       },
       {
@@ -853,6 +905,26 @@ export const settingPages: SettingPage[] = [
           TA("business_hero_intro", "Intro text"),
           IMG("business_hero_image", "Header background image"),
           T("business_empty_text", "Message when the list is empty"),
+        ],
+      },
+      {
+        section: "Community Business ordering",
+        preview: { path: "/business", anchor: "sec-business-info" },
+        hideNote: AUTO_HIDE,
+        items: [
+          T("business_ordering_title", "Ordering / booking heading"),
+          LINES("business_ordering_steps", "Ordering / booking instructions", {
+            itemLabel: "Step",
+            addLabel: "Add a step",
+          }),
+          T("business_payment_title", "Payment heading"),
+          TA("business_payment_text", "Payment instructions"),
+          T("business_delivery_title", "Delivery heading"),
+          TA("business_delivery_text", "Delivery / collection information"),
+          T("business_policy_title", "Return / cancellation heading"),
+          TA("business_policy_text", "Return / cancellation policy"),
+          T("business_impact_title", "Community impact heading"),
+          TA("business_impact_text", "Community impact message"),
         ],
       },
       {

@@ -6,6 +6,7 @@ import { Upload, X, FileText, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "./toast";
 import { withMinDelay } from "@/lib/utils";
+import { uploadDirectToSpaces } from "@/lib/upload-client";
 
 export function FileUploadField({
   name,
@@ -28,13 +29,9 @@ export function FileUploadField({
     setUploading(true);
     setError("");
     const toastId = toast({ title: `Uploading ${file.name}…`, variant: "loading" });
-    const fd = new FormData();
-    fd.append("file", file);
     try {
-      const res = await withMinDelay(fetch("/api/upload", { method: "POST", body: fd }));
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Upload failed");
-      setUrl(data.url);
+      const publicUrl = await withMinDelay(uploadDirectToSpaces(file));
+      setUrl(publicUrl);
       update(toastId, {
         title: "Uploaded",
         description: "Remember to save the form to keep it.",

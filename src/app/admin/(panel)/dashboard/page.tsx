@@ -7,6 +7,7 @@ import {
   Lightbulb,
   Mail,
   ShoppingBag,
+  ClipboardList,
   FileText,
   ArrowRight,
   TrendingUp,
@@ -17,13 +18,14 @@ import { formatMoney } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
 export default async function DashboardPage() {
-  const [projects, news, events, publications, products, donations, suggestions, messages, totalDonated] =
+  const [projects, news, events, publications, products, businessOrders, donations, suggestions, messages, totalDonated] =
     await Promise.all([
       prisma.project.count(),
       prisma.news.count(),
       prisma.event.count(),
       prisma.publication.count(),
       prisma.product.count(),
+      prisma.businessOrder.count({ where: { status: "new" } }),
       prisma.donation.count({ where: { status: "success" } }),
       prisma.suggestion.count({ where: { read: false } }),
       prisma.contactMessage.count({ where: { read: false } }),
@@ -36,6 +38,7 @@ export default async function DashboardPage() {
     { label: "Events", value: events, icon: CalendarDays, href: "/admin/content/events", tint: "bg-teal-50 text-teal-700" },
     { label: "Publications", value: publications, icon: FileText, href: "/admin/content/publications", tint: "bg-teal-50 text-teal-700" },
     { label: "Products", value: products, icon: ShoppingBag, href: "/admin/content/products", tint: "bg-amber-50 text-amber-700" },
+    { label: "New Business Orders", value: businessOrders, icon: ClipboardList, href: "/admin/content/business-orders", tint: "bg-teal-50 text-teal-700", alert: businessOrders > 0 },
     { label: "Successful Donations", value: donations, icon: Heart, href: "/admin/content/donations", tint: "bg-rose-50 text-rose-600" },
     { label: "New Suggestions", value: suggestions, icon: Lightbulb, href: "/admin/content/suggestions", tint: "bg-amber-50 text-amber-700", alert: suggestions > 0 },
     { label: "New Messages", value: messages, icon: Mail, href: "/admin/content/messages", tint: "bg-rose-50 text-rose-600", alert: messages > 0 },
