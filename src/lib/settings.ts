@@ -540,7 +540,9 @@ export const settingPages: SettingPage[] = [
           T("home_donate_title", "Heading"),
           TA("home_donate_text", "Body text"),
           T("home_donate_button", "Donate button text"),
+          P("home_donate_button_link", "Donate button link", "Relative path such as /donate, or a full URL. Leave blank to link to the homepage."),
           T("home_donate_button2", "Second button text", "Blank hides it."),
+          P("home_donate_button2_link", "Second button link", "Relative path such as /contact, or a full URL. Leave blank to link to the homepage."),
         ],
       },
       {
