@@ -189,8 +189,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
     .filter(Boolean)
     .slice(0, 4)
     .map((name) => name.trim().charAt(0).toUpperCase());
-  const heroBlurbTitle = heroPoints[0];
-  const heroChips = heroPoints.slice(1, 4);
+  const heroChips = heroPoints.slice(0, 3);
   const heroStat = stats[0];
 
   return (
@@ -276,16 +275,11 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
               )}
             </div>
 
-            {/* Bottom row: blurb + floating tag/stat cards */}
-            <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-              {(heroBlurbTitle || heroSubtitle) && (
-                <FadeIn immediate delay={0.28} className="max-w-lg">
-                  {heroBlurbTitle && <h2 className="mb-2 text-lg font-bold text-white">{heroBlurbTitle}</h2>}
-                  {heroSubtitle && (
-                    <p className="whitespace-pre-line text-sm leading-relaxed text-white/70">
-                      {heroSubtitle}
-                    </p>
-                  )}
+            {/* Bottom row: subtitle + floating tag/stat cards */}
+            <div className="grid gap-10 lg:grid-cols-[1.4fr_0.6fr] lg:items-end">
+              {heroSubtitle && (
+                <FadeIn immediate delay={0.28} className="max-w-[38rem]">
+                  <p className="text-sm leading-relaxed text-white/70">{heroSubtitle}</p>
                 </FadeIn>
               )}
 

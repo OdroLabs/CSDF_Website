@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   Eye,
   Target,
   Users,
   History,
   HeartHandshake,
-  ArrowRight,
   TrendingUp,
   Globe2,
   Quote,
@@ -15,13 +13,13 @@ import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
 import { getLabels } from "@/lib/labels";
 import { getSettings, s, sPairs } from "@/lib/settings";
-import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/site/page-hero";
 import { FadeIn, Stagger, StaggerItem } from "@/components/site/motion";
 import { StatCounter } from "@/components/site/stat-counter";
 import { DarkTestimonialCarousel } from "@/components/site/dark-testimonial-carousel";
 import { Timeline } from "@/components/site/timeline";
 import { LogoMarquee } from "@/components/site/logo-marquee";
+import { GalleryGrid } from "@/components/site/gallery-grid";
 
 export async function generateMetadata({
   params,
@@ -157,11 +155,6 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
                 </h2>
               )}
               <p className="max-w-2xl whitespace-pre-line leading-relaxed text-muted-foreground">{overview}</p>
-              <Button asChild className="mt-6">
-                <Link href={`/${locale}/services`}>
-                  {dict.nav.services} <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
             </FadeIn>
           </div>
         </section>
@@ -261,23 +254,14 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
                 {galleryTitle}
               </h2>
             </FadeIn>
-            <Stagger className="grid grid-cols-2 gap-4 md:grid-cols-4 md:[grid-template-rows:repeat(2,minmax(0,1fr))] md:[grid-auto-flow:dense]">
-              {galleryImages.map((img, i) => (
-                <StaggerItem
-                  key={img.id}
-                  className={i === 0 ? "col-span-2 row-span-2" : ""}
-                >
-                  <div className="h-full overflow-hidden rounded-2xl border border-border shadow-card">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={img.image}
-                      alt={loc(img, "caption", locale)}
-                      className="aspect-square h-full w-full object-cover transition-transform duration-500 hover:scale-105 md:aspect-auto"
-                    />
-                  </div>
-                </StaggerItem>
-              ))}
-            </Stagger>
+            <GalleryGrid
+              items={galleryImages.map((img) => ({
+                id: img.id,
+                image: img.image,
+                videoUrl: img.videoUrl,
+                caption: loc(img, "caption", locale),
+              }))}
+            />
           </div>
         </section>
       )}

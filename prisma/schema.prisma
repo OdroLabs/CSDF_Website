@@ -181,7 +181,8 @@ model GalleryImage {
   captionEn String?
   captionSi String?
   captionTa String?
-  image     String
+  image     String?
+  videoUrl  String?
   order     Int      @default(0)
   createdAt DateTime @default(now())
 }

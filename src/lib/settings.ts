@@ -474,7 +474,7 @@ export const settingPages: SettingPage[] = [
           LINES("hero_points", "Highlight card items", {
             itemLabel: "Point",
             addLabel: "Add highlight",
-            help: "First item is the bold blurb title next to the hero photo; the rest show as floating tag chips.",
+            help: "Shown as floating tag chips near the bottom of the hero. Up to 3 are used.",
           }),
           T("hero_footnote", "Floating stat card footnote"),
         ],
