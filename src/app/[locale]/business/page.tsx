@@ -4,7 +4,7 @@ import { ShoppingBag, CreditCard, Truck, RotateCcw, HeartHandshake } from "lucid
 import { prisma } from "@/lib/prisma";
 import { loc, type Locale } from "@/lib/i18n";
 import { getLabels } from "@/lib/labels";
-import { getSettings, s, sList } from "@/lib/settings";
+import { getSettings, s, sList, show } from "@/lib/settings";
 import { formatMoney } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -46,6 +46,7 @@ export default async function BusinessPage({ params }: { params: { locale: Local
     { icon: RotateCcw, title: s(settings, "business_policy_title", locale), text: s(settings, "business_policy_text", locale) },
     { icon: HeartHandshake, title: s(settings, "business_impact_title", locale), text: s(settings, "business_impact_text", locale) },
   ].filter((section) => section.title || section.text);
+  const showOrdering = show(settings, "show_business_ordering", orderingSteps, infoSections);
 
   return (
     <>
@@ -115,7 +116,7 @@ export default async function BusinessPage({ params }: { params: { locale: Local
         )}
       </Stagger>
 
-      {(orderingSteps.length > 0 || infoSections.length > 0) && (
+      {showOrdering && (
         <section id="sec-business-info" className="border-t border-border bg-muted/50 py-16 md:py-24">
           <div className="container">
             {orderingSteps.length > 0 && (

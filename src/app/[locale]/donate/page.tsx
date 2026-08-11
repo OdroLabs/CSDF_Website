@@ -50,8 +50,9 @@ export default async function DonatePage({
     .filter((n) => Number.isFinite(n) && n > 0);
 
   const showOnline = show(settings, "show_donate_online");
-  const showBank = Boolean(bankIntro || bankDetails);
-  const showImpact = impactItems.length > 0;
+  const showBank = show(settings, "show_donate_bank", bankIntro, bankDetails);
+  const showImpact = show(settings, "show_donate_impact", impactItems);
+  const showNotes = show(settings, "show_donate_notes", receiptNote, privacyNote);
   const hasSidebar = showBank || showImpact;
 
   return (
@@ -158,7 +159,7 @@ export default async function DonatePage({
         )}
       </div>
 
-      {(receiptNote || privacyNote) && (
+      {showNotes && (
         <section id="sec-donation-notes" className="container grid gap-6 pb-16 md:grid-cols-2 md:pb-24">
           {[receiptNote, privacyNote].filter(Boolean).map((text, index) => (
             <FadeIn key={index} delay={index * 0.08} className="border-l-2 border-primary pl-5">
