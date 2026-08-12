@@ -103,7 +103,7 @@ export default async function ProjectDetailPage({
           }`
         : null,
     },
-    { icon: MapPin, label: dict.common.location, value: project.location },
+    { icon: MapPin, label: dict.common.location, value: loc(project, "location", locale) },
     { icon: Users, label: dict.common.beneficiaries, value: beneficiaries || null },
   ].filter((f) => f.value);
 
@@ -141,9 +141,9 @@ export default async function ProjectDetailPage({
                   {project.endDate ? ` – ${formatYear(project.endDate)}` : ""}
                 </span>
               )}
-              {project.location && (
+              {loc(project, "location", locale) && (
                 <span className="flex items-center gap-1.5 text-sm text-white/80">
-                  <MapPin className="h-4 w-4" /> {project.location}
+                  <MapPin className="h-4 w-4" /> {loc(project, "location", locale)}
                 </span>
               )}
             </div>

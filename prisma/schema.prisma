@@ -54,7 +54,9 @@ model Project {
   beneficiariesEn String?
   beneficiariesSi String?
   beneficiariesTa String?
-  location       String?
+  locationEn     String?   @map("location")
+  locationSi     String?
+  locationTa     String?
   image2         String?
   image3         String?
   status         String    @default("ongoing") // ongoing | completed | upcoming

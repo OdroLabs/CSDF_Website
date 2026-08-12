@@ -94,7 +94,7 @@ export const entities: EntityDef[] = [
         addLabel: "Add an outcome",
         help: "Each one becomes a numbered card on the project page.",
       },
-      { name: "location", label: "Location / districts", type: "text" },
+      { name: "location", label: "Location / districts", type: "text", i18n: true },
       { name: "beneficiaries", label: "Beneficiaries", type: "text", i18n: true, help: "e.g. 1,200 women across 6 districts" },
       { name: "image2", label: "Gallery image 1", type: "image" },
       { name: "image3", label: "Gallery image 2", type: "image" },
