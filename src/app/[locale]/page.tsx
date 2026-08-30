@@ -19,7 +19,7 @@ import { getSettings, s, sList, sNum, show } from "@/lib/settings";
 import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DarkTestimonialCarousel } from "@/components/site/dark-testimonial-carousel";
+import { TestimonialSlider } from "@/components/site/testimonial-slider";
 import { StatCounter } from "@/components/site/stat-counter";
 import { FadeIn, Stagger, StaggerItem, Parallax, TextReveal } from "@/components/site/motion";
 import { Marquee } from "@/components/site/marquee";
@@ -156,7 +156,9 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
   const donateTitle = s(settings, "home_donate_title", locale);
   const donateText = s(settings, "home_donate_text", locale);
   const donateButton = s(settings, "home_donate_button", locale);
+  const donateButtonLink = link(locale, s(settings, "home_donate_button_link"));
   const donateButton2 = s(settings, "home_donate_button2", locale);
+  const donateButton2Link = link(locale, s(settings, "home_donate_button2_link"));
   const donateEyebrow = s(settings, "home_donate_eyebrow", locale);
 
   /* ---------------------- Which sections actually render ------------------ */
@@ -596,20 +598,44 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       {/* ------------------------------------------------------------------ */}
       {showDonate && (donateButton2 || donateButton) && (
         <section id="sec-donate" className="container pb-20 md:pb-28">
-          <FadeIn className="flex flex-col items-center gap-6 rounded-3xl bg-primary px-8 py-10 text-center text-white shadow-pop sm:flex-row sm:justify-between sm:text-left md:px-14">
+          <FadeIn className="relative flex flex-col items-center gap-4 overflow-hidden rounded-3xl bg-secondary px-8 py-14 text-center text-white shadow-pop md:px-14 md:py-16">
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-secondary via-secondary/85 to-primary/50 mix-blend-multiply" />
+            <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-accent/25 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-28 -left-24 h-64 w-64 rounded-full bg-primary/25 blur-3xl" />
+
             {donateEyebrow && (
-              <p className="hidden text-xs font-semibold uppercase tracking-[0.16em] text-white/70 sm:block">
+              <p className="relative flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/70">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                 {donateEyebrow}
               </p>
             )}
-            <h2 className="max-w-xl text-2xl font-bold leading-tight md:text-3xl">{donateTitle}</h2>
-            {donateButton2 && (
-              <Button asChild size="lg" className="shrink-0 rounded-full bg-secondary px-8 hover:bg-secondary/90">
-                <Link href={`/${locale}/contact`}>
-                  {donateButton2} <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
+            <h2 className="relative max-w-2xl text-2xl font-bold leading-tight md:text-4xl">{donateTitle}</h2>
+            {donateText && (
+              <p className="relative line-clamp-3 max-w-2xl text-sm leading-relaxed text-white/75 md:text-base">
+                {donateText}
+              </p>
             )}
+            <div className="relative mt-2 flex flex-wrap items-center justify-center gap-3">
+              {donateButton && (
+                <Button asChild size="lg" className="rounded-full bg-primary px-8 hover:bg-primary/90">
+                  <Link href={donateButtonLink}>
+                    {donateButton} <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              )}
+              {donateButton2 && (
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="rounded-full border-white/40 bg-transparent px-8 text-white hover:bg-white/10"
+                >
+                  <Link href={donateButton2Link}>
+                    {donateButton2} <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              )}
+            </div>
           </FadeIn>
         </section>
       )}
@@ -771,7 +797,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                 )}
                 {donateButton && (
                   <Button asChild className="mt-6 w-full rounded-full bg-primary hover:bg-primary/90">
-                    <Link href={`/${locale}/donate`}>
+                    <Link href={donateButtonLink}>
                       {donateButton} <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
@@ -783,35 +809,25 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       )}
 
       {/* ------------------------------------------------------------------ */}
-      {/* Testimonials — dark, centered, no star ratings                      */}
+      {/* Testimonials — light multi-card slider, quote peeking off the edge  */}
       {/* ------------------------------------------------------------------ */}
       {showTestimonials && (
-        <section id="sec-testimonials" className="relative overflow-hidden bg-secondary py-24 text-white md:py-32">
-          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-32 left-1/4 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
-          <div className="container relative">
-            <FadeIn className="mx-auto mb-16 max-w-2xl space-y-3 text-center">
-              {testimonialsEyebrow && (
-                <p className="flex items-center justify-center gap-3 text-xs font-semibold uppercase tracking-[0.16em] text-white/60">
-                  <span className="h-px w-8 bg-white/25" />
-                  {testimonialsEyebrow}
-                  <span className="h-px w-8 bg-white/25" />
-                </p>
-              )}
-              {testimonialsTitle && (
-                <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{testimonialsTitle}</h2>
-              )}
-            </FadeIn>
-            <div className="relative mx-auto max-w-4xl">
-              <DarkTestimonialCarousel
-                edgeArrows
-                spotlight
-                items={testimonials.map((t) => ({
-                  quote: loc(t, "quote", locale),
-                  author: loc(t, "author", locale),
-                }))}
-              />
-            </div>
+        <section id="sec-testimonials" className="border-t border-border py-24 md:py-32">
+          <div className="container">
+            {testimonialsEyebrow && (
+              <FadeIn className="mb-10">
+                <SectionTag>{testimonialsEyebrow}</SectionTag>
+              </FadeIn>
+            )}
+            <TestimonialSlider
+              title={testimonialsTitle}
+              items={testimonials.map((t) => ({
+                quote: loc(t, "quote", locale),
+                author: loc(t, "author", locale),
+                avatar: t.avatar,
+                rating: t.rating,
+              }))}
+            />
           </div>
         </section>
       )}

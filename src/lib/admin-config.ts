@@ -94,7 +94,7 @@ export const entities: EntityDef[] = [
         addLabel: "Add an outcome",
         help: "Each one becomes a numbered card on the project page.",
       },
-      { name: "location", label: "Location / districts", type: "text" },
+      { name: "location", label: "Location / districts", type: "text", i18n: true },
       { name: "beneficiaries", label: "Beneficiaries", type: "text", i18n: true, help: "e.g. 1,200 women across 6 districts" },
       { name: "image2", label: "Gallery image 1", type: "image" },
       { name: "image3", label: "Gallery image 2", type: "image" },
@@ -398,10 +398,18 @@ export const entities: EntityDef[] = [
     fields: [
       { name: "quote", label: "Quote", type: "textarea", i18n: true, required: true },
       { name: "author", label: "Author / attribution", type: "text", i18n: true, required: true },
+      { name: "avatar", label: "Photo", type: "image", help: "Leave blank to show the author's initial instead." },
+      {
+        name: "rating",
+        label: "Star rating",
+        type: "number",
+        help: "1 to 5. Leave blank to show 5 stars.",
+      },
       { name: "order", label: "Sort order", type: "number" },
       { name: "published", label: "Published", type: "boolean" },
     ],
     listFields: [
+      { name: "avatar", label: "", type: "image" },
       { name: "authorEn", label: "Author" },
       { name: "published", label: "Published", type: "boolean" },
     ],

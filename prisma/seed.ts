@@ -259,7 +259,7 @@ async function main() {
         "Bring free health screenings to underserved communities\nBuild a trusted referral network of respectful providers\nTrain peer navigators from within the community\nRaise health awareness through community education\nReduce late diagnosis through early screening\nEliminate stigma as a barrier to care",
       outcomesEn:
         "Screenings Delivered :: Over 320 mobile clinics conducted, delivering thousands of free screenings across 10 districts.\nReferrals Completed :: Peer navigation more than doubled the rate of completed hospital referrals among participants.\nCommunity Trust :: Clinics are now requested by community leaders, with attendance growing every quarter.",
-      location: "10 districts across Sri Lanka",
+      locationEn: "10 districts across Sri Lanka",
       beneficiariesEn: "5,000+ women reached",
       status: "ongoing",
       order: 1,
@@ -277,7 +277,7 @@ async function main() {
         "Translate legal rights into plain, practical language\nRun community workshops in Sinhala and Tamil\nTrain peer educators to sustain rights education\nConnect participants to free legal assistance\nHelp women obtain missing identity documents\nBuild confidence to engage police and courts",
       outcomesEn:
         "Workshops Held :: Hundreds of rights-awareness sessions delivered across partner communities.\nDocuments Secured :: Many women supported to obtain NICs and birth certificates, unlocking services and voting rights.\nCases Resolved :: Early legal guidance resolved disputes before escalation in a majority of supported cases.",
-      location: "Community venues in 10 districts",
+      locationEn: "Community venues in 10 districts",
       beneficiariesEn: "2,500+ workshop participants",
       status: "ongoing",
       order: 2,
@@ -295,7 +295,7 @@ async function main() {
         "Identify and mentor emerging community leaders\nTeach facilitation, outreach, and advocacy skills\nProvide six months of guided field experience\nCertify graduates as CSDF peer educators\nCreate pathways into program leadership roles\nBuild a self-sustaining leadership pipeline",
       outcomesEn:
         "Leaders Certified :: Multiple cohorts of certified peer educators now lead outreach across all partner districts.\nPrograms Multiplied :: Graduate-led sessions have extended CSDF's reach far beyond what staff alone could deliver.\nVoices Heard :: Graduates now represent their communities in district coordination forums.",
-      location: "CSDF training centres & field sites",
+      locationEn: "CSDF training centres & field sites",
       beneficiariesEn: "450+ training sessions delivered",
       status: "ongoing",
       order: 3,
@@ -313,7 +313,7 @@ async function main() {
         "Deliver vocational training in four livelihood tracks\nTeach budgeting, savings, and business basics\nProvide seed support for viable business plans\nMentor new entrepreneurs through their first year\nMarket products via the Community Business platform\nBuild peer networks of women producers",
       outcomesEn:
         "Businesses Launched :: Dozens of women-led micro-businesses now generate independent income.\nIncomes Raised :: Participants report meaningfully higher and more stable household income after graduation.\nProducts to Market :: The Community Business showcase connects producers directly to customers via WhatsApp ordering.",
-      location: "6 districts, expanding annually",
+      locationEn: "6 districts, expanding annually",
       beneficiariesEn: "300+ women entrepreneurs supported",
       status: "ongoing",
       order: 4,
@@ -330,7 +330,7 @@ async function main() {
           contentEn: proj.contentEn,
           objectivesEn: proj.objectivesEn,
           outcomesEn: proj.outcomesEn,
-          location: proj.location,
+          locationEn: proj.locationEn,
           beneficiariesEn: proj.beneficiariesEn,
         },
       });
