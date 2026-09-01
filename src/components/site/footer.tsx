@@ -41,7 +41,16 @@ export function SiteFooter({
   const copyright = s(settings, "footer_copyright", locale);
   const credit = s(settings, "footer_credit", locale);
 
-  const showExplore = show(settings, "show_footer_explore", nav.explore);
+  // Legal pages link from the footer only once there's something to read —
+  // no point sending visitors to a page the admin hasn't written yet.
+  const showPrivacy = Boolean(s(settings, "privacy_content", locale));
+  const showTerms = Boolean(s(settings, "terms_content", locale));
+
+  const showExplore = show(
+    settings,
+    "show_footer_explore",
+    nav.explore.length > 0 || showPrivacy || showTerms
+  );
   const showInvolved = show(settings, "show_footer_involved", nav.involved);
   const showSocial = show(settings, "show_footer_social", socials);
   const showNewsletter = show(settings, "show_footer_newsletter", newsletterTitle);
@@ -141,6 +150,28 @@ export function SiteFooter({
                   </Link>
                 </li>
               ))}
+              {showPrivacy && (
+                <li>
+                  <Link
+                    className="inline-flex items-center gap-2 transition-colors hover:text-accent"
+                    href={`/${locale}/privacy`}
+                  >
+                    <span className="h-px w-3 bg-accent/50" />
+                    {dict.nav.privacy}
+                  </Link>
+                </li>
+              )}
+              {showTerms && (
+                <li>
+                  <Link
+                    className="inline-flex items-center gap-2 transition-colors hover:text-accent"
+                    href={`/${locale}/terms`}
+                  >
+                    <span className="h-px w-3 bg-accent/50" />
+                    {dict.nav.terms}
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
         )}

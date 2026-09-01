@@ -101,6 +101,8 @@ export type SettingType =
   | "file"
   | "boolean"
   | "number"
+  /** Full HTML editor — formatting, links, inline images. */
+  | "richtext"
   /** Repeatable rows of "heading + text", stored as `Left :: Right` lines. */
   | "pairs"
   /** Repeatable single-value rows, stored one per line. */
@@ -164,6 +166,14 @@ const TA = (key: string, label: string, help?: string): SettingDef => ({
   key,
   label,
   type: "textarea",
+  i18n: true,
+  help,
+});
+/** Translated rich HTML content. */
+const RT = (key: string, label: string, help?: string): SettingDef => ({
+  key,
+  label,
+  type: "richtext",
   i18n: true,
   help,
 });
@@ -952,6 +962,33 @@ export const settingPages: SettingPage[] = [
           TA("suggestions_hero_intro", "Intro text"),
           IMG("suggestions_hero_image", "Header background image"),
           T("suggestions_success_message", "Message shown after sending"),
+        ],
+      },
+    ],
+  },
+
+  /* ------------------------------------------------------------- Legal pages */
+  {
+    slug: "legal",
+    title: "Legal Pages",
+    description: "Privacy Policy and Terms & Conditions. Each page hides itself from the menu and footer until it has content.",
+    sections: [
+      {
+        section: "Privacy Policy",
+        preview: { path: "/privacy", anchor: "sec-legal-body" },
+        hideNote: "Hidden from the site (including the footer link) until this has content.",
+        items: [
+          T("privacy_title", "Page title", "Leave blank to use \"Privacy Policy\"."),
+          RT("privacy_content", "Content"),
+        ],
+      },
+      {
+        section: "Terms & Conditions",
+        preview: { path: "/terms", anchor: "sec-legal-body" },
+        hideNote: "Hidden from the site (including the footer link) until this has content.",
+        items: [
+          T("terms_title", "Page title", "Leave blank to use \"Terms & Conditions\"."),
+          RT("terms_content", "Content"),
         ],
       },
     ],

@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { FileUploadField } from "./image-upload";
 import { ToggleField } from "./toggle-field";
 import { LineListField, PairListField } from "./repeater-field";
+import { RichTextField } from "./rich-text-field";
 import { SectionPreview, type PreviewSection } from "./section-preview";
 
 const langs = [
@@ -102,17 +103,24 @@ function SettingField({ item, settings }: { item: SettingDef; settings: Settings
           isImage={item.type === "image"}
         />
       ) : item.i18n ? (
-        <div className="grid gap-3 xl:grid-cols-3">
+        <div className={item.type === "richtext" ? "space-y-5" : "grid gap-3 xl:grid-cols-3"}>
           {langs.map((lang) => (
             <div key={lang.code} className="space-y-1">
               <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
                 {lang.label}
               </p>
-              <PlainInput
-                item={item}
-                name={`${item.key}__${lang.code}`}
-                value={valueFor(settings, item.key, lang.suffix)}
-              />
+              {item.type === "richtext" ? (
+                <RichTextField
+                  name={`${item.key}__${lang.code}`}
+                  defaultValue={valueFor(settings, item.key, lang.suffix)}
+                />
+              ) : (
+                <PlainInput
+                  item={item}
+                  name={`${item.key}__${lang.code}`}
+                  value={valueFor(settings, item.key, lang.suffix)}
+                />
+              )}
             </div>
           ))}
         </div>
