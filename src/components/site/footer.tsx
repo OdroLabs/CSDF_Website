@@ -95,7 +95,7 @@ export function SiteFooter({
           </div>
 
           {about && (
-            <p className="mb-5 max-w-xs whitespace-pre-line text-sm leading-relaxed text-white/55">
+            <p className="mb-5 max-w-xs whitespace-pre-line text-sm leading-relaxed text-white">
               {about}
             </p>
           )}

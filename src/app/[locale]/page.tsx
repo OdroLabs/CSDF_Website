@@ -202,7 +202,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       {showHero && (
         <section
           id="sec-hero"
-          className="relative flex min-h-[100svh] flex-col overflow-hidden bg-secondary text-white md:h-[100svh] md:min-h-[720px]"
+          className="relative flex min-h-[100svh] flex-col overflow-hidden bg-black text-white md:h-[100svh] md:min-h-[720px]"
         >
           {heroImage && (
             <div className="absolute inset-0 overflow-hidden">
@@ -212,8 +212,8 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                   style={{ backgroundImage: `url(${heroImage})` }}
                 />
               </Parallax>
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-secondary via-secondary/85 to-primary/50 mix-blend-multiply" />
-              <div className="pointer-events-none absolute inset-0 bg-secondary/25" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-black via-[#ffaaf1]/50 to-[#ffaaf1] mix-blend-multiply" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-[#ffaaf1]/25 to-[#ffaaf1]/50" />
             </div>
           )}
           <div className="pointer-events-none absolute -right-32 -top-32 h-[32rem] w-[32rem] rounded-full bg-accent/25 blur-3xl" />
@@ -331,38 +331,6 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
               <Marquee items={tickerItems} className="text-white/70" />
             </div>
           )}
-        </section>
-      )}
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Quick highlights strip                                              */}
-      {/* ------------------------------------------------------------------ */}
-      {showServices && services.length > 0 && (
-        <section id="sec-highlights" className="border-b border-border bg-muted/40">
-          <div className="container">
-            <Stagger className="grid divide-y divide-border sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-              {services.slice(0, 3).map((service) => (
-                <StaggerItem key={service.id}>
-                  <Link
-                    href={`/${locale}/services/${service.slug ?? service.id}`}
-                    className="group flex items-center gap-4 px-2 py-6 transition-colors duration-300 hover:text-primary sm:px-8"
-                  >
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary/10 text-xl text-primary transition-transform duration-300 group-hover:scale-105">
-                      {service.icon || <ShieldCheck className="h-5 w-5" />}
-                    </span>
-                    <div className="min-w-0">
-                      <h3 className="truncate font-bold leading-snug text-foreground transition-colors group-hover:text-primary">
-                        {loc(service, "title", locale)}
-                      </h3>
-                      <p className="line-clamp-1 text-sm leading-relaxed text-muted-foreground">
-                        {loc(service, "description", locale)}
-                      </p>
-                    </div>
-                  </Link>
-                </StaggerItem>
-              ))}
-            </Stagger>
-          </div>
         </section>
       )}
 

@@ -137,7 +137,7 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
                   {overviewTitle}
                 </h2>
               )}
-              <p className="max-w-2xl whitespace-pre-line leading-relaxed text-muted-foreground">{overview}</p>
+              <p className="max-w-2xl whitespace-pre-line leading-relaxed text-black">{overview}</p>
             </FadeIn>
             {overviewImage && (
               <FadeIn delay={0.1} className="relative mx-auto w-full max-w-xl lg:order-2 lg:ml-0 lg:mr-auto">
@@ -182,16 +182,15 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
             {showVisionMission && (
               <div className="mb-6 grid gap-6 lg:grid-cols-4">
                 {checklist.map((item, i) => (
-                  <FadeIn
-                    key={i}
-                    delay={i * 0.08}
-                    className={`rounded-3xl p-8 shadow-pop lg:col-span-2 ${
-                      i === 0 ? "bg-primary text-white" : "bg-secondary text-white"
-                    }`}
-                  >
-                    <item.icon className="mb-4 h-8 w-8 text-white/70" />
-                    <h3 className="mb-3 text-xl font-bold">{item.title}</h3>
-                    <p className="text-sm leading-relaxed text-white/80">{item.text}</p>
+                  <FadeIn key={i} delay={i * 0.08} className="lg:col-span-2">
+                    <div
+                      className="h-full rounded-3xl p-8 text-white shadow-pop"
+                      style={{ backgroundColor: i === 0 ? "#ed008c" : "#FFBFC3" }}
+                    >
+                      <item.icon className="mb-4 h-8 w-8 text-white/70" />
+                      <h3 className="mb-3 text-xl font-bold">{item.title}</h3>
+                      <p className="text-sm leading-relaxed text-white/80">{item.text}</p>
+                    </div>
                   </FadeIn>
                 ))}
               </div>
